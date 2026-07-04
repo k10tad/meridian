@@ -1,5 +1,6 @@
 /*==========================
 Meridian Design System v1.0
+Mobile First
 ==========================*/
 
 :root {
@@ -8,7 +9,6 @@ Meridian Design System v1.0
     --color-bg-deep: #02030a;
 
     --color-card: rgba(255, 255, 255, 0.055);
-    --color-card-strong: rgba(255, 255, 255, 0.085);
     --color-card-border: rgba(255, 255, 255, 0.10);
 
     --color-text: #f4f1ea;
@@ -16,25 +16,19 @@ Meridian Design System v1.0
 
     --color-gold: #d4af37;
     --color-gold-soft: rgba(212, 175, 55, 0.25);
-    --color-blue: #17233d;
 
     --radius-card: 22px;
     --radius-panel: 28px;
-    --radius-small: 14px;
     --radius-pill: 999px;
 
-    --space-xs: 6px;
-    --space-sm: 10px;
     --space-md: 16px;
     --space-lg: 24px;
-    --space-xl: 34px;
 
     --shadow-card: 0 18px 50px rgba(0, 0, 0, 0.28);
 
     --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
     --transition-fast: 180ms ease;
-    --transition-normal: 420ms ease;
     --transition-slow: 900ms ease;
 }
 
@@ -62,13 +56,16 @@ Boot Screen
 .boot-screen {
     position: fixed;
     inset: 0;
+    z-index: 10;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
     background:
         radial-gradient(circle at center, #1d2844 0%, #070911 70%);
-    z-index: 10;
+
     transition: opacity var(--transition-slow), visibility var(--transition-slow);
 }
 
@@ -135,61 +132,152 @@ App Layout
 }
 
 /*==========================
-Hero / Commander
+Commander Hero
 ==========================*/
 
-.hero {
-    margin-bottom: var(--space-lg);
+.commander-hero {
+    position: relative;
+    margin-bottom: 28px;
 }
 
 .hero-image {
-    height: 300px;
+    height: 360px;
     border-radius: var(--radius-panel);
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background:
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    position: relative;
+
     border: 1px solid var(--color-card-border);
     box-shadow: var(--shadow-card);
+
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
 }
 
-.message {
-    margin-top: 15px;
-    padding: var(--space-md);
+.hero-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(2, 3, 10, 0.02) 0%,
+            rgba(2, 3, 10, 0.14) 45%,
+            rgba(2, 3, 10, 0.72) 100%
+        );
+}
+
+.commander {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 36%;
+    display: block;
+    animation: commanderBreath 7s ease-in-out infinite;
+}
+
+@keyframes commanderBreath {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.018);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.commander-brief-card {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    z-index: 3;
+
+    padding: 15px 16px;
     border-radius: 18px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--color-card-border);
-    line-height: 1.65;
+
+    background: rgba(6, 8, 16, 0.78);
+    border: 1px solid rgba(212, 175, 55, 0.20);
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(18px);
+}
+
+.brief-label {
+    color: var(--color-gold);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+#deskGreeting {
     font-size: 15px;
+    line-height: 1.7;
+}
+
+.mini-relationship {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    color: var(--color-muted);
+    font-size: 12px;
+}
+
+.relationship-bar {
+    height: 7px;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.relationship-fill {
+    width: 18%;
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(90deg, var(--color-gold), #f0d98a);
 }
 
 /*==========================
-Desk
+Titles / Cards
 ==========================*/
 
+.desk-header,
 .title {
-    margin-bottom: 18px;
+    margin-bottom: var(--space-md);
 }
 
+.eyebrow {
+    color: var(--color-gold);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    margin-bottom: 4px;
+}
+
+.desk-header h1,
 .title h1 {
     margin: 0;
     font-size: 30px;
     letter-spacing: 0.04em;
 }
 
+.desk-header p,
 .title p {
     margin: 6px 0 0;
     color: var(--color-muted);
     font-size: 13px;
-    letter-spacing: 0.08em;
 }
 
 .card {
     margin-bottom: var(--space-md);
     padding: 18px;
     border-radius: var(--radius-card);
+
     background: var(--color-card);
     border: 1px solid var(--color-card-border);
     box-shadow: var(--shadow-card);
@@ -208,53 +296,12 @@ Desk
     line-height: 1.6;
 }
 
-/*==========================
-Tab Bar
-==========================*/
-
-.tabbar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-
-    display: flex;
-    justify-content: space-around;
-
-    padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
-
-    background: rgba(10,12,20,0.88);
-    backdrop-filter: blur(20px);
-    border-top: 1px solid var(--color-card-border);
-}
-
-.tabbar button {
-    width: 46px;
-    height: 46px;
-    border-radius: var(--radius-pill);
-    background: transparent;
-    border: none;
-    color: var(--color-text);
-    font-size: 24px;
-    transition:
-        background var(--transition-fast),
-        transform var(--transition-fast),
-        color var(--transition-fast);
-}
-
-.tabbar button:active {
-    transform: scale(0.92);
-    background: var(--color-gold-soft);
-    color: var(--color-gold);
-}
-
-.commander {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 36%;
-    border-radius: var(--radius-panel);
-    display: block;
+.order-list {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--color-muted);
+    line-height: 1.8;
+    font-size: 14px;
 }
 
 /*==========================
@@ -268,12 +315,6 @@ Page Navigation
 
 .app-page.active-page {
     display: block;
-}
-
-.tabbar button.active {
-    background: var(--color-gold-soft);
-    color: var(--color-gold);
-    box-shadow: 0 0 18px rgba(212, 175, 55, 0.18);
 }
 
 @keyframes pageFade {
@@ -405,5 +446,105 @@ Planner
     height: 4px;
     border-radius: 50%;
     background: var(--color-gold);
+}
+
+/*==========================
+Tab Bar
+==========================*/
+
+.tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 100%;
+    max-width: 430px;
+
+    display: flex;
+    justify-content: space-around;
+
+    padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+
+    background: rgba(10,12,20,0.88);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--color-card-border);
+}
+
+.tabbar button {
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-pill);
+
+    background: transparent;
+    border: none;
+
+    color: var(--color-text);
+    font-size: 23px;
+
+    transition:
+        background var(--transition-fast),
+        transform var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.tabbar button.active {
+    background: var(--color-gold-soft);
+    color: var(--color-gold);
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.18);
+}
+
+.tabbar button:active {
+    transform: scale(0.92);
+}
+
+/*==========================
+Today's Condition
+==========================*/
+
+.condition-intro {
+    margin-bottom: 14px !important;
+}
+
+.condition-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.condition-btn {
+    min-height: 42px;
+    border-radius: 14px;
+    border: 1px solid var(--color-card-border);
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--color-text);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+}
+
+.condition-btn.selected {
+    border-color: rgba(212, 175, 55, 0.58);
+    background: rgba(212, 175, 55, 0.16);
+    color: var(--color-gold);
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.14);
+}
+
+.condition-btn:active {
+    transform: scale(0.97);
+}
+
+.relationship-meta {
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.meta-label {
+    opacity: 0.6;
+}
+
+.meta-right {
+    text-align: right;
 }
 

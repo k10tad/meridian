@@ -1,0 +1,37 @@
+//========================
+// Meridian Desk
+// Commander Home v1.0
+//========================
+
+const deskGreeting = document.getElementById("deskGreeting");
+const messageBox = document.getElementById("message");
+
+function getTimeGreeting() {
+    const hour = new Date().getHours();
+
+    if (hour >= 5 && hour < 11) {
+        return "おはよう、レイ。今日はどうだ。";
+    }
+
+    if (hour >= 11 && hour < 17) {
+        return "昼だ。ペースを崩すな。";
+    }
+
+    if (hour >= 17 && hour < 22) {
+        return "夕方だな。今日の残りを確認する。";
+    }
+
+    return "遅い時間だ。無理はするな、レイ。";
+}
+
+function applyDeskGreeting() {
+    const greeting = getTimeGreeting();
+
+    if (deskGreeting) {
+        deskGreeting.textContent = greeting;
+    }
+
+}
+
+applyDeskGreeting();
+

@@ -17,100 +17,117 @@
 
 <main id="app" class="app hidden">
 
-    <header class="hero">
+    <section class="commander-hero">
         <div class="hero-image">
             <img src="assets/images/sebas/commander-home.png" class="commander" alt="Commander">
         </div>
 
-        <div id="message" class="message">
-            今日はどうだ、レイ。
+        <div class="commander-brief-card">
+            <div class="brief-label">COMMANDER</div>
+            <div id="deskGreeting">今日はどうだ、レイ。</div>
+
+            <div class="mini-relationship">
+                <span id="relationshipLevel">Partner Lv.1</span>
+                <span id="relationshipAffinity">18%</span>
+            </div>
+
+            <div class="relationship-bar">
+                <div class="relationship-fill"></div>
+            </div>
+
+            <div class="relationship-meta">
+                <div>
+                    <div class="meta-label">Today's Trust</div>
+                    <div id="relationshipTrust">+0</div>
+                </div>
+
+                <div class="meta-right">
+                    <div class="meta-label">Days Together</div>
+                    <div id="relationshipDays">1</div>
+                </div>
+            </div>
         </div>
-    </header>
+    </section>
 
     <section id="deskPage" class="app-page active-page">
-        <div class="title">
+        <div class="desk-header">
+            <div class="eyebrow">MERIDIAN</div>
             <h1>Desk</h1>
             <p>Personal Command Desk</p>
         </div>
 
-        <div class="card">
+        <div class="card condition-card">
             <h2>Today's Condition</h2>
-            <p>今日はどうだ。</p>
+            <p class="condition-intro">今の状態を選べ。今日の進め方を調整する。</p>
+
+            <div class="condition-grid">
+                <button class="condition-btn" data-condition="good">元気</button>
+                <button class="condition-btn" data-condition="normal">普通</button>
+                <button class="condition-btn" data-condition="tired">疲れてる</button>
+                <button class="condition-btn" data-condition="headache">頭痛</button>
+                <button class="condition-btn" data-condition="period">生理中</button>
+                <button class="condition-btn" data-condition="low">気分が沈んでる</button>
+            </div>
         </div>
 
-        <div class="card">
+        <div class="card orders-card">
             <h2>Today's Orders</h2>
-            <p>司令を取得中...</p>
+            <ul id="todayOrders" class="order-list">
+                <li>体調を確認する</li>
+                <li>最初の任務を一つ決める</li>
+                <li>無理なら予定を減らす</li>
+            </ul>
         </div>
 
         <div class="card">
             <h2>Weather</h2>
-            <p>読み込み中...</p>
-        </div>
-
-        <div class="card">
-            <h2>Relationship</h2>
-            <p>Partner Lv.1</p>
+            <p>天気情報は後でここに接続する。</p>
         </div>
     </section>
 
-  <section id="plannerPage" class="app-page">
-
-    <div class="title">
-        <h1>Planner</h1>
-        <p>Mission calendar</p>
-    </div>
-
-    <div class="planner-header-card">
-        <div>
-            <div class="planner-label">Today</div>
-            <div id="plannerToday" class="planner-today">--</div>
+    <section id="plannerPage" class="app-page">
+        <div class="title">
+            <h1>Planner</h1>
+            <p>Mission calendar</p>
         </div>
 
-        <button class="planner-add-btn">＋</button>
-    </div>
-
-    <div class="card planner-card">
-        <div class="planner-month-row">
-            <button id="prevMonth" class="planner-nav-btn">‹</button>
-            <h2 id="plannerMonth">Month</h2>
-            <button id="nextMonth" class="planner-nav-btn">›</button>
+        <div class="planner-header-card">
+            <div>
+                <div class="planner-label">Today</div>
+                <div id="plannerToday" class="planner-today">--</div>
+            </div>
+            <button class="planner-add-btn">＋</button>
         </div>
 
-        <div class="calendar-weekdays">
-            <span>Sun</span>
-            <span>Mon</span>
-            <span>Tue</span>
-            <span>Wed</span>
-            <span>Thu</span>
-            <span>Fri</span>
-            <span>Sat</span>
+        <div class="card planner-card">
+            <div class="planner-month-row">
+                <button id="prevMonth" class="planner-nav-btn">‹</button>
+                <h2 id="plannerMonth">Month</h2>
+                <button id="nextMonth" class="planner-nav-btn">›</button>
+            </div>
+
+            <div class="calendar-weekdays">
+                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+                <span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+
+            <div id="calendarGrid" class="calendar-grid"></div>
         </div>
 
-        <div id="calendarGrid" class="calendar-grid"></div>
-    </div>
-
-    <div class="card">
-        <h2>Today’s Brief</h2>
-        <p id="plannerBrief">予定はまだ登録されていない。</p>
-    </div>
-
-</section>
+        <div class="card">
+            <h2>Today’s Brief</h2>
+            <p id="plannerBrief">予定はまだ登録されていない。</p>
+        </div>
+    </section>
 
     <section id="focusPage" class="app-page">
         <div class="title">
             <h1>Focus</h1>
             <p>Work and concentration</p>
         </div>
-
         <div class="card">
             <h2>Pomodoro</h2>
             <p>集中タイマーをここに入れる。</p>
-        </div>
-
-        <div class="card">
-            <h2>Tasks</h2>
-            <p>今日のタスクをここに入れる。</p>
         </div>
     </section>
 
@@ -119,15 +136,9 @@
             <h1>Health</h1>
             <p>Condition and training</p>
         </div>
-
-        <div class="card">
-            <h2>Sleep</h2>
-            <p>睡眠記録をここに入れる。</p>
-        </div>
-
         <div class="card">
             <h2>Boxing</h2>
-            <p>軽いボクシングの記録とラウンドタイマーをここに入れる。</p>
+            <p>軽いボクシングの記録をここに入れる。</p>
         </div>
     </section>
 
@@ -136,15 +147,9 @@
             <h1>Vestige</h1>
             <p>Archive and memory</p>
         </div>
-
         <div class="card">
             <h2>Album</h2>
             <p>写真アルバムをここに入れる。</p>
-        </div>
-
-        <div class="card">
-            <h2>Commander Log</h2>
-            <p>日々の記録をここに入れる。</p>
         </div>
     </section>
 
@@ -161,7 +166,9 @@
 <script src="js/boot.js"></script>
 <script src="js/navigation.js"></script>
 <script src="js/planner.js"></script>
+<script src="js/relationship.js"></script>
+<script src="js/desk.js"></script>
+<script src="js/condition.js"></script>
 
 </body>
 </html>
-
