@@ -1,0 +1,409 @@
+/*==========================
+Meridian Design System v1.0
+==========================*/
+
+:root {
+    --color-bg: #050711;
+    --color-bg-soft: #0b1020;
+    --color-bg-deep: #02030a;
+
+    --color-card: rgba(255, 255, 255, 0.055);
+    --color-card-strong: rgba(255, 255, 255, 0.085);
+    --color-card-border: rgba(255, 255, 255, 0.10);
+
+    --color-text: #f4f1ea;
+    --color-muted: rgba(244, 241, 234, 0.62);
+
+    --color-gold: #d4af37;
+    --color-gold-soft: rgba(212, 175, 55, 0.25);
+    --color-blue: #17233d;
+
+    --radius-card: 22px;
+    --radius-panel: 28px;
+    --radius-small: 14px;
+    --radius-pill: 999px;
+
+    --space-xs: 6px;
+    --space-sm: 10px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 34px;
+
+    --shadow-card: 0 18px 50px rgba(0, 0, 0, 0.28);
+
+    --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+    --transition-fast: 180ms ease;
+    --transition-normal: 420ms ease;
+    --transition-slow: 900ms ease;
+}
+
+/*==========================
+Base
+==========================*/
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top, #26314d 0%, var(--color-bg) 52%, var(--color-bg-deep) 100%);
+    color: var(--color-text);
+    font-family: var(--font-main);
+}
+
+/*==========================
+Boot Screen
+==========================*/
+
+.boot-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background:
+        radial-gradient(circle at center, #1d2844 0%, #070911 70%);
+    z-index: 10;
+    transition: opacity var(--transition-slow), visibility var(--transition-slow);
+}
+
+.boot-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.boot-symbol {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 18px;
+    opacity: 0.92;
+    filter: drop-shadow(0 0 18px rgba(212, 175, 55, 0.28));
+    animation: compassWake 6s ease-in-out infinite;
+}
+
+.boot-logo {
+    letter-spacing: 0.22em;
+    font-size: 32px;
+    font-weight: 650;
+    margin-bottom: 18px;
+}
+
+.boot-text {
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+}
+
+@keyframes compassWake {
+    0% {
+        transform: rotate(0deg) scale(0.96);
+        opacity: 0.72;
+    }
+
+    50% {
+        transform: rotate(8deg) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotate(0deg) scale(0.96);
+        opacity: 0.72;
+    }
+}
+
+/*==========================
+App Layout
+==========================*/
+
+.app {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 14px 14px 92px;
+    transition: opacity var(--transition-slow);
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/*==========================
+Hero / Commander
+==========================*/
+
+.hero {
+    margin-bottom: var(--space-lg);
+}
+
+.hero-image {
+    height: 300px;
+    border-radius: var(--radius-panel);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    border: 1px solid var(--color-card-border);
+    box-shadow: var(--shadow-card);
+}
+
+.message {
+    margin-top: 15px;
+    padding: var(--space-md);
+    border-radius: 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--color-card-border);
+    line-height: 1.65;
+    font-size: 15px;
+}
+
+/*==========================
+Desk
+==========================*/
+
+.title {
+    margin-bottom: 18px;
+}
+
+.title h1 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: 0.04em;
+}
+
+.title p {
+    margin: 6px 0 0;
+    color: var(--color-muted);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+}
+
+.card {
+    margin-bottom: var(--space-md);
+    padding: 18px;
+    border-radius: var(--radius-card);
+    background: var(--color-card);
+    border: 1px solid var(--color-card-border);
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(16px);
+}
+
+.card h2 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+}
+
+.card p {
+    margin: 0;
+    color: var(--color-muted);
+    line-height: 1.6;
+}
+
+/*==========================
+Tab Bar
+==========================*/
+
+.tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-around;
+
+    padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+
+    background: rgba(10,12,20,0.88);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--color-card-border);
+}
+
+.tabbar button {
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    font-size: 24px;
+    transition:
+        background var(--transition-fast),
+        transform var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.tabbar button:active {
+    transform: scale(0.92);
+    background: var(--color-gold-soft);
+    color: var(--color-gold);
+}
+
+.commander {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 36%;
+    border-radius: var(--radius-panel);
+    display: block;
+}
+
+/*==========================
+Page Navigation
+==========================*/
+
+.app-page {
+    display: none;
+    animation: pageFade 260ms ease;
+}
+
+.app-page.active-page {
+    display: block;
+}
+
+.tabbar button.active {
+    background: var(--color-gold-soft);
+    color: var(--color-gold);
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.18);
+}
+
+@keyframes pageFade {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/*==========================
+Planner
+==========================*/
+
+.planner-header-card {
+    margin-bottom: var(--space-md);
+    padding: 18px;
+    border-radius: var(--radius-card);
+    background:
+        linear-gradient(135deg, rgba(212,175,55,0.16), rgba(255,255,255,0.045));
+    border: 1px solid rgba(212,175,55,0.18);
+    box-shadow: var(--shadow-card);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.planner-label {
+    color: var(--color-muted);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.planner-today {
+    font-size: 20px;
+    font-weight: 650;
+}
+
+.planner-add-btn {
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(212,175,55,0.32);
+    background: rgba(212,175,55,0.12);
+    color: var(--color-gold);
+    font-size: 26px;
+}
+
+.planner-card {
+    padding: 16px;
+}
+
+.planner-month-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.planner-month-row h2 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: 0.05em;
+}
+
+.planner-nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-card-border);
+    background: rgba(255,255,255,0.045);
+    color: var(--color-text);
+    font-size: 26px;
+    line-height: 1;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 8px;
+    color: var(--color-muted);
+    font-size: 10px;
+    text-align: center;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.calendar-day {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.035);
+    color: var(--color-text);
+    font-size: 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.calendar-day.empty {
+    opacity: 0;
+}
+
+.calendar-day.today {
+    border-color: rgba(212,175,55,0.68);
+    background: rgba(212,175,55,0.16);
+    color: var(--color-gold);
+    font-weight: 700;
+}
+
+.calendar-day.has-event::after {
+    content: "";
+    position: absolute;
+    bottom: 6px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-gold);
+}
+

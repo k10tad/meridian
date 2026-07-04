@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meridian</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+
+<div id="bootScreen" class="boot-screen">
+    <img src="assets/icons/meridian-logo.svg" class="boot-symbol" alt="Meridian Logo">
+    <div class="boot-logo">MERIDIAN</div>
+    <div id="bootText" class="boot-text">Initializing...</div>
+</div>
+
+<main id="app" class="app hidden">
+
+    <header class="hero">
+        <div class="hero-image">
+            <img src="assets/images/sebas/commander-home.png" class="commander" alt="Commander">
+        </div>
+
+        <div id="message" class="message">
+            今日はどうだ、レイ。
+        </div>
+    </header>
+
+    <section id="deskPage" class="app-page active-page">
+        <div class="title">
+            <h1>Desk</h1>
+            <p>Personal Command Desk</p>
+        </div>
+
+        <div class="card">
+            <h2>Today's Condition</h2>
+            <p>今日はどうだ。</p>
+        </div>
+
+        <div class="card">
+            <h2>Today's Orders</h2>
+            <p>司令を取得中...</p>
+        </div>
+
+        <div class="card">
+            <h2>Weather</h2>
+            <p>読み込み中...</p>
+        </div>
+
+        <div class="card">
+            <h2>Relationship</h2>
+            <p>Partner Lv.1</p>
+        </div>
+    </section>
+
+  <section id="plannerPage" class="app-page">
+
+    <div class="title">
+        <h1>Planner</h1>
+        <p>Mission calendar</p>
+    </div>
+
+    <div class="planner-header-card">
+        <div>
+            <div class="planner-label">Today</div>
+            <div id="plannerToday" class="planner-today">--</div>
+        </div>
+
+        <button class="planner-add-btn">＋</button>
+    </div>
+
+    <div class="card planner-card">
+        <div class="planner-month-row">
+            <button id="prevMonth" class="planner-nav-btn">‹</button>
+            <h2 id="plannerMonth">Month</h2>
+            <button id="nextMonth" class="planner-nav-btn">›</button>
+        </div>
+
+        <div class="calendar-weekdays">
+            <span>Sun</span>
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+        </div>
+
+        <div id="calendarGrid" class="calendar-grid"></div>
+    </div>
+
+    <div class="card">
+        <h2>Today’s Brief</h2>
+        <p id="plannerBrief">予定はまだ登録されていない。</p>
+    </div>
+
+</section>
+
+    <section id="focusPage" class="app-page">
+        <div class="title">
+            <h1>Focus</h1>
+            <p>Work and concentration</p>
+        </div>
+
+        <div class="card">
+            <h2>Pomodoro</h2>
+            <p>集中タイマーをここに入れる。</p>
+        </div>
+
+        <div class="card">
+            <h2>Tasks</h2>
+            <p>今日のタスクをここに入れる。</p>
+        </div>
+    </section>
+
+    <section id="healthPage" class="app-page">
+        <div class="title">
+            <h1>Health</h1>
+            <p>Condition and training</p>
+        </div>
+
+        <div class="card">
+            <h2>Sleep</h2>
+            <p>睡眠記録をここに入れる。</p>
+        </div>
+
+        <div class="card">
+            <h2>Boxing</h2>
+            <p>軽いボクシングの記録とラウンドタイマーをここに入れる。</p>
+        </div>
+    </section>
+
+    <section id="vestigePage" class="app-page">
+        <div class="title">
+            <h1>Vestige</h1>
+            <p>Archive and memory</p>
+        </div>
+
+        <div class="card">
+            <h2>Album</h2>
+            <p>写真アルバムをここに入れる。</p>
+        </div>
+
+        <div class="card">
+            <h2>Commander Log</h2>
+            <p>日々の記録をここに入れる。</p>
+        </div>
+    </section>
+
+    <nav class="tabbar">
+        <button class="tab-btn active" data-page="deskPage">🏠</button>
+        <button class="tab-btn" data-page="plannerPage">📅</button>
+        <button class="tab-btn" data-page="focusPage">🎯</button>
+        <button class="tab-btn" data-page="healthPage">❤️</button>
+        <button class="tab-btn" data-page="vestigePage">📖</button>
+    </nav>
+
+</main>
+
+<script src="js/boot.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/planner.js"></script>
+
+</body>
+</html>
+
