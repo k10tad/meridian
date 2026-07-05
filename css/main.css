@@ -548,3 +548,163 @@ Today's Condition
     text-align: right;
 }
 
+/*==========================
+Daily Brief
+==========================*/
+
+.daily-brief-card {
+    border-color: rgba(212, 175, 55, 0.16);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(212, 175, 55, 0.10),
+            rgba(255, 255, 255, 0.045)
+        );
+}
+
+.brief-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.brief-line {
+    height: 1px;
+    margin: 14px 0;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+#briefDate,
+#briefCondition {
+    margin-top: 4px;
+    font-weight: 650;
+}
+
+#briefMessage {
+    color: var(--color-muted);
+    line-height: 1.7;
+}
+
+/*==========================
+Health
+==========================*/
+
+.health-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.health-toggle {
+    min-height: 42px;
+    border-radius: 14px;
+    border: 1px solid var(--color-card-border);
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.health-toggle.selected {
+    border-color: rgba(212, 175, 55, 0.58);
+    background: rgba(212, 175, 55, 0.16);
+    color: var(--color-gold);
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.14);
+}
+
+.health-toggle:active {
+    transform: scale(0.97);
+}
+
+.health-input,
+.health-textarea {
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--color-card-border);
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--color-text);
+    font-size: 14px;
+    font-family: var(--font-main);
+}
+
+.health-input::placeholder,
+.health-textarea::placeholder {
+    color: var(--color-muted);
+}
+
+.health-textarea {
+    min-height: 92px;
+    resize: vertical;
+}
+
+/*==========================
+Weather
+==========================*/
+
+.weather-card {
+    border-color: rgba(212, 175, 55, 0.14);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(23, 35, 61, 0.64),
+            rgba(255, 255, 255, 0.045)
+        );
+}
+
+.weather-top,
+.weather-main,
+.weather-sub {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.weather-top h2 {
+    margin-bottom: 2px;
+}
+
+#weatherLocation {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.weather-icon {
+    font-size: 34px;
+}
+
+.weather-main {
+    margin-top: 18px;
+}
+
+.weather-temp {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.weather-desc {
+    color: var(--color-muted);
+    font-size: 14px;
+}
+
+.weather-pressure {
+    text-align: right;
+    font-size: 14px;
+}
+
+#weatherPressure {
+    margin-top: 4px;
+    font-weight: 650;
+}
+
+.weather-sub {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--color-muted);
+    font-size: 13px;
+}

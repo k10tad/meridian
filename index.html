@@ -23,8 +23,8 @@
         </div>
 
         <div class="commander-brief-card">
-            <div class="brief-label">COMMANDER</div>
-            <div id="deskGreeting">今日はどうだ、レイ。</div>
+            <div class="brief-label">MADRID HEADQUARTERS</div>
+            <div id="deskGreeting">Receiving local conditions...</div>
 
             <div class="mini-relationship">
                 <span id="relationshipLevel">Partner Lv.1</span>
@@ -40,7 +40,6 @@
                     <div class="meta-label">Today's Trust</div>
                     <div id="relationshipTrust">+0</div>
                 </div>
-
                 <div class="meta-right">
                     <div class="meta-label">Days Together</div>
                     <div id="relationshipDays">1</div>
@@ -54,6 +53,49 @@
             <div class="eyebrow">MERIDIAN</div>
             <h1>Desk</h1>
             <p>Personal Command Desk</p>
+        </div>
+
+        <div class="card daily-brief-card">
+            <h2>Daily Brief</h2>
+            <div class="brief-grid">
+                <div>
+                    <div class="meta-label">Today</div>
+                    <div id="briefDate">--</div>
+                </div>
+                <div class="meta-right">
+                    <div class="meta-label">Condition</div>
+                    <div id="briefCondition">未確認</div>
+                </div>
+            </div>
+            <div class="brief-line"></div>
+            <p id="briefMessage">今日の状態を確認する。</p>
+        </div>
+
+        <div class="card weather-card">
+            <div class="weather-top">
+                <div>
+                    <h2>Weather</h2>
+                    <p id="weatherLocation">Madrid Headquarters</p>
+                </div>
+                <div id="weatherIcon" class="weather-icon">--</div>
+            </div>
+
+            <div class="weather-main">
+                <div>
+                    <div class="weather-temp" id="weatherTemp">--℃</div>
+                    <div class="weather-desc" id="weatherDesc">Receiving local weather...</div>
+                </div>
+
+                <div class="weather-pressure">
+                    <div class="meta-label">Pressure</div>
+                    <div id="weatherPressure">---- hPa</div>
+                </div>
+            </div>
+
+            <div class="weather-sub">
+                <span id="weatherHumidity">湿度 --%</span>
+                <span id="weatherPressureNote">Local sync standby</span>
+            </div>
         </div>
 
         <div class="card condition-card">
@@ -77,11 +119,6 @@
                 <li>最初の任務を一つ決める</li>
                 <li>無理なら予定を減らす</li>
             </ul>
-        </div>
-
-        <div class="card">
-            <h2>Weather</h2>
-            <p>天気情報は後でここに接続する。</p>
         </div>
     </section>
 
@@ -136,9 +173,33 @@
             <h1>Health</h1>
             <p>Condition and training</p>
         </div>
+
+        <div class="card health-card">
+            <h2>Today’s Health Log</h2>
+
+            <div class="health-grid">
+                <button class="health-toggle" data-health="headache">頭痛</button>
+                <button class="health-toggle" data-health="dizzy">めまい</button>
+                <button class="health-toggle" data-health="period">生理</button>
+                <button class="health-toggle" data-health="pms">PMS</button>
+                <button class="health-toggle" data-health="medicine">服薬</button>
+                <button class="health-toggle" data-health="boxing">Boxing</button>
+            </div>
+        </div>
+
         <div class="card">
-            <h2>Boxing</h2>
-            <p>軽いボクシングの記録をここに入れる。</p>
+            <h2>Sleep Memo</h2>
+            <input id="sleepMemoInput" class="health-input" type="text" placeholder="例：5時間、浅い、よく眠れた">
+        </div>
+
+        <div class="card">
+            <h2>Body Note</h2>
+            <textarea id="bodyNoteInput" class="health-textarea" placeholder="今日の体調メモ"></textarea>
+        </div>
+
+        <div class="card">
+            <h2>Commander Analysis</h2>
+            <p id="healthSummary">今日の記録はまだない。</p>
         </div>
     </section>
 
@@ -169,6 +230,9 @@
 <script src="js/relationship.js"></script>
 <script src="js/desk.js"></script>
 <script src="js/condition.js"></script>
+<script src="js/dailyBrief.js"></script>
+<script src="js/health.js"></script>
+<script src="js/weather.js"></script>
 
 </body>
 </html>

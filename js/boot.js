@@ -5,13 +5,14 @@
 const bootScreen = document.getElementById("bootScreen");
 const bootText = document.getElementById("bootText");
 const app = document.getElementById("app");
-const message = document.getElementById("message");
+const deskGreetingBoot = document.getElementById("deskGreeting");
 
 const bootLines = [
-    "Initializing...",
-    "Loading Vestige...",
-    "Commander Connected.",
-    "Good Morning, Rei."
+    "Initializing Meridian...",
+    "Loading Vestige Archive...",
+    "Syncing Local Conditions...",
+    "Connecting Madrid Headquarters...",
+    "Commander Connected."
 ];
 
 let bootIndex = 0;
@@ -33,12 +34,14 @@ function runBootSequence() {
             bootScreen.classList.add("fade-out");
             app.classList.remove("hidden");
 
-            if (message) {
-                message.textContent = "今日はどうだ、レイ。";
+            if (deskGreetingBoot) {
+                deskGreetingBoot.textContent =
+                    "Local conditions synced. おはよう、レイ。";
             }
+
         }, 700);
 
-    }, 900);
+    }, 850);
 }
 
 window.addEventListener("load", runBootSequence);
