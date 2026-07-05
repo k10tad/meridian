@@ -708,3 +708,398 @@ Weather
     color: var(--color-muted);
     font-size: 13px;
 }
+
+/*==========================
+Mission Status
+==========================*/
+
+.mission-card {
+    border-color: rgba(212, 175, 55, 0.16);
+}
+
+.mission-percent-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0 10px;
+    color: var(--color-muted);
+    font-size: 13px;
+}
+
+#missionPercent {
+    color: var(--color-gold);
+    font-weight: 700;
+}
+
+.mission-bar {
+    height: 9px;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+.mission-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(90deg, var(--color-gold), #f0d98a);
+    transition: width 420ms ease;
+}
+
+.mission-list {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    color: var(--color-muted);
+    line-height: 1.9;
+    font-size: 14px;
+}
+
+.mission-complete {
+    color: var(--color-gold);
+}
+
+/*==========================
+Planner v1.0 + Cycle Tracker
+==========================*/
+
+.calendar-day.selected-day {
+    border-color: rgba(244, 241, 234, 0.72);
+    background: rgba(255, 255, 255, 0.10);
+}
+
+.calendar-day.period-start {
+    border-color: rgba(190, 72, 86, 0.75);
+    background: rgba(190, 72, 86, 0.18);
+}
+
+.calendar-day.period-start::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #be4856;
+}
+
+.calendar-day.period-estimate {
+    border-color: rgba(212, 175, 55, 0.52);
+    background: rgba(212, 175, 55, 0.10);
+}
+
+.calendar-day.period-estimate::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-gold);
+}
+
+.cycle-card {
+    border-color: rgba(190, 72, 86, 0.22);
+}
+
+.cycle-note {
+    margin-bottom: 14px !important;
+}
+
+.cycle-btn {
+    width: 100%;
+    min-height: 44px;
+    border-radius: 14px;
+    border: 1px solid rgba(190, 72, 86, 0.38);
+    background: rgba(190, 72, 86, 0.14);
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.cycle-btn:active {
+    transform: scale(0.98);
+}
+
+.cycle-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 16px;
+    font-size: 14px;
+}
+
+#lastPeriodDate,
+#nextPeriodDate {
+    margin-top: 4px;
+    font-weight: 650;
+}
+
+.brief-date {
+    color: var(--color-gold);
+    font-weight: 650;
+    margin-bottom: 8px;
+}
+
+.brief-item {
+    color: var(--color-muted);
+    line-height: 1.7;
+}
+
+/*==========================
+Planner v1.1
+Complete / Delete
+==========================*/
+
+.plan-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.plan-item:last-child {
+    border-bottom: none;
+}
+
+.plan-check,
+.plan-delete {
+    border: none;
+    background: transparent;
+    color: var(--color-gold);
+    font-size: 18px;
+}
+
+.plan-title {
+    flex: 1;
+    color: var(--color-text);
+    line-height: 1.5;
+}
+
+.plan-item.done .plan-title {
+    color: var(--color-muted);
+    text-decoration: line-through;
+}
+
+.plan-delete {
+    color: rgba(244, 241, 234, 0.55);
+}
+
+.calendar-day.all-done {
+    border-color: rgba(127, 168, 139, 0.7);
+    background: rgba(127, 168, 139, 0.14);
+}
+
+.planner-add-btn,
+.planner-nav-btn,
+.calendar-day,
+.plan-check,
+.plan-delete,
+.cycle-btn {
+    position: relative;
+    z-index: 20;
+    pointer-events: auto;
+}
+
+/*==========================
+Cycle Tracker v0.2
+==========================*/
+
+.cycle-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.cycle-btn.secondary {
+    background: rgba(255, 255, 255, 0.045);
+    border-color: var(--color-card-border);
+}
+
+.calendar-day.period-end {
+    border-color: rgba(190, 72, 86, 0.42);
+    background: rgba(190, 72, 86, 0.09);
+}
+
+.calendar-day.period-end::after {
+    content: "";
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(190, 72, 86, 0.85);
+}
+
+.cycle-history {
+    margin-top: 16px;
+}
+
+.cycle-empty {
+    color: var(--color-muted);
+    font-size: 13px;
+}
+
+.cycle-record {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.cycle-record-main {
+    font-size: 14px;
+    color: var(--color-text);
+}
+
+.cycle-record-sub {
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--color-muted);
+    letter-spacing: 0.08em;
+}
+
+.cycle-delete {
+    border: none;
+    background: transparent;
+    color: rgba(244, 241, 234, 0.55);
+    font-size: 18px;
+}
+
+/*==========================
+Cycle / Health Insight v1.3
+==========================*/
+
+.cycle-status-card {
+    border-color: rgba(190, 72, 86, 0.22);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(190, 72, 86, 0.10),
+            rgba(255, 255, 255, 0.045)
+        );
+}
+
+.cycle-status-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+#cycleDayStatus,
+#cycleNextStatus {
+    margin-top: 4px;
+    font-weight: 650;
+}
+
+.cycle-status-message {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--color-muted);
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+/*==========================
+Commander Intelligence v1.4.0
+==========================*/
+
+.commander-intel-card {
+    border-color: rgba(212, 175, 55, 0.18);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(212, 175, 55, 0.10),
+            rgba(23, 35, 61, 0.42)
+        );
+}
+
+.intel-status-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.intel-status-grid.second {
+    margin-top: 14px;
+}
+
+#intelWeather,
+#intelCycle,
+#intelHealth,
+#intelMission {
+    margin-top: 4px;
+    font-weight: 650;
+}
+
+#commanderIntelMessage {
+    color: var(--color-muted);
+    line-height: 1.7;
+}
+
+#commanderIntelMessage {
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/*==========================
+Commander Intelligence v1.4.2
+Readiness / Priority
+==========================*/
+
+.readiness-panel {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.readiness-status {
+    margin-top: 4px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.status-ready {
+    color: #7fa88b;
+}
+
+.status-caution {
+    color: #d4af37;
+}
+
+.status-limited {
+    color: #d38b4a;
+}
+
+.status-recovery {
+    color: #be4856;
+}
+
+#riskScore {
+    margin-top: 4px;
+    font-weight: 650;
+}
+
+.priority-list {
+    margin: 10px 0 0;
+    padding-left: 20px;
+    color: var(--color-muted);
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+.priority-list li::marker {
+    color: var(--color-gold);
+}

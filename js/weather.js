@@ -151,6 +151,10 @@ function renderWeather(data) {
         })
     );
 
+    if (typeof completeMission === "function") {
+    completeMission("weather");
+}
+
     window.dispatchEvent(new Event("meridianWeatherUpdated"));
 }
 

@@ -71,6 +71,91 @@
             <p id="briefMessage">今日の状態を確認する。</p>
         </div>
 
+        <div class="card mission-card">
+    <h2>Mission Status</h2>
+
+    <div class="mission-percent-row">
+        <span>Today's Progress</span>
+        <span id="missionPercent">0%</span>
+    </div>
+
+    <div class="mission-bar">
+        <div id="missionFill" class="mission-fill"></div>
+    </div>
+
+    <ul class="mission-list">
+        <li id="missionCondition">☐ Condition Check</li>
+        <li id="missionWeather">☐ Weather Sync</li>
+        <li id="missionPlanner">☐ Planner</li>
+        <li id="missionHealth">☐ Health Log</li>
+        <li id="missionFocus">☐ Focus Session</li>
+    </ul>
+</div>
+
+<div class="card commander-intel-card">
+    <h2>Commander Intelligence</h2>
+
+    <div class="readiness-panel">
+        <div>
+            <div class="meta-label">Operational Status</div>
+            <div id="readinessStatus" class="readiness-status">READY</div>
+        </div>
+
+        <div class="meta-right">
+            <div class="meta-label">Risk</div>
+            <div id="riskScore">0 / 10</div>
+        </div>
+    </div>
+
+    <div class="brief-line"></div>
+
+    <div class="intel-status-grid">
+        <div>
+            <div class="meta-label">Weather</div>
+            <div id="intelWeather">Standby</div>
+        </div>
+
+        <div class="meta-right">
+            <div class="meta-label">Cycle</div>
+            <div id="intelCycle">Standby</div>
+        </div>
+    </div>
+
+    <div class="intel-status-grid second">
+        <div>
+            <div class="meta-label">Health</div>
+            <div id="intelHealth">Standby</div>
+        </div>
+
+        <div class="meta-right">
+            <div class="meta-label">Mission</div>
+            <div id="intelMission">0%</div>
+        </div>
+    </div>
+
+    <div class="brief-line"></div>
+
+    <div class="meta-label">Today's Priority</div>
+    <ol id="commanderPriority" class="priority-list">
+        <li>Health</li>
+        <li>Planner</li>
+        <li>Focus</li>
+    </ol>
+
+    <div class="brief-line"></div>
+
+    <p id="commanderIntelMessage">
+        データを同期中だ。
+    </p>
+</div>
+
+    <div class="brief-line"></div>
+
+    <p id="commanderIntelMessage">
+        データを同期中だ。
+    </p>
+</div>
+
         <div class="card weather-card">
             <div class="weather-top">
                 <div>
@@ -122,40 +207,78 @@
         </div>
     </section>
 
-    <section id="plannerPage" class="app-page">
-        <div class="title">
-            <h1>Planner</h1>
-            <p>Mission calendar</p>
+  <section id="plannerPage" class="app-page">
+    <div class="title">
+        <h1>Planner</h1>
+        <p>Mission calendar</p>
+    </div>
+
+    <div class="planner-header-card">
+        <div>
+            <div class="planner-label">Selected Date</div>
+            <div id="plannerToday" class="planner-today">--</div>
         </div>
 
-        <div class="planner-header-card">
+        <button id="addPlanButton" class="planner-add-btn">＋</button>
+    </div>
+
+    <div class="card planner-card">
+        <div class="planner-month-row">
+            <button id="prevMonth" class="planner-nav-btn">‹</button>
+            <h2 id="plannerMonth">Month</h2>
+            <button id="nextMonth" class="planner-nav-btn">›</button>
+        </div>
+
+        <div class="calendar-weekdays">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+            <span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+
+        <div id="calendarGrid" class="calendar-grid"></div>
+    </div>
+
+    <div class="card cycle-card">
+        <h2>Cycle Tracker</h2>
+
+        <p class="cycle-note">
+            開始日と終了日を記録して、平均周期と次回予測を更新する。
+        </p>
+
+        <div class="cycle-actions">
+            <button id="periodStartButton" class="cycle-btn">
+                選択日を開始日に追加
+            </button>
+
+            <button id="periodEndButton" class="cycle-btn secondary">
+                選択日を終了日に設定
+            </button>
+        </div>
+
+        <div class="cycle-info">
             <div>
-                <div class="planner-label">Today</div>
-                <div id="plannerToday" class="planner-today">--</div>
-            </div>
-            <button class="planner-add-btn">＋</button>
-        </div>
-
-        <div class="card planner-card">
-            <div class="planner-month-row">
-                <button id="prevMonth" class="planner-nav-btn">‹</button>
-                <h2 id="plannerMonth">Month</h2>
-                <button id="nextMonth" class="planner-nav-btn">›</button>
+                <div class="meta-label">Last Period</div>
+                <div id="lastPeriodDate">未記録</div>
             </div>
 
-            <div class="calendar-weekdays">
-                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
-                <span>Thu</span><span>Fri</span><span>Sat</span>
+            <div>
+                <div class="meta-label">Average</div>
+                <div id="averageCycleDays">--日</div>
             </div>
 
-            <div id="calendarGrid" class="calendar-grid"></div>
+            <div class="meta-right">
+                <div class="meta-label">Next Estimate</div>
+                <div id="nextPeriodDate">未設定</div>
+            </div>
         </div>
 
-        <div class="card">
-            <h2>Today’s Brief</h2>
-            <p id="plannerBrief">予定はまだ登録されていない。</p>
-        </div>
-    </section>
+        <div id="cycleHistory" class="cycle-history"></div>
+    </div>
+
+    <div class="card">
+        <h2>Today’s Brief</h2>
+        <div id="plannerBrief">予定はまだ登録されていない。</div>
+    </div>
+</section>
 
     <section id="focusPage" class="app-page">
         <div class="title">
@@ -168,40 +291,60 @@
         </div>
     </section>
 
-    <section id="healthPage" class="app-page">
-        <div class="title">
-            <h1>Health</h1>
-            <p>Condition and training</p>
-        </div>
+   <section id="healthPage" class="app-page">
+    <div class="title">
+        <h1>Health</h1>
+        <p>Condition and training</p>
+    </div>
 
-        <div class="card health-card">
-            <h2>Today’s Health Log</h2>
+    <div class="card cycle-status-card">
+        <h2>Cycle Status</h2>
 
-            <div class="health-grid">
-                <button class="health-toggle" data-health="headache">頭痛</button>
-                <button class="health-toggle" data-health="dizzy">めまい</button>
-                <button class="health-toggle" data-health="period">生理</button>
-                <button class="health-toggle" data-health="pms">PMS</button>
-                <button class="health-toggle" data-health="medicine">服薬</button>
-                <button class="health-toggle" data-health="boxing">Boxing</button>
+        <div class="cycle-status-grid">
+            <div>
+                <div class="meta-label">Cycle Day</div>
+                <div id="cycleDayStatus">未記録</div>
+            </div>
+
+            <div class="meta-right">
+                <div class="meta-label">Next Estimate</div>
+                <div id="cycleNextStatus">未設定</div>
             </div>
         </div>
 
-        <div class="card">
-            <h2>Sleep Memo</h2>
-            <input id="sleepMemoInput" class="health-input" type="text" placeholder="例：5時間、浅い、よく眠れた">
+        <div id="cycleStatusMessage" class="cycle-status-message">
+            生理周期の記録はPlannerから追加できる。
         </div>
+    </div>
 
-        <div class="card">
-            <h2>Body Note</h2>
-            <textarea id="bodyNoteInput" class="health-textarea" placeholder="今日の体調メモ"></textarea>
-        </div>
+    <div class="card health-card">
+        <h2>Today’s Health Log</h2>
 
-        <div class="card">
-            <h2>Commander Analysis</h2>
-            <p id="healthSummary">今日の記録はまだない。</p>
+        <div class="health-grid">
+            <button class="health-toggle" data-health="headache">頭痛</button>
+            <button class="health-toggle" data-health="dizzy">めまい</button>
+            <button class="health-toggle" data-health="period">生理</button>
+            <button class="health-toggle" data-health="pms">PMS</button>
+            <button class="health-toggle" data-health="medicine">服薬</button>
+            <button class="health-toggle" data-health="boxing">Boxing</button>
         </div>
-    </section>
+    </div>
+
+    <div class="card">
+        <h2>Sleep Memo</h2>
+        <input id="sleepMemoInput" class="health-input" type="text" placeholder="例：5時間、浅い、よく眠れた">
+    </div>
+
+    <div class="card">
+        <h2>Body Note</h2>
+        <textarea id="bodyNoteInput" class="health-textarea" placeholder="今日の体調メモ"></textarea>
+    </div>
+
+    <div class="card">
+        <h2>Commander Analysis</h2>
+        <p id="healthSummary">今日の記録はまだない。</p>
+    </div>
+</section>
 
     <section id="vestigePage" class="app-page">
         <div class="title">
@@ -226,13 +369,20 @@
 
 <script src="js/boot.js"></script>
 <script src="js/navigation.js"></script>
-<script src="js/planner.js"></script>
+
 <script src="js/relationship.js"></script>
-<script src="js/desk.js"></script>
-<script src="js/condition.js"></script>
-<script src="js/dailyBrief.js"></script>
+<script src="js/mission.js"></script>
+
+<script src="js/planner.js"></script>
 <script src="js/health.js"></script>
+<script src="js/cycleInsight.js"></script>
 <script src="js/weather.js"></script>
+
+<script src="js/dailyBrief.js"></script>
+<script src="js/desk.js"></script>
+
+<script src="js/commander-messages.js"></script>
+<script src="js/commander.js"></script>
 
 </body>
 </html>

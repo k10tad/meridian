@@ -110,6 +110,10 @@ function applyCondition(condition, shouldAddTrust) {
     if (shouldAddTrust && typeof addTrust === "function") {
         addTrust(data.trust);
     }
+
+    if (typeof completeMission === "function") {
+    completeMission("condition");
+}
 }
 
 conditionButtons.forEach(function (button) {

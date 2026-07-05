@@ -110,6 +110,10 @@ healthButtons.forEach(function (button) {
             addTrust(1);
         }
 
+        if (typeof completeMission === "function") {
+    completeMission("health");
+}
+
         saveHealthLog();
         renderHealthLog();
     });
