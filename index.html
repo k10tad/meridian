@@ -347,15 +347,27 @@
 </section>
 
     <section id="vestigePage" class="app-page">
-        <div class="title">
-            <h1>Vestige</h1>
-            <p>Archive and memory</p>
+    <div class="title">
+        <h1>Vestige</h1>
+        <p>Archive and memory</p>
+    </div>
+
+    <div class="card vestige-save-card">
+        <h2>Save Today’s Record</h2>
+        <p>今日の記録をVestigeへ保存する。</p>
+
+        <button id="saveVestigeButton" class="vestige-save-btn">
+            Save Record
+        </button>
+    </div>
+
+    <div class="card">
+        <h2>Archive</h2>
+        <div id="vestigeList" class="vestige-list">
+            まだ記録は保存されていない。
         </div>
-        <div class="card">
-            <h2>Album</h2>
-            <p>写真アルバムをここに入れる。</p>
-        </div>
-    </section>
+    </div>
+</section>
 
     <nav class="tabbar">
         <button class="tab-btn active" data-page="deskPage">🏠</button>
@@ -383,6 +395,7 @@
 
 <script src="js/commander-messages.js"></script>
 <script src="js/commander.js"></script>
+<script src="js/vestige.js"></script>
 
 </body>
 </html>

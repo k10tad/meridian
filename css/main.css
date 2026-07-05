@@ -1103,3 +1103,71 @@ Readiness / Priority
 .priority-list li::marker {
     color: var(--color-gold);
 }
+
+/*==========================
+Vestige v1.0 Step 1
+==========================*/
+
+.vestige-save-card {
+    border-color: rgba(212, 175, 55, 0.18);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(212, 175, 55, 0.10),
+            rgba(255, 255, 255, 0.045)
+        );
+}
+
+.vestige-save-btn {
+    width: 100%;
+    min-height: 46px;
+    margin-top: 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(212, 175, 55, 0.36);
+    background: rgba(212, 175, 55, 0.14);
+    color: var(--color-gold);
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.vestige-save-btn:active {
+    transform: scale(0.98);
+}
+
+.vestige-list {
+    color: var(--color-muted);
+    font-size: 14px;
+}
+
+.vestige-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.vestige-item:last-child {
+    border-bottom: none;
+}
+
+.vestige-date {
+    color: var(--color-text);
+    font-weight: 650;
+}
+
+.vestige-status {
+    margin-top: 3px;
+    font-size: 12px;
+    color: var(--color-muted);
+}
+
+.vestige-open-btn {
+    border: 1px solid var(--color-card-border);
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--color-text);
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 12px;
+}
