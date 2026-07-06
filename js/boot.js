@@ -34,10 +34,9 @@ function runBootSequence() {
             bootScreen.classList.add("fade-out");
             app.classList.remove("hidden");
 
-            if (deskGreetingBoot) {
-                deskGreetingBoot.textContent =
-                    "Local conditions synced. おはよう、レイ。";
-            }
+          if (deskGreetingBoot) {
+    window.dispatchEvent(new Event("meridianBootCompleted"));
+    }
 
         }, 700);
 

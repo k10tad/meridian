@@ -1,10 +1,15 @@
 //========================
-// Meridian Vestige v1.1B
-// Archive with Meridian Data Snapshot
+// Meridian Vestige v1.2
+// Archive Detail Card
 //========================
 
 const saveVestigeButton = document.getElementById("saveVestigeButton");
 const vestigeList = document.getElementById("vestigeList");
+const vestigeDetailCard = document.getElementById("vestigeDetailCard");
+const vestigeDetailNo = document.getElementById("vestigeDetailNo");
+const vestigeDetailDate = document.getElementById("vestigeDetailDate");
+const vestigeDetailBody = document.getElementById("vestigeDetailBody");
+const closeVestigeDetail = document.getElementById("closeVestigeDetail");
 
 const VESTIGE_KEY = "meridianVestigeRecords";
 
@@ -37,6 +42,13 @@ function formatVestigeDate(date) {
     });
 }
 
+function formatVestigeTime(date) {
+    return date.toLocaleTimeString("ja-JP", {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
 function formatArchiveNo(number) {
     return "No." + String(number).padStart(4, "0");
 }
@@ -51,6 +63,15 @@ function getDateKey(date) {
     const d = String(date.getDate()).padStart(2, "0");
 
     return y + "-" + m + "-" + d;
+}
+
+function parseDateKey(key) {
+    const parts = key.split("-").map(Number);
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+}
+
+function diffDays(a, b) {
+    return Math.round((parseDateKey(a) - parseDateKey(b)) / 86400000);
 }
 
 //========================
@@ -116,25 +137,6 @@ function readCommanderSnapshot() {
 //========================
 // New record structure
 //========================
-
-function createEmptySummary() {
-    return {
-        weather: null,
-        health: null,
-        cycle: null,
-        mission: null,
-        relationship: null
-    };
-}
-
-function createEmptyCommander() {
-    return {
-        message: "",
-        readiness: "READY",
-        risk: "0 / 10",
-        priority: []
-    };
-}
 
 function createEmptyMedia() {
     return {
@@ -240,11 +242,94 @@ function saveTodayVestige() {
     saveVestigeRecords(records);
 
     renderVestigeList();
+    openVestigeRecord(newRecord.id);
 }
 
 //========================
-// Render helpers
+// Summary helpers
 //========================
+
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function getMissionPercent(mission) {
+    if (!mission) return 0;
+
+    const values = Object.values(mission);
+    const total = values.length;
+
+    if (total === 0) return 0;
+
+    const completed = values.filter(Boolean).length;
+
+    return Math.round((completed / total) * 100);
+}
+
+function getHealthFlags(health) {
+    if (!health) return [];
+
+    const flags = [];
+
+    if (health.headache) flags.push("頭痛");
+    if (health.dizzy) flags.push("めまい");
+    if (health.period) flags.push("生理");
+    if (health.pms) flags.push("PMS");
+    if (health.medicine) flags.push("服薬");
+    if (health.boxing) flags.push("Boxing");
+
+    return flags;
+}
+
+function getCycleRecords(cycle) {
+    if (!cycle || !Array.isArray(cycle.records)) return [];
+
+    return cycle.records
+        .filter(function (record) {
+            return record.start;
+        })
+        .sort(function (a, b) {
+            return parseDateKey(a.start) - parseDateKey(b.start);
+        });
+}
+
+function getCycleStatus(cycle, createdAt) {
+    const records = getCycleRecords(cycle);
+
+    if (records.length === 0) {
+        return "未記録";
+    }
+
+    const targetDate = new Date(createdAt);
+    const targetKey = getDateKey(targetDate);
+
+    const last = records
+        .filter(function (record) {
+            return parseDateKey(record.start) <= parseDateKey(targetKey);
+        })
+        .pop();
+
+    if (!last) return "記録あり";
+
+    const day = diffDays(targetKey, last.start) + 1;
+
+    if (last.end) {
+        const inPeriod =
+            parseDateKey(last.start) <= parseDateKey(targetKey) &&
+            parseDateKey(targetKey) <= parseDateKey(last.end);
+
+        if (inPeriod) {
+            return "Day " + day + " / 生理中";
+        }
+    }
+
+    return "Day " + day;
+}
 
 function summarizeRecord(record) {
     const parts = [];
@@ -256,20 +341,10 @@ function summarizeRecord(record) {
         );
     }
 
-    if (record.summary.health) {
-        const health = record.summary.health;
-        const flags = [];
+    const healthFlags = getHealthFlags(record.summary.health);
 
-        if (health.headache) flags.push("頭痛");
-        if (health.dizzy) flags.push("めまい");
-        if (health.period) flags.push("生理");
-        if (health.pms) flags.push("PMS");
-        if (health.medicine) flags.push("服薬");
-        if (health.boxing) flags.push("Boxing");
-
-        if (flags.length > 0) {
-            parts.push(flags.join(" / "));
-        }
+    if (healthFlags.length > 0) {
+        parts.push(healthFlags.join(" / "));
     }
 
     if (record.commander && record.commander.readiness) {
@@ -283,8 +358,251 @@ function summarizeRecord(record) {
     return parts.join(" ・ ");
 }
 
+function renderTagList(items, emptyLabel) {
+    if (!items || items.length === 0) {
+        return "<span class='vestige-tag muted'>" + escapeHtml(emptyLabel || "なし") + "</span>";
+    }
+
+    return items.map(function (item) {
+        return "<span class='vestige-tag'>" + escapeHtml(item) + "</span>";
+    }).join("");
+}
+
+function getRecordMood(record) {
+    const commander = record.commander || {};
+    const readiness = commander.readiness || "READY";
+
+    if (readiness.includes("RECOVERY")) return "Recovery";
+    if (readiness.includes("LIMITED")) return "Limited";
+    if (readiness.includes("CAUTION")) return "Caution";
+    return "Ready";
+}
+
 //========================
-// Render
+// Detail render helpers
+//========================
+
+function detailSection(title, body) {
+    return (
+        "<div class='vestige-detail-section'>" +
+            "<div class='vestige-section-title'>" + escapeHtml(title) + "</div>" +
+            "<div class='vestige-section-body'>" + body + "</div>" +
+        "</div>"
+    );
+}
+
+function renderOverviewDetail(record) {
+    const weather = record.summary.weather;
+    const health = record.summary.health;
+    const mission = record.summary.mission;
+    const cycle = record.summary.cycle;
+
+    const weatherLabel = weather
+        ? (weather.text || "天気") + " / " + (weather.pressure || "----") + "hPa"
+        : "未同期";
+
+    const healthFlags = getHealthFlags(health);
+    const healthLabel = healthFlags.length ? healthFlags.join(" / ") : "記録なし";
+
+    const missionLabel = getMissionPercent(mission) + "%";
+    const cycleLabel = getCycleStatus(cycle, record.createdAt);
+
+    return (
+        "<div class='vestige-overview-grid'>" +
+            "<div class='vestige-overview-tile'>" +
+                "<div class='meta-label'>Weather</div>" +
+                "<div>" + escapeHtml(weatherLabel) + "</div>" +
+            "</div>" +
+            "<div class='vestige-overview-tile'>" +
+                "<div class='meta-label'>Health</div>" +
+                "<div>" + escapeHtml(healthLabel) + "</div>" +
+            "</div>" +
+            "<div class='vestige-overview-tile'>" +
+                "<div class='meta-label'>Cycle</div>" +
+                "<div>" + escapeHtml(cycleLabel) + "</div>" +
+            "</div>" +
+            "<div class='vestige-overview-tile'>" +
+                "<div class='meta-label'>Mission</div>" +
+                "<div>" + escapeHtml(missionLabel) + "</div>" +
+            "</div>" +
+        "</div>"
+    );
+}
+
+function renderCommanderHero(record) {
+    const commander = record.commander || {};
+    const message = commander.message || "記録なし";
+    const readiness = commander.readiness || "READY";
+    const risk = commander.risk || "0 / 10";
+    const priority = Array.isArray(commander.priority) ? commander.priority : [];
+
+    let priorityHtml = "";
+
+    if (priority.length > 0) {
+        priorityHtml =
+            "<div class='vestige-priority-row'>" +
+                renderTagList(priority, "優先事項なし") +
+            "</div>";
+    }
+
+    return (
+        "<div class='vestige-commander-card'>" +
+            "<div class='vestige-commander-label'>Commander</div>" +
+            "<p class='vestige-commander-quote'>“" + escapeHtml(message) + "”</p>" +
+            "<div class='vestige-commander-meta'>" +
+                "<span>" + escapeHtml(readiness) + "</span>" +
+                "<span>Risk " + escapeHtml(risk) + "</span>" +
+            "</div>" +
+            priorityHtml +
+        "</div>"
+    );
+}
+
+function renderWeatherDetail(weather) {
+    if (!weather) {
+        return detailSection("Weather", "<p>記録なし</p>");
+    }
+
+    const body =
+        "<div class='vestige-metric-row'>" +
+            "<span>Condition</span>" +
+            "<strong>" + escapeHtml(weather.text || "天気不明") + "</strong>" +
+        "</div>" +
+        "<div class='vestige-metric-row'>" +
+            "<span>Temperature</span>" +
+            "<strong>" + escapeHtml(weather.temp ?? "--") + "℃</strong>" +
+        "</div>" +
+        "<div class='vestige-metric-row'>" +
+            "<span>Pressure</span>" +
+            "<strong>" + escapeHtml(weather.pressure ?? "----") + "hPa</strong>" +
+        "</div>" +
+        "<div class='vestige-metric-row'>" +
+            "<span>Humidity</span>" +
+            "<strong>" + escapeHtml(weather.humidity ?? "--") + "%</strong>" +
+        "</div>" +
+        "<p class='vestige-note-line'>" + escapeHtml(weather.note || "") + "</p>";
+
+    return detailSection("Weather", body);
+}
+
+function renderHealthDetail(health) {
+    if (!health) {
+        return detailSection("Health", "<p>記録なし</p>");
+    }
+
+    const flags = getHealthFlags(health);
+
+    let body = "<div class='vestige-tag-row'>" + renderTagList(flags, "症状記録なし") + "</div>";
+
+    if (health.sleepMemo) {
+        body +=
+            "<div class='vestige-metric-row'>" +
+                "<span>Sleep</span>" +
+                "<strong>" + escapeHtml(health.sleepMemo) + "</strong>" +
+            "</div>";
+    }
+
+    if (health.bodyNote) {
+        body += "<p class='vestige-note-line'>" + escapeHtml(health.bodyNote) + "</p>";
+    }
+
+    return detailSection("Health", body);
+}
+
+function renderCycleDetail(cycle, record) {
+    const records = getCycleRecords(cycle);
+    const status = getCycleStatus(cycle, record.createdAt);
+
+    if (records.length === 0) {
+        return detailSection("Cycle", "<p>記録なし</p>");
+    }
+
+    const last = records[records.length - 1];
+
+    let body =
+        "<div class='vestige-metric-row'>" +
+            "<span>Status</span>" +
+            "<strong>" + escapeHtml(status) + "</strong>" +
+        "</div>" +
+        "<div class='vestige-metric-row'>" +
+            "<span>Latest Start</span>" +
+            "<strong>" + escapeHtml(last.start || "--") + "</strong>" +
+        "</div>";
+
+    if (last.end) {
+        body +=
+            "<div class='vestige-metric-row'>" +
+                "<span>Latest End</span>" +
+                "<strong>" + escapeHtml(last.end) + "</strong>" +
+            "</div>";
+    }
+
+    return detailSection("Cycle", body);
+}
+
+function renderMissionDetail(mission) {
+    if (!mission) {
+        return detailSection("Mission", "<p>記録なし</p>");
+    }
+
+    const percent = getMissionPercent(mission);
+
+    const labels = {
+        condition: "Condition",
+        weather: "Weather",
+        planner: "Planner",
+        health: "Health",
+        focus: "Focus"
+    };
+
+    let body =
+        "<div class='vestige-progress-row'>" +
+            "<span>Mission Progress</span>" +
+            "<strong>" + percent + "%</strong>" +
+        "</div>" +
+        "<div class='vestige-progress-bar'>" +
+            "<div class='vestige-progress-fill' style='width:" + percent + "%'></div>" +
+        "</div>" +
+        "<ul class='vestige-mini-list'>";
+
+    Object.keys(labels).forEach(function (key) {
+        body += "<li>" + (mission[key] ? "☑ " : "☐ ") + labels[key] + "</li>";
+    });
+
+    body += "</ul>";
+
+    return detailSection("Mission", body);
+}
+
+function renderRelationshipDetail(relationship) {
+    if (!relationship) {
+        return detailSection("Relationship", "<p>記録なし</p>");
+    }
+
+    const affinity = Number(relationship.affinity || 0);
+
+    const body =
+        "<div class='vestige-metric-row'>" +
+            "<span>Level</span>" +
+            "<strong>Partner Lv." + escapeHtml(relationship.level || 1) + "</strong>" +
+        "</div>" +
+        "<div class='vestige-progress-row'>" +
+            "<span>Affinity</span>" +
+            "<strong>" + escapeHtml(affinity) + "%</strong>" +
+        "</div>" +
+        "<div class='vestige-progress-bar'>" +
+            "<div class='vestige-progress-fill' style='width:" + Math.min(affinity, 100) + "%'></div>" +
+        "</div>" +
+        "<div class='vestige-metric-row'>" +
+            "<span>Today's Trust</span>" +
+            "<strong>+" + escapeHtml(relationship.trustToday || 0) + "</strong>" +
+        "</div>";
+
+    return detailSection("Relationship", body);
+}
+
+//========================
+// Render list / detail
 //========================
 
 function renderVestigeList() {
@@ -306,16 +624,62 @@ function renderVestigeList() {
         item.innerHTML =
             "<div>" +
                 "<div class='vestige-date'>" +
-                    record.archiveLabel + " / " + record.label +
+                    escapeHtml(record.archiveLabel) + " / " + escapeHtml(record.label) +
                 "</div>" +
                 "<div class='vestige-status'>" +
-                    summarizeRecord(record) +
+                    escapeHtml(summarizeRecord(record)) +
                 "</div>" +
             "</div>" +
-            "<button class='vestige-open-btn' type='button'>Open</button>";
+            "<button class='vestige-open-btn' type='button' data-id='" + record.id + "'>Open</button>";
 
         vestigeList.appendChild(item);
     });
+
+    document.querySelectorAll(".vestige-open-btn").forEach(function (button) {
+        button.addEventListener("click", function () {
+            openVestigeRecord(Number(button.dataset.id));
+        });
+    });
+}
+
+function openVestigeRecord(id) {
+    const records = getVestigeRecords();
+    const record = records.find(function (item) {
+        return Number(item.id) === Number(id);
+    });
+
+    if (!record || !vestigeDetailCard || !vestigeDetailBody) return;
+
+    const createdAt = new Date(record.createdAt);
+
+    if (vestigeDetailNo) {
+        vestigeDetailNo.textContent = "Archive " + record.archiveLabel + " / " + getRecordMood(record);
+    }
+
+    if (vestigeDetailDate) {
+        vestigeDetailDate.textContent = record.label + " " + formatVestigeTime(createdAt);
+    }
+
+    vestigeDetailBody.innerHTML =
+        renderOverviewDetail(record) +
+        renderCommanderHero(record) +
+        renderWeatherDetail(record.summary.weather) +
+        renderHealthDetail(record.summary.health) +
+        renderCycleDetail(record.summary.cycle, record) +
+        renderMissionDetail(record.summary.mission) +
+        renderRelationshipDetail(record.summary.relationship);
+
+    vestigeDetailCard.classList.remove("is-hidden");
+    vestigeDetailCard.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+function closeDetail() {
+    if (vestigeDetailCard) {
+        vestigeDetailCard.classList.add("is-hidden");
+    }
 }
 
 //========================
@@ -326,5 +690,10 @@ if (saveVestigeButton) {
     saveVestigeButton.addEventListener("click", saveTodayVestige);
 }
 
+if (closeVestigeDetail) {
+    closeVestigeDetail.addEventListener("click", closeDetail);
+}
+
 migrateVestigeRecords();
 renderVestigeList();
+

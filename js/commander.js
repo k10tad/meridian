@@ -1,6 +1,6 @@
 //========================
-// Meridian Commander Intelligence v1.4.2
-// Readiness / Risk / Priority / Voice DB
+// Meridian Commander Intelligence v1.6.1
+// Message Engine / Hero Brief / Intelligence Panel
 //========================
 
 const intelWeather = document.getElementById("intelWeather");
@@ -33,33 +33,43 @@ function commanderDiffDays(a, b) {
     return Math.round((commanderParseDate(a) - commanderParseDate(b)) / 86400000);
 }
 
+function safeJsonRead(key, fallback) {
+    try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : fallback;
+    } catch (error) {
+        console.warn("Meridian storage parse failed:", key, error);
+        return fallback;
+    }
+}
+
 function getWeatherData() {
-    return JSON.parse(localStorage.getItem("meridianWeather")) || null;
+    return safeJsonRead("meridianWeather", null);
 }
 
 function getHealthData() {
-    return JSON.parse(localStorage.getItem("meridianHealthLog_" + commanderTodayKey())) || null;
+    return safeJsonRead("meridianHealthLog_" + commanderTodayKey(), null);
 }
 
 function getRelationshipData() {
-    return JSON.parse(localStorage.getItem("relationship")) || {
+    return safeJsonRead("relationship", {
         affinity: 18,
         level: 1
-    };
+    });
 }
 
 function getMissionData() {
-    return JSON.parse(localStorage.getItem("meridianMission_" + commanderTodayKey())) || {
+    return safeJsonRead("meridianMission_" + commanderTodayKey(), {
         condition: false,
         weather: false,
         planner: false,
         health: false,
         focus: false
-    };
+    });
 }
 
 function getCycleData() {
-    const saved = JSON.parse(localStorage.getItem("meridianCycle"));
+    const saved = safeJsonRead("meridianCycle", { records: [] });
 
     if (saved && Array.isArray(saved.records)) {
         return saved;
@@ -126,8 +136,8 @@ function getMissionPercent() {
 function calculateRisk(data) {
     let risk = 0;
 
-    if (data.weather && data.weather.pressure <= 1008) risk += 2;
-    if (data.weather && data.weather.pressure <= 1000) risk += 2;
+    if (data.weather && Number(data.weather.pressure) <= 1008) risk += 2;
+    if (data.weather && Number(data.weather.pressure) <= 1000) risk += 2;
 
     if (data.health && data.health.headache) risk += 3;
     if (data.health && data.health.dizzy) risk += 3;
@@ -154,24 +164,6 @@ function getReadiness(risk) {
     if (risk >= 5) return "LIMITED";
     if (risk >= 3) return "CAUTION";
     return "READY";
-}
-
-function getTimeGreeting() {
-    const hour = new Date().getHours();
-
-    if (hour >= 5 && hour < 12) return CommanderMessages.greetings.morning;
-    if (hour >= 12 && hour < 18) return CommanderMessages.greetings.afternoon;
-    if (hour >= 18 && hour < 23) return CommanderMessages.greetings.evening;
-
-    return CommanderMessages.greetings.night;
-}
-
-function getRelationshipSuffix(affinity) {
-    const tone = CommanderMessages.relationshipTone.find(function (item) {
-        return affinity >= item.min;
-    });
-
-    return tone ? tone.suffix : "";
 }
 
 function buildPriorityList(data, readiness) {
@@ -201,43 +193,126 @@ function buildPriorityList(data, readiness) {
     return Array.from(new Set(priorities)).slice(0, 4);
 }
 
+function getCommanderRelationshipLine(affinity) {
+    if (typeof commanderGetRelationshipLine === "function") {
+        return commanderGetRelationshipLine(affinity);
+    }
+
+    if (affinity >= 50) return "一つずつでいい。";
+    return "無理をする必要はない。";
+}
+
+function getCommanderGreetingLine() {
+    if (typeof commanderGetGreetingLine === "function") {
+        return commanderGetGreetingLine();
+    }
+
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return "Buenos días, Rei.";
+    if (hour >= 12 && hour < 18) return "Buenas tardes, Rei.";
+    if (hour >= 18 && hour < 23) return "Buenas noches, Rei.";
+    return "遅い時間だ、レイ。";
+}
+
+function pickCommander(list, fallback) {
+    if (typeof commanderPick === "function") {
+        return commanderPick(list);
+    }
+
+    if (!Array.isArray(list) || list.length === 0) return fallback || "";
+    return list[Math.floor(Math.random() * list.length)];
+}
+
 function buildCommanderMessage(data) {
     const risk = calculateRisk(data);
     const readiness = getReadiness(risk);
     const relationship = getRelationshipData();
-    const suffix = getRelationshipSuffix(relationship.affinity || 0);
+    const affinity = relationship.affinity || 0;
 
-    let message = "";
+    const lines = [];
+
+    lines.push(getCommanderGreetingLine());
 
     if (
         data.health &&
         data.health.headache &&
         data.weather &&
-        data.weather.pressure <= 1008
+        Number(data.weather.pressure) <= 1008
     ) {
-        message = CommanderMessages.special.headachePressure;
-    } else if (data.cycle.isPeriod || (data.health && data.health.period)) {
-        message = CommanderMessages.special.period;
-    } else if (data.cycle.isPmsWindow || (data.health && data.health.pms)) {
-        message = CommanderMessages.special.pms;
-    } else if (data.missionPercent >= 100) {
-        message = CommanderMessages.special.missionComplete;
-    } else if (data.missionPercent >= 80) {
-        message = CommanderMessages.special.missionHigh;
+        lines.push(pickCommander(CommanderMessages.weather.lowPressure, "気圧が低い。頭痛に注意しろ。"));
+        lines.push(pickCommander(CommanderMessages.health.headache, "頭痛があるなら、予定は少し削れ。"));
     } else {
-        message = pickCommanderMessage(CommanderMessages.readiness[readiness]);
+        if (data.weather && Number(data.weather.pressure) <= 1008) {
+            lines.push(pickCommander(CommanderMessages.weather.lowPressure, "気圧が低い。無理に押し切るな。"));
+        } else if (
+            data.weather &&
+            data.weather.text &&
+            (data.weather.text.includes("雨") || data.weather.text.includes("雷"))
+        ) {
+            lines.push(pickCommander(CommanderMessages.weather.rain, "天候が崩れている。移動は慎重に。"));
+        } else {
+            lines.push(pickCommander(CommanderMessages.weather.stable, "気象条件は安定している。"));
+        }
+
+        if (data.cycle.isPeriod || (data.health && data.health.period)) {
+            lines.push(pickCommander(CommanderMessages.health.period, "生理中だ。身体を優先しろ。"));
+        } else if (data.cycle.isPmsWindow || (data.health && data.health.pms)) {
+            lines.push(pickCommander(CommanderMessages.health.pms, "PMSが出やすい時期だ。余白を残せ。"));
+        } else if (data.health && data.health.headache) {
+            lines.push(pickCommander(CommanderMessages.health.headache, "頭痛があるなら、今日は少し抑えろ。"));
+        } else {
+            lines.push(pickCommander(CommanderMessages.health.normal, "体調記録は安定している。"));
+        }
     }
 
-    if (suffix) {
-        message += " " + suffix;
+    if (data.missionPercent >= 100) {
+        lines.push(pickCommander(CommanderMessages.mission.complete, "任務完了だ。今日はよくやった、レイ。"));
+    } else if (data.missionPercent >= 80) {
+        lines.push(pickCommander(CommanderMessages.mission.high, "かなり進んでいる。最後まで整えろ。"));
+    } else if (data.missionPercent >= 40) {
+        lines.push(pickCommander(CommanderMessages.mission.middle, "悪くない進み方だ。"));
+    } else {
+        lines.push(pickCommander(CommanderMessages.mission.low, "まず一つ終わらせるぞ。"));
     }
+
+    const relationshipLine = getCommanderRelationshipLine(affinity);
+
+    if (relationshipLine) {
+        lines.push(relationshipLine);
+    }
+
+    lines.push(pickCommander(CommanderMessages.closings, "行ってこい。"));
 
     return {
-        message: message,
+        message: lines.filter(Boolean).join("\n\n"),
         risk: risk,
         readiness: readiness,
         priorities: buildPriorityList(data, readiness)
     };
+}
+
+function buildHeroCommanderMessage(data) {
+    const relationship = getRelationshipData();
+    const affinity = relationship.affinity || 0;
+    const lines = [];
+
+    lines.push(getCommanderGreetingLine());
+
+    if (data.health && data.health.headache) {
+        lines.push("頭痛があるなら、今日は少し抑えろ。");
+    } else if (data.cycle.isPeriod || (data.health && data.health.period)) {
+        lines.push("今日は身体を優先しろ。");
+    } else if (data.weather && Number(data.weather.pressure) <= 1008) {
+        lines.push("気圧が低い。無理に押し切るな。");
+    } else {
+        lines.push("今日の状況は確認済みだ。");
+    }
+
+    if (affinity >= 50) {
+        lines.push("一つずつでいい。");
+    }
+
+    return lines.filter(Boolean).join(" ");
 }
 
 function renderPriority(priorities) {
@@ -312,16 +387,38 @@ function renderCommanderIntel() {
     renderReadiness(result.readiness, result.risk);
     renderPriority(result.priorities);
 
+    localStorage.setItem(
+        "meridianCommanderSnapshot",
+        JSON.stringify({
+            message: result.message,
+            heroMessage: buildHeroCommanderMessage(data),
+            readiness: result.readiness,
+            risk: result.risk + " / 10",
+            priority: result.priorities,
+            updatedAt: Date.now()
+        })
+    );
+
     if (commanderIntelMessage) {
         commanderIntelMessage.textContent = result.message;
     }
 
     if (deskGreetingCommander) {
-        deskGreetingCommander.textContent = getTimeGreeting();
+        const hasSeenFirstConnection =
+            localStorage.getItem("meridianFirstConnectionSeen");
+
+        if (!hasSeenFirstConnection && typeof commanderGetFirstConnectionMessage === "function") {
+            deskGreetingCommander.textContent = commanderGetFirstConnectionMessage();
+            localStorage.setItem("meridianFirstConnectionSeen", "true");
+        } else {
+            deskGreetingCommander.textContent = buildHeroCommanderMessage(data);
+        }
     }
 }
 
 renderCommanderIntel();
 
 window.addEventListener("meridianWeatherUpdated", renderCommanderIntel);
+window.addEventListener("meridianBootCompleted", renderCommanderIntel);
 window.addEventListener("storage", renderCommanderIntel);
+

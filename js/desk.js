@@ -1,12 +1,12 @@
 //========================
 // Meridian Desk
-// Commander Home v1.0
+// Commander Home v1.1
 //========================
 
 const deskGreeting = document.getElementById("deskGreeting");
-const messageBox = document.getElementById("message");
+const deskMessageBox = document.getElementById("message");
 
-function getTimeGreeting() {
+function getDeskTimeGreeting() {
     const hour = new Date().getHours();
 
     if (hour >= 5 && hour < 11) {
@@ -25,12 +25,11 @@ function getTimeGreeting() {
 }
 
 function applyDeskGreeting() {
-    const greeting = getTimeGreeting();
-
-    if (deskGreeting) {
-        deskGreeting.textContent = greeting;
+    // Commander.js owns the hero greeting.
+    // Desk keeps a safe fallback only when the hero is still empty.
+    if (deskGreeting && !deskGreeting.textContent.trim()) {
+        deskGreeting.textContent = getDeskTimeGreeting();
     }
-
 }
 
 applyDeskGreeting();

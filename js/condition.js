@@ -133,3 +133,5 @@ function loadTodayCondition() {
 }
 
 loadTodayCondition();
+
+console.log("condition.js loaded");
