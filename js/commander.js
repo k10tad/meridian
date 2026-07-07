@@ -223,6 +223,85 @@ function pickCommander(list, fallback) {
     return list[Math.floor(Math.random() * list.length)];
 }
 
+function getPlannerCountForCommander() {
+    const plans = JSON.parse(localStorage.getItem("meridianPlans")) || {};
+    const today = new Date();
+    const key =
+        today.getFullYear() + "-" +
+        String(today.getMonth() + 1).padStart(2, "0") + "-" +
+        String(today.getDate()).padStart(2, "0");
+
+    const todayPlans = plans[key] || [];
+    return todayPlans.length;
+}
+
+function commanderGetWeekdayObservation() {
+    const day = new Date().getDay();
+
+    if (day === 1) {
+        return commanderPick(CommanderMessages.observations.monday);
+    }
+
+    if (day === 5) {
+        return commanderPick(CommanderMessages.observations.friday);
+    }
+
+    return "";
+}
+
+function commanderGetPlannerObservation() {
+    const count = getPlannerCountForCommander();
+
+    if (count === 0) {
+        return commanderPick(CommanderMessages.observations.noPlans);
+    }
+
+    if (count >= 5) {
+        return commanderPick(CommanderMessages.observations.manyPlans);
+    }
+
+    return "";
+}
+
+function commanderGetAnalysisLine(data) {
+    const plannerCount = getPlannerCountForCommander();
+    const hasHealthRisk =
+        data.health &&
+        (data.health.headache || data.health.dizzy || data.health.period || data.health.pms);
+
+    const lowPressure =
+        data.weather &&
+        data.weather.pressure <= 1008;
+
+    if ((hasHealthRisk || lowPressure) && plannerCount >= 3) {
+        return commanderPick(CommanderMessages.analysis.heavyDay);
+    }
+
+    if (plannerCount === 0 && hasHealthRisk) {
+        return commanderPick(CommanderMessages.analysis.recoveryDay);
+    }
+
+    return commanderPick(CommanderMessages.analysis.normalDay);
+}
+
+function commanderGetAdviceLine(data) {
+    const plannerCount = getPlannerCountForCommander();
+
+    if (data.health && (data.health.headache || data.health.period || data.health.pms)) {
+        return commanderPick(CommanderMessages.advice.reduceLoad);
+    }
+
+    if (plannerCount === 0) {
+        return commanderPick(CommanderMessages.advice.rest);
+    }
+
+    if (plannerCount >= 4) {
+        return commanderPick(CommanderMessages.advice.focus);
+    }
+
+    return commanderPick(CommanderMessages.advice.startSmall);
+}
+
 function buildCommanderMessage(data) {
     const risk = calculateRisk(data);
     const readiness = getReadiness(risk);
@@ -280,6 +359,19 @@ function buildCommanderMessage(data) {
     if (relationshipLine) {
         lines.push(relationshipLine);
     }
+
+    const weekdayObservation = commanderGetWeekdayObservation();
+if (weekdayObservation) {
+    lines.push(weekdayObservation);
+}
+
+const plannerObservation = commanderGetPlannerObservation();
+if (plannerObservation) {
+    lines.push(plannerObservation);
+}
+
+lines.push(commanderGetAnalysisLine(data));
+lines.push(commanderGetAdviceLine(data));
 
     lines.push(pickCommander(CommanderMessages.closings, "行ってこい。"));
 
