@@ -20,6 +20,16 @@ const relationship = {
 // 初回起動日
 //========================
 
+function normalizeRelationshipProgress() {
+    relationship.totalTrust = Number(relationship.totalTrust) || 0;
+
+    relationship.level =
+        Math.floor(relationship.totalTrust / 100) + 1;
+
+    relationship.affinity =
+        relationship.totalTrust % 100;
+}
+
 function initializeRelationship(){
 
     const saved = localStorage.getItem("relationship");
@@ -39,6 +49,8 @@ function initializeRelationship(){
 
     }
 
+    normalizeRelationshipProgress();
+    saveRelationship();
     renderRelationship();
 
 }
@@ -125,16 +137,7 @@ function addTrust(value){
 
     relationship.totalTrust += value;
 
-    relationship.affinity =
-        Math.min(
-            100,
-            relationship.totalTrust
-        );
-
-    relationship.level =
-        Math.floor(
-            relationship.totalTrust/100
-        ) + 1;
+    normalizeRelationshipProgress();
 
     saveRelationship();
 
@@ -143,3 +146,4 @@ function addTrust(value){
 }
 
 initializeRelationship();
+

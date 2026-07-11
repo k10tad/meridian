@@ -171,6 +171,59 @@ const CommanderMessages = {
         }
     ],
 
+    observations: {
+        monday: [
+            "月曜日は最初から全力で走るな。",
+            "週の初めだ。まずは流れを作れ。"
+        ],
+        friday: [
+            "一週間よく持ちこたえた。",
+            "金曜だ。最後まで雑に締めるな。"
+        ],
+        noPlans: [
+            "今日は珍しく余白がある。",
+            "予定は少ない。回復に回せる。"
+        ],
+        manyPlans: [
+            "予定が多い。優先順位を間違えるな。",
+            "詰め込みすぎだ。削る判断も必要だ。"
+        ]
+    },
+
+    analysis: {
+        heavyDay: [
+            "体調と予定が重なっている。今日は全部を取りに行く日ではない。",
+            "負荷が高い。通常より少なく見積もれ。"
+        ],
+        recoveryDay: [
+            "今日は回復に使える日だ。",
+            "予定が少ないなら、身体を整える方へ回せ。"
+        ],
+        normalDay: [
+            "通常運用で進められる。",
+            "大きな警戒はない。だが油断はするな。"
+        ]
+    },
+
+    advice: {
+        startSmall: [
+            "最初の任務だけ終わらせよう。",
+            "小さい任務でいい。着手しろ。"
+        ],
+        reduceLoad: [
+            "予定は削っても構わない。",
+            "今日は余力を残せ。"
+        ],
+        rest: [
+            "休む判断も任務のうちだ。",
+            "温かいものを飲め。"
+        ],
+        focus: [
+            "一つに絞れ。",
+            "同時に抱えるな。順番に処理しろ。"
+        ]
+    },
+
     closings: [
         "行ってこい。",
         "無事に戻れ。",
@@ -219,3 +272,4 @@ function commanderGetRelationshipLine(affinity) {
 function commanderGetFirstConnectionMessage() {
     return commanderPick(CommanderMessages.firstConnection);
 }
+
