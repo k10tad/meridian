@@ -1414,3 +1414,146 @@ Record Card Polish
     pointer-events: auto;
 }
 
+
+
+/*==========================
+Focus Timer Phase 1
+==========================*/
+
+.focus-timer-card {
+    border-color: rgba(212, 175, 55, 0.18);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(212, 175, 55, 0.08),
+            rgba(23, 35, 61, 0.38)
+        );
+}
+
+.focus-timer-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.focus-timer-header h2 {
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+
+.focus-timer-status {
+    flex-shrink: 0;
+    padding: 7px 10px;
+    border: 1px solid rgba(212, 175, 55, 0.24);
+    border-radius: var(--radius-pill);
+    color: var(--color-gold);
+    background: rgba(212, 175, 55, 0.08);
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+}
+
+.focus-timer-status[data-status="active"] {
+    border-color: rgba(127, 168, 139, 0.36);
+    color: #a9c9b2;
+    background: rgba(127, 168, 139, 0.10);
+}
+
+.focus-timer-status[data-status="paused"] {
+    color: var(--color-muted);
+    border-color: var(--color-card-border);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.focus-timer-status[data-status="complete"] {
+    border-color: rgba(212, 175, 55, 0.42);
+    color: #f0d98a;
+    background: rgba(212, 175, 55, 0.14);
+}
+
+.focus-timer-display {
+    margin: 34px 0 26px;
+    color: var(--color-text);
+    font-size: clamp(62px, 20vw, 92px);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.focus-progress-track {
+    height: 7px;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.focus-progress-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(
+        90deg,
+        var(--color-gold),
+        rgba(240, 217, 138, 0.92)
+    );
+    transition: width 240ms linear;
+}
+
+.focus-controls {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr 1fr;
+    gap: 9px;
+    margin-top: 22px;
+}
+
+.focus-control-btn {
+    min-width: 0;
+    min-height: 46px;
+    padding: 0 10px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 14px;
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.045);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.focus-control-btn.primary {
+    border-color: rgba(212, 175, 55, 0.34);
+    color: var(--color-gold);
+    background: rgba(212, 175, 55, 0.12);
+}
+
+.focus-control-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.focus-control-btn:disabled {
+    cursor: default;
+    opacity: 0.36;
+}
+
+.focus-timer-message {
+    min-height: 3.2em;
+    margin: 18px 0 0;
+    color: var(--color-muted);
+    font-size: 14px;
+    line-height: 1.65;
+    text-align: center;
+}
+
+@media (max-width: 360px) {
+    .focus-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .focus-timer-display {
+        font-size: 64px;
+    }
+}

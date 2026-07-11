@@ -289,9 +289,62 @@
             <h1>Focus</h1>
             <p>Work and concentration</p>
         </div>
-        <div class="card">
-            <h2>Pomodoro</h2>
-            <p>集中タイマーをここに入れる。</p>
+
+        <div class="card focus-timer-card">
+            <div class="focus-timer-header">
+                <div>
+                    <div class="meta-label">Current Session</div>
+                    <h2 id="focusModeLabel">Focus</h2>
+                </div>
+
+                <div id="focusTimerStatus" class="focus-timer-status">
+                    READY
+                </div>
+            </div>
+
+            <div
+                id="focusTimerDisplay"
+                class="focus-timer-display"
+                role="timer"
+                aria-live="polite"
+            >
+                25:00
+            </div>
+
+            <div class="focus-progress-track" aria-hidden="true">
+                <div id="focusProgressFill" class="focus-progress-fill"></div>
+            </div>
+
+            <div class="focus-controls">
+                <button
+                    id="focusStartButton"
+                    class="focus-control-btn primary"
+                    type="button"
+                >
+                    Start
+                </button>
+
+                <button
+                    id="focusPauseButton"
+                    class="focus-control-btn"
+                    type="button"
+                    disabled
+                >
+                    Pause
+                </button>
+
+                <button
+                    id="focusResetButton"
+                    class="focus-control-btn"
+                    type="button"
+                >
+                    Reset
+                </button>
+            </div>
+
+            <p id="focusTimerMessage" class="focus-timer-message">
+                25分の集中を開始できる。
+            </p>
         </div>
     </section>
 
@@ -420,8 +473,10 @@
 <script src="js/memory.js"></script>
 <script src="js/engine.js"></script>
 
+<script src="js/commander-messages.js"></script>
 <script src="js/commander.js"></script>
 
+<script src="js/focus.js"></script>
 <script src="js/vestige.js"></script>
 
 </body>
