@@ -1,11 +1,10 @@
 {
-  "version": "1.8.0",
-  "build": "updater-step1",
+  "version": "1.8.2",
+  "build": "updater-step2",
   "updatedAt": "2026-07-12",
   "notes": [
-    "PWA manifest added",
-    "Service Worker registration added",
-    "No application data is deleted"
+    "更新通知と更新ボタンを追加",
+    "ホーム画面アプリを削除せず更新可能",
+    "保存データを保持したまま再起動"
   ]
 }
-

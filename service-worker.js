@@ -1,22 +1,19 @@
 //========================
 // Meridian Service Worker
-// Updater Step 1
+// Updater Step 2
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-sw-1.8.0-step1";
+const MERIDIAN_SW_VERSION = "meridian-runtime-1.8.2";
+const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {
-    // Activate the new worker without waiting for every old tab to close.
-    self.skipWaiting();
+    // The new worker waits until the user accepts the update.
 });
 
 self.addEventListener("activate", function (event) {
     event.waitUntil(
         Promise.all([
             self.clients.claim(),
-
-            // Only remove old Meridian caches.
-            // localStorage / IndexedDB data are NOT touched.
             caches.keys().then(function (cacheNames) {
                 return Promise.all(
                     cacheNames
@@ -41,7 +38,47 @@ self.addEventListener("message", function (event) {
     }
 });
 
-// Step 1 intentionally has no fetch handler.
-// Meridian continues to load files from the network/browser cache normally.
-// A controlled update strategy will be added in Updater Step 2.
+self.addEventListener("fetch", function (event) {
+    const request = event.request;
+
+    if (request.method !== "GET") {
+        return;
+    }
+
+    const requestUrl = new URL(request.url);
+
+    if (requestUrl.origin !== self.location.origin) {
+        return;
+    }
+
+    event.respondWith(
+        fetch(request, { cache: "no-store" })
+            .then(function (response) {
+                if (!response || response.status !== 200) {
+                    return response;
+                }
+
+                const responseCopy = response.clone();
+
+                caches.open(MERIDIAN_SW_VERSION).then(function (cache) {
+                    cache.put(request, responseCopy);
+                });
+
+                return response;
+            })
+            .catch(function () {
+                return caches.match(request).then(function (cachedResponse) {
+                    if (cachedResponse) {
+                        return cachedResponse;
+                    }
+
+                    if (request.mode === "navigate") {
+                        return caches.match(MERIDIAN_ROOT);
+                    }
+
+                    return Response.error();
+                });
+            })
+    );
+});
 

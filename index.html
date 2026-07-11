@@ -10,7 +10,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meridian</title>
     <meta name="theme-color" content="#050711">
-    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Meridian">
@@ -487,7 +486,50 @@
 <script src="js/vestige.js"></script>
 <script src="js/update.js"></script>
 
+    <!-- Meridian Updater -->
+    <div
+        id="meridianUpdateModal"
+        class="update-modal hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="meridianUpdateTitle"
+    >
+        <div class="update-modal-backdrop"></div>
+
+        <section class="update-modal-card">
+            <div class="update-modal-kicker">MERIDIAN UPDATE</div>
+            <h2 id="meridianUpdateTitle">最新版があります</h2>
+
+            <p id="meridianUpdateVersion" class="update-modal-version">
+                Version checking...
+            </p>
+
+            <ul id="meridianUpdateNotes" class="update-modal-notes"></ul>
+
+            <p id="meridianUpdateStatus" class="update-modal-status">
+                更新しても、Planner・Health・Relationship・Vestigeの保存データは消えない。
+            </p>
+
+            <div class="update-modal-actions">
+                <button
+                    id="meridianUpdateLaterButton"
+                    class="update-modal-button"
+                    type="button"
+                >
+                    あとで
+                </button>
+
+                <button
+                    id="meridianUpdateNowButton"
+                    class="update-modal-button primary"
+                    type="button"
+                >
+                    更新
+                </button>
+            </div>
+        </section>
+    </div>
+
 </body>
 </html>
-
 
