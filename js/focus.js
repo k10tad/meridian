@@ -1,12 +1,13 @@
 //========================
 // Meridian Focus Timer
-// Phase 1: Start / Pause / Reset
+// Phase 2: Focus / Break automatic switching
 //========================
 
 (function () {
     "use strict";
 
-    const FOCUS_DURATION_SECONDS = 25 * 60;
+    const FOCUS_SECONDS = 25 * 60;
+    const BREAK_SECONDS = 5 * 60;
 
     const display = document.getElementById("focusTimerDisplay");
     const modeLabel = document.getElementById("focusModeLabel");
@@ -28,15 +29,25 @@
         !pauseButton ||
         !resetButton
     ) {
-        console.warn("Meridian Focus Timer: required elements were not found.");
+        console.warn(
+            "Meridian Focus Timer: required elements were not found."
+        );
         return;
     }
 
-    let remainingSeconds = FOCUS_DURATION_SECONDS;
+    let mode = "focus";
+    let round = 1;
+    let remainingSeconds = FOCUS_SECONDS;
     let timerId = null;
     let endTimestamp = null;
     let isRunning = false;
     let isComplete = false;
+
+    function getModeDuration() {
+        return mode === "focus"
+            ? FOCUS_SECONDS
+            : BREAK_SECONDS;
+    }
 
     function formatTime(totalSeconds) {
         const safeSeconds = Math.max(0, Math.ceil(totalSeconds));
@@ -55,26 +66,46 @@
         statusLabel.dataset.status = status.toLowerCase();
     }
 
-    function render() {
-        display.textContent = formatTime(remainingSeconds);
+    function setMode(nextMode) {
+        mode = nextMode;
+        remainingSeconds = getModeDuration();
+        endTimestamp = null;
+        isRunning = false;
+        isComplete = false;
 
-        const elapsed = FOCUS_DURATION_SECONDS - remainingSeconds;
+        if (mode === "focus") {
+            modeLabel.textContent = "Focus";
+        } else {
+            modeLabel.textContent = "Break";
+        }
+    }
+
+    function render() {
+        const duration = getModeDuration();
+        const elapsed = duration - remainingSeconds;
         const progress = Math.min(
             100,
-            Math.max(0, (elapsed / FOCUS_DURATION_SECONDS) * 100)
+            Math.max(0, (elapsed / duration) * 100)
         );
 
+        display.textContent = formatTime(remainingSeconds);
         progressFill.style.width = progress + "%";
 
         startButton.disabled = isRunning;
         pauseButton.disabled = !isRunning;
 
-        if (isComplete) {
-            startButton.textContent = "Start Again";
-        } else if (remainingSeconds < FOCUS_DURATION_SECONDS) {
+        if (isRunning) {
+            startButton.textContent = "Running";
+        } else if (
+            remainingSeconds < duration &&
+            remainingSeconds > 0
+        ) {
             startButton.textContent = "Resume";
         } else {
-            startButton.textContent = "Start";
+            startButton.textContent =
+                mode === "focus"
+                    ? "Start"
+                    : "Start Break";
         }
     }
 
@@ -85,54 +116,35 @@
         }
     }
 
-    function completeTimer() {
-        stopInterval();
-
-        remainingSeconds = 0;
-        endTimestamp = null;
-        isRunning = false;
-        isComplete = true;
-
-        setStatus("COMPLETE");
-        message.textContent = "25分の集中を完了した。";
-        render();
-    }
-
-    function tick() {
-        if (!isRunning || endTimestamp === null) {
-            return;
-        }
-
-        const millisecondsLeft = endTimestamp - Date.now();
-        remainingSeconds = Math.max(0, millisecondsLeft / 1000);
-
-        if (remainingSeconds <= 0) {
-            completeTimer();
-            return;
-        }
-
-        render();
-    }
-
-    function startTimer() {
+    function startCurrentMode() {
         if (isRunning) {
             return;
         }
 
-        if (isComplete || remainingSeconds <= 0) {
-            remainingSeconds = FOCUS_DURATION_SECONDS;
-            isComplete = false;
+        if (remainingSeconds <= 0) {
+            remainingSeconds = getModeDuration();
         }
 
         isRunning = true;
+        isComplete = false;
         endTimestamp = Date.now() + remainingSeconds * 1000;
 
         setStatus("ACTIVE");
-        message.textContent = "集中時間を開始した。今は一つだけ見ろ。";
+
+        if (mode === "focus") {
+            message.textContent =
+                "Round " +
+                round +
+                "。集中時間を開始した。今は一つだけ見ろ。";
+        } else {
+            message.textContent =
+                "Round " +
+                round +
+                "の休憩だ。画面から目を離していい。";
+        }
 
         stopInterval();
         timerId = window.setInterval(tick, 250);
-
         tick();
     }
 
@@ -148,34 +160,131 @@
         endTimestamp = null;
 
         setStatus("PAUSED");
-        message.textContent = "一時停止した。再開できる時に戻れ。";
+
+        if (mode === "focus") {
+            message.textContent =
+                "Round " +
+                round +
+                "を一時停止した。再開できる時に戻れ。";
+        } else {
+            message.textContent =
+                "休憩を一時停止した。";
+        }
+
         render();
     }
 
     function resetTimer() {
         stopInterval();
 
-        remainingSeconds = FOCUS_DURATION_SECONDS;
-        endTimestamp = null;
-        isRunning = false;
-        isComplete = false;
+        round = 1;
+        setMode("focus");
 
         setStatus("READY");
-        message.textContent = "25分の集中を開始できる。";
+        message.textContent =
+            "Round 1。25分の集中を開始できる。";
+
         render();
     }
 
-    startButton.addEventListener("click", startTimer);
-    pauseButton.addEventListener("click", pauseTimer);
-    resetButton.addEventListener("click", resetTimer);
+    function completeFocus() {
+        stopInterval();
 
-    document.addEventListener("visibilitychange", function () {
-        if (!document.hidden && isRunning) {
-            tick();
+        setMode("break");
+        setStatus("BREAK");
+
+        message.textContent =
+            "Round " +
+            round +
+            "を完了した。5分休め。";
+
+        render();
+
+        // Focus終了後は休憩を自動開始する。
+        window.setTimeout(function () {
+            if (
+                mode === "break" &&
+                !isRunning &&
+                remainingSeconds === BREAK_SECONDS
+            ) {
+                startCurrentMode();
+            }
+        }, 900);
+    }
+
+    function completeBreak() {
+        stopInterval();
+
+        round += 1;
+        setMode("focus");
+        setStatus("READY");
+
+        message.textContent =
+            "休憩終了。Round " +
+            round +
+            "を開始できる。";
+
+        // 休憩終了後は次のFocusを自動開始せず、
+        // READY状態で待機する。
+        render();
+    }
+
+    function completeCurrentMode() {
+        remainingSeconds = 0;
+        isRunning = false;
+        endTimestamp = null;
+        isComplete = true;
+
+        if (mode === "focus") {
+            completeFocus();
+        } else {
+            completeBreak();
         }
-    });
+    }
 
-    modeLabel.textContent = "Focus";
+    function tick() {
+        if (!isRunning || endTimestamp === null) {
+            return;
+        }
+
+        const millisecondsLeft = endTimestamp - Date.now();
+        remainingSeconds = Math.max(
+            0,
+            millisecondsLeft / 1000
+        );
+
+        if (remainingSeconds <= 0) {
+            completeCurrentMode();
+            return;
+        }
+
+        render();
+    }
+
+    startButton.addEventListener(
+        "click",
+        startCurrentMode
+    );
+
+    pauseButton.addEventListener(
+        "click",
+        pauseTimer
+    );
+
+    resetButton.addEventListener(
+        "click",
+        resetTimer
+    );
+
+    document.addEventListener(
+        "visibilitychange",
+        function () {
+            if (!document.hidden && isRunning) {
+                tick();
+            }
+        }
+    );
+
     resetTimer();
 })();
 

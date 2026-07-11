@@ -431,6 +431,74 @@
         </div>
     </div>
 
+    <div class="card backup-card">
+        <div class="backup-card-header">
+            <div>
+                <div class="meta-label">Safety System</div>
+                <h2>Backup Export</h2>
+            </div>
+
+            <div id="backupStorageCount" class="backup-count">
+                0 items
+            </div>
+        </div>
+
+        <p class="backup-description">
+            Planner、Health、Relationship、Vestigeなど、
+            この端末に保存されているMeridianデータをJSONとして書き出す。
+        </p>
+
+        <button
+            id="backupExportButton"
+            class="backup-export-btn"
+            type="button"
+        >
+            Export Backup
+        </button>
+
+        <p id="backupExportStatus" class="backup-status">
+            定期的に保存しておくと、端末変更や再設置時に復元できる。
+        </p>
+
+        <div class="backup-import-block">
+            <div class="backup-import-title">Backup Import</div>
+
+            <p class="backup-description">
+                MeridianのバックアップJSONを選び、この端末へ復元する。
+                復元前には現在データを自動退避する。
+            </p>
+
+            <input
+                id="backupImportInput"
+                class="backup-file-input"
+                type="file"
+                accept="application/json,.json"
+            >
+
+            <label
+                for="backupImportInput"
+                class="backup-import-label"
+            >
+                Select Backup File
+            </label>
+
+            <button
+                id="backupImportButton"
+                class="backup-import-btn"
+                type="button"
+                disabled
+            >
+                Restore Backup
+            </button>
+
+            <p id="backupImportStatus" class="backup-status">
+                Meridian形式のJSONだけ復元できる。
+            </p>
+        </div>
+
+    </div>
+
+
     <div id="vestigeDetailCard" class="card vestige-detail-card is-hidden">
         <div class="vestige-detail-header">
             <div>
@@ -485,6 +553,7 @@
 <script src="js/focus.js"></script>
 <script src="js/vestige.js"></script>
 <script src="js/update.js"></script>
+<script src="js/backup.js"></script>
 
     <!-- Meridian Updater -->
     <div

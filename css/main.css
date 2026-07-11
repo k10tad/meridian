@@ -1671,3 +1671,143 @@ Meridian Updater Step 2
     transform: scale(0.98);
 }
 
+
+/*==========================
+Meridian Backup Export
+==========================*/
+
+.backup-card {
+    border-color: rgba(127, 168, 139, 0.20);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(127, 168, 139, 0.08),
+            rgba(23, 35, 61, 0.30)
+        );
+}
+
+.backup-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.backup-card-header h2 {
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+
+.backup-count {
+    flex-shrink: 0;
+    padding: 7px 10px;
+    border: 1px solid rgba(127, 168, 139, 0.24);
+    border-radius: var(--radius-pill);
+    color: #a9c9b2;
+    background: rgba(127, 168, 139, 0.08);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.backup-description {
+    margin: 18px 0 0;
+    color: var(--color-muted);
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+.backup-export-btn {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 20px;
+    border: 1px solid rgba(127, 168, 139, 0.34);
+    border-radius: 14px;
+    color: #c8dfcf;
+    background: rgba(127, 168, 139, 0.12);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.backup-export-btn:active {
+    transform: scale(0.985);
+}
+
+.backup-export-btn:disabled {
+    opacity: 0.5;
+}
+
+.backup-status {
+    min-height: 2.9em;
+    margin: 14px 0 0;
+    color: var(--color-muted);
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+
+/*==========================
+Meridian Backup Import
+==========================*/
+
+.backup-import-block {
+    margin-top: 24px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.backup-import-title {
+    color: var(--color-text);
+    font-size: 16px;
+    font-weight: 720;
+}
+
+.backup-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+.backup-import-label,
+.backup-import-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 46px;
+    border-radius: 14px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.backup-import-label {
+    margin-top: 18px;
+    border: 1px solid var(--color-card-border);
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.045);
+}
+
+.backup-import-btn {
+    margin-top: 10px;
+    border: 1px solid rgba(212, 175, 55, 0.32);
+    color: var(--color-gold);
+    background: rgba(212, 175, 55, 0.11);
+}
+
+.backup-import-btn:disabled {
+    opacity: 0.38;
+}
+
+.backup-import-label:active,
+.backup-import-btn:active:not(:disabled) {
+    transform: scale(0.985);
+}
