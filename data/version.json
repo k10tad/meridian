@@ -1,0 +1,11 @@
+{
+  "version": "1.8.0",
+  "build": "updater-step1",
+  "updatedAt": "2026-07-12",
+  "notes": [
+    "PWA manifest added",
+    "Service Worker registration added",
+    "No application data is deleted"
+  ]
+}
+

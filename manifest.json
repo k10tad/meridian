@@ -1,0 +1,22 @@
+{
+  "name": "Meridian",
+  "short_name": "Meridian",
+  "description": "Personal Command Desk",
+  "id": "/meridian/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#050711",
+  "theme_color": "#050711",
+  "orientation": "portrait-primary",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "assets/icons/meridian-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
+
