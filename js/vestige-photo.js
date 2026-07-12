@@ -1,37 +1,48 @@
 //========================
 // Meridian Vestige Photo
-// Phase 1: select / save / display / delete
+// Phase 2: date / memo / one-per-day / lightbox
 //========================
 
 (function () {
     "use strict";
 
-    const MAX_PHOTOS = 1;
     const MAX_INPUT_BYTES = 15 * 1024 * 1024;
     const MAX_IMAGE_EDGE = 1600;
     const JPEG_QUALITY = 0.82;
 
-    const input = document.getElementById(
-        "vestigePhotoInput"
-    );
+    const input = document.getElementById("vestigePhotoInput");
+    const dateInput = document.getElementById("vestigePhotoDate");
+    const memoInput = document.getElementById("vestigePhotoMemo");
+    const status = document.getElementById("vestigePhotoStatus");
+    const gallery = document.getElementById("vestigePhotoGallery");
+    const count = document.getElementById("vestigePhotoCount");
 
-    const status = document.getElementById(
-        "vestigePhotoStatus"
+    const lightbox = document.getElementById("vestigePhotoLightbox");
+    const lightboxClose = document.getElementById(
+        "vestigePhotoLightboxClose"
     );
-
-    const gallery = document.getElementById(
-        "vestigePhotoGallery"
+    const lightboxImage = document.getElementById(
+        "vestigePhotoLightboxImage"
     );
-
-    const count = document.getElementById(
-        "vestigePhotoCount"
+    const lightboxTitle = document.getElementById(
+        "vestigePhotoLightboxTitle"
+    );
+    const lightboxMemo = document.getElementById(
+        "vestigePhotoLightboxMemo"
     );
 
     if (
         !input ||
+        !dateInput ||
+        !memoInput ||
         !status ||
         !gallery ||
-        !count
+        !count ||
+        !lightbox ||
+        !lightboxClose ||
+        !lightboxImage ||
+        !lightboxTitle ||
+        !lightboxMemo
     ) {
         console.warn(
             "Meridian Vestige Photo: required elements were not found."
@@ -43,23 +54,25 @@
         console.error(
             "Meridian Vestige Photo: Photo DB is unavailable."
         );
-        status.textContent =
-            "写真保管庫を起動できなかった。";
+        status.textContent = "写真保管庫を起動できなかった。";
         return;
     }
 
     let activeObjectUrls = [];
+    let editingPhotoId = null;
 
     function getDateKey(date) {
         const year = date.getFullYear();
-        const month = String(
-            date.getMonth() + 1
-        ).padStart(2, "0");
-        const day = String(
-            date.getDate()
-        ).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
 
         return year + "-" + month + "-" + day;
+    }
+
+    function setDefaultDate() {
+        if (!dateInput.value) {
+            dateInput.value = getDateKey(new Date());
+        }
     }
 
     function createId() {
@@ -74,9 +87,7 @@
             "photo-" +
             Date.now() +
             "-" +
-            Math.random()
-                .toString(16)
-                .slice(2)
+            Math.random().toString(16).slice(2)
         );
     }
 
@@ -91,28 +102,17 @@
     function loadImage(file) {
         return new Promise(function (resolve, reject) {
             const image = new Image();
-            const objectUrl =
-                URL.createObjectURL(file);
+            const objectUrl = URL.createObjectURL(file);
 
-            image.addEventListener(
-                "load",
-                function () {
-                    URL.revokeObjectURL(objectUrl);
-                    resolve(image);
-                }
-            );
+            image.addEventListener("load", function () {
+                URL.revokeObjectURL(objectUrl);
+                resolve(image);
+            });
 
-            image.addEventListener(
-                "error",
-                function () {
-                    URL.revokeObjectURL(objectUrl);
-                    reject(
-                        new Error(
-                            "画像を読み込めなかった。"
-                        )
-                    );
-                }
-            );
+            image.addEventListener("error", function () {
+                URL.revokeObjectURL(objectUrl);
+                reject(new Error("画像を読み込めなかった。"));
+            });
 
             image.src = objectUrl;
         });
@@ -133,62 +133,35 @@
 
         const width = Math.max(
             1,
-            Math.round(
-                image.naturalWidth * scale
-            )
+            Math.round(image.naturalWidth * scale)
         );
 
         const height = Math.max(
             1,
-            Math.round(
-                image.naturalHeight * scale
-            )
+            Math.round(image.naturalHeight * scale)
         );
 
-        const canvas =
-            document.createElement("canvas");
-
+        const canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
 
-        const context = canvas.getContext(
-            "2d",
-            {
-                alpha: false
-            }
-        );
+        const context = canvas.getContext("2d", {
+            alpha: false
+        });
 
         if (!context) {
-            throw new Error(
-                "画像処理を開始できなかった。"
-            );
+            throw new Error("画像処理を開始できなかった。");
         }
 
         context.fillStyle = "#ffffff";
-        context.fillRect(
-            0,
-            0,
-            width,
-            height
-        );
-
-        context.drawImage(
-            image,
-            0,
-            0,
-            width,
-            height
-        );
+        context.fillRect(0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
 
         return new Promise(function (resolve, reject) {
             canvas.toBlob(
                 function (blob) {
                     if (!blob) {
-                        reject(
-                            new Error(
-                                "画像の圧縮に失敗した。"
-                            )
-                        );
+                        reject(new Error("画像の圧縮に失敗した。"));
                         return;
                     }
 
@@ -209,9 +182,7 @@
             return "写真が選択されていない。";
         }
 
-        if (
-            !String(file.type).startsWith("image/")
-        ) {
+        if (!String(file.type).startsWith("image/")) {
             return "画像ファイルを選択してくれ。";
         }
 
@@ -222,67 +193,82 @@
         return "";
     }
 
-    async function saveSelectedPhoto() {
-        const file =
-            input.files &&
-            input.files[0];
-
-        const validationError =
-            validateFile(file);
-
+    function resetForm() {
+        editingPhotoId = null;
+        memoInput.value = "";
+        dateInput.value = getDateKey(new Date());
         input.value = "";
+    }
+
+    async function saveSelectedPhoto() {
+        const file = input.files && input.files[0];
+        const validationError = validateFile(file);
 
         if (validationError) {
-            status.textContent =
-                validationError;
+            input.value = "";
+            status.textContent = validationError;
             return;
         }
 
-        try {
-            const existingCount =
-                await window.MeridianPhotoDB.count();
+        const selectedDate = dateInput.value || getDateKey(new Date());
 
-            if (existingCount >= MAX_PHOTOS) {
+        try {
+            const existingForDate =
+                await window.MeridianPhotoDB.getByDate(selectedDate);
+
+            if (
+                existingForDate &&
+                existingForDate.id !== editingPhotoId
+            ) {
+                input.value = "";
                 status.textContent =
-                    "Phase 1では1枚だけ保存できる。現在の写真を削除してから追加してくれ。";
+                    selectedDate +
+                    "にはすでに写真がある。編集または削除してから追加してくれ。";
                 return;
             }
 
-            status.textContent =
-                "写真を圧縮して保存している。";
+            status.textContent = "写真を圧縮して保存している。";
 
-            const processed =
-                await compressImage(file);
-
+            const processed = await compressImage(file);
             const now = new Date();
 
+            const wasEditing = Boolean(editingPhotoId);
+
             const record = {
-                id: createId(),
+                id: editingPhotoId || createId(),
                 createdAt: now.toISOString(),
-                dateKey: getDateKey(now),
+                dateKey: selectedDate,
                 vestigeRecordId: null,
-                fileName:
-                    file.name ||
-                    "photo.jpg",
-                originalMimeType:
-                    file.type ||
-                    "image/*",
+                fileName: file.name || "photo.jpg",
+                originalMimeType: file.type || "image/*",
                 mimeType: "image/jpeg",
                 width: processed.width,
                 height: processed.height,
                 size: processed.blob.size,
                 blob: processed.blob,
-                memo: ""
+                memo: memoInput.value.trim()
             };
 
-            await window.MeridianPhotoDB.add(
-                record
-            );
+            if (editingPhotoId) {
+                await window.MeridianPhotoDB.update(record);
+                status.textContent = "写真を更新した。";
+            } else {
+                await window.MeridianPhotoDB.add(record);
+                status.textContent = "写真を端末内へ保存した。";
+            }
 
-            status.textContent =
-                "写真を端末内へ保存した。";
-
+            resetForm();
             await renderPhotos();
+
+            window.dispatchEvent(
+                new CustomEvent("meridianVestigePhotoUpdated", {
+                    detail: {
+                        dateKey: record.dateKey,
+                        photoId: record.id,
+                        action: wasEditing ? "updated" : "saved"
+                    }
+                })
+            );
         } catch (error) {
             console.error(
                 "Meridian Vestige Photo: save failed.",
@@ -291,13 +277,17 @@
 
             status.textContent =
                 "写真の保存に失敗した。別の画像で試してくれ。";
+        } finally {
+            input.value = "";
         }
     }
 
     async function removePhoto(photo) {
         const confirmed = window.confirm(
             "この写真を端末内のVestigeから削除します。\n\n" +
-            "ファイル名: " +
+            "日付: " +
+            photo.dateKey +
+            "\nファイル名: " +
             photo.fileName +
             "\n\n削除後は元に戻せません。"
         );
@@ -307,102 +297,127 @@
         }
 
         try {
-            await window.MeridianPhotoDB.delete(
-                photo.id
-            );
-
-            status.textContent =
-                "写真を削除した。";
-
+            await window.MeridianPhotoDB.delete(photo.id);
+            status.textContent = "写真を削除した。";
             await renderPhotos();
+
+            window.dispatchEvent(
+                new CustomEvent("meridianVestigePhotoUpdated", {
+                    detail: {
+                        dateKey: photo.dateKey,
+                        photoId: photo.id,
+                        action: "deleted"
+                    }
+                })
+            );
         } catch (error) {
             console.error(
                 "Meridian Vestige Photo: delete failed.",
                 error
             );
 
-            status.textContent =
-                "写真を削除できなかった。";
+            status.textContent = "写真を削除できなかった。";
         }
     }
 
+    function beginEdit(photo) {
+        editingPhotoId = photo.id;
+        dateInput.value = photo.dateKey;
+        memoInput.value = photo.memo || "";
+        status.textContent =
+            "編集モード。新しい写真を選ぶと、同じ記録を更新する。";
+        dateInput.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+
+    function openLightbox(photo, objectUrl) {
+        lightboxImage.src = objectUrl;
+        lightboxTitle.textContent =
+            photo.dateKey + " / " + photo.fileName;
+        lightboxMemo.textContent =
+            photo.memo || "メモなし";
+        lightbox.classList.remove("hidden");
+    }
+
+    function closeLightbox() {
+        lightbox.classList.add("hidden");
+        lightboxImage.removeAttribute("src");
+    }
+
     function createPhotoElement(photo) {
-        const item =
-            document.createElement("article");
+        const item = document.createElement("article");
+        item.className = "vestige-photo-item";
 
-        item.className =
-            "vestige-photo-item";
+        const imageButton = document.createElement("button");
+        imageButton.className = "vestige-photo-image-button";
+        imageButton.type = "button";
+        imageButton.setAttribute("aria-label", "Enlarge photo");
 
-        const image =
-            document.createElement("img");
-
-        const objectUrl =
-            URL.createObjectURL(photo.blob);
+        const image = document.createElement("img");
+        const objectUrl = URL.createObjectURL(photo.blob);
 
         activeObjectUrls.push(objectUrl);
 
-        image.className =
-            "vestige-photo-image";
-
+        image.className = "vestige-photo-image";
         image.src = objectUrl;
-        image.alt =
-            "Vestige photo";
+        image.alt = "Vestige photo";
 
-        const meta =
-            document.createElement("div");
+        imageButton.appendChild(image);
+        imageButton.addEventListener("click", function () {
+            openLightbox(photo, objectUrl);
+        });
 
-        meta.className =
-            "vestige-photo-meta";
+        const meta = document.createElement("div");
+        meta.className = "vestige-photo-meta";
 
-        const text =
-            document.createElement("div");
+        const text = document.createElement("div");
+        text.className = "vestige-photo-name";
 
-        text.className =
-            "vestige-photo-name";
+        const name = document.createElement("div");
+        name.textContent = photo.dateKey + " / " + photo.fileName;
 
-        const name =
-            document.createElement("div");
+        const createdAt = document.createElement("div");
+        createdAt.className = "vestige-photo-date";
+        createdAt.textContent =
+            "保存: " +
+            new Date(photo.createdAt).toLocaleString("ja-JP");
 
-        name.textContent =
-            photo.fileName;
+        const memo = document.createElement("div");
+        memo.className = "vestige-photo-memo";
+        memo.textContent = photo.memo || "メモなし";
 
-        const date =
-            document.createElement("div");
+        const actions = document.createElement("div");
+        actions.className = "vestige-photo-actions";
 
-        date.className =
-            "vestige-photo-date";
+        const editButton = document.createElement("button");
+        editButton.className = "vestige-photo-edit-btn";
+        editButton.type = "button";
+        editButton.textContent = "Edit";
+        editButton.addEventListener("click", function () {
+            beginEdit(photo);
+        });
 
-        date.textContent =
-            new Date(
-                photo.createdAt
-            ).toLocaleString(
-                "ja-JP"
-            );
-
-        const deleteButton =
-            document.createElement("button");
-
-        deleteButton.className =
-            "vestige-photo-delete-btn";
-
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "vestige-photo-delete-btn";
         deleteButton.type = "button";
-        deleteButton.textContent =
-            "Delete";
-
-        deleteButton.addEventListener(
-            "click",
-            function () {
-                removePhoto(photo);
-            }
-        );
+        deleteButton.textContent = "Delete";
+        deleteButton.addEventListener("click", function () {
+            removePhoto(photo);
+        });
 
         text.appendChild(name);
-        text.appendChild(date);
+        text.appendChild(createdAt);
+        text.appendChild(memo);
+
+        actions.appendChild(editButton);
+        actions.appendChild(deleteButton);
 
         meta.appendChild(text);
-        meta.appendChild(deleteButton);
+        meta.appendChild(actions);
 
-        item.appendChild(image);
+        item.appendChild(imageButton);
         item.appendChild(meta);
 
         return item;
@@ -413,23 +428,17 @@
         gallery.innerHTML = "";
 
         try {
-            const photos =
-                await window.MeridianPhotoDB.getAll();
+            const photos = await window.MeridianPhotoDB.getAll();
 
-            count.textContent =
-                photos.length +
-                " / " +
-                MAX_PHOTOS;
+            count.textContent = photos.length + " photos";
 
             photos.forEach(function (photo) {
-                gallery.appendChild(
-                    createPhotoElement(photo)
-                );
+                gallery.appendChild(createPhotoElement(photo));
             });
 
             if (photos.length === 0) {
                 status.textContent =
-                    "写真を選択すると、端末内へ圧縮保存する。";
+                    "1日につき1枚、端末内へ圧縮保存する。";
             }
         } catch (error) {
             console.error(
@@ -442,16 +451,34 @@
         }
     }
 
-    input.addEventListener(
-        "change",
-        saveSelectedPhoto
-    );
+    window.openVestigePhotoLightbox = function (photo) {
+        if (!photo || !photo.blob) {
+            return;
+        }
 
-    window.addEventListener(
-        "pagehide",
-        revokeObjectUrls
-    );
+        const objectUrl = URL.createObjectURL(photo.blob);
+        activeObjectUrls.push(objectUrl);
+        openLightbox(photo, objectUrl);
+    };
 
+    input.addEventListener("change", saveSelectedPhoto);
+    lightboxClose.addEventListener("click", closeLightbox);
+
+    lightbox.addEventListener("click", function (event) {
+        if (event.target === lightbox) {
+            closeLightbox();
+        }
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            closeLightbox();
+        }
+    });
+
+    window.addEventListener("pagehide", revokeObjectUrls);
+
+    setDefaultDate();
     renderPhotos();
 })();
 

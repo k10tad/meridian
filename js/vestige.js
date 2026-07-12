@@ -13,6 +13,9 @@ const closeVestigeDetail = document.getElementById("closeVestigeDetail");
 
 const VESTIGE_KEY = "meridianVestigeRecords";
 
+let currentVestigeDetailId = null;
+let vestigeDetailPhotoUrl = null;
+
 //========================
 // Storage
 //========================
@@ -222,7 +225,7 @@ function migrateVestigeRecords() {
 // Save today
 //========================
 
-function saveTodayVestige() {
+async function saveTodayVestige() {
     const records = getVestigeRecords();
     const todayKey = new Date().toDateString();
 
@@ -242,7 +245,7 @@ function saveTodayVestige() {
     saveVestigeRecords(records);
 
     renderVestigeList();
-    openVestigeRecord(newRecord.id);
+    await openVestigeRecord(newRecord.id);
 }
 
 //========================
@@ -642,7 +645,7 @@ function renderVestigeList() {
     });
 }
 
-function openVestigeRecord(id) {
+async function openVestigeRecord(id, options) {
     const records = getVestigeRecords();
     const record = records.find(function (item) {
         return Number(item.id) === Number(id);
@@ -650,14 +653,24 @@ function openVestigeRecord(id) {
 
     if (!record || !vestigeDetailCard || !vestigeDetailBody) return;
 
+    currentVestigeDetailId = Number(record.id);
+    releaseVestigeDetailPhotoUrl();
+
     const createdAt = new Date(record.createdAt);
 
     if (vestigeDetailNo) {
-        vestigeDetailNo.textContent = "Archive " + record.archiveLabel + " / " + getRecordMood(record);
+        vestigeDetailNo.textContent =
+            "Archive " +
+            record.archiveLabel +
+            " / " +
+            getRecordMood(record);
     }
 
     if (vestigeDetailDate) {
-        vestigeDetailDate.textContent = record.label + " " + formatVestigeTime(createdAt);
+        vestigeDetailDate.textContent =
+            record.label +
+            " " +
+            formatVestigeTime(createdAt);
     }
 
     vestigeDetailBody.innerHTML =
@@ -669,17 +682,37 @@ function openVestigeRecord(id) {
         renderMissionDetail(record.summary.mission) +
         renderRelationshipDetail(record.summary.relationship);
 
+    try {
+        const linkedPhoto =
+            await getAndLinkPhotoForRecord(record);
+
+        if (linkedPhoto) {
+            appendVestigePhotoDetail(linkedPhoto);
+        }
+    } catch (error) {
+        console.error(
+            "Meridian Vestige: photo linkage failed.",
+            error
+        );
+    }
+
     vestigeDetailCard.classList.remove("is-hidden");
-    vestigeDetailCard.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
+
+    if (!(options && options.keepScroll)) {
+        vestigeDetailCard.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
 }
 
 function closeDetail() {
     if (vestigeDetailCard) {
         vestigeDetailCard.classList.add("is-hidden");
     }
+
+    currentVestigeDetailId = null;
+    releaseVestigeDetailPhotoUrl();
 }
 
 //========================
@@ -693,6 +726,16 @@ if (saveVestigeButton) {
 if (closeVestigeDetail) {
     closeVestigeDetail.addEventListener("click", closeDetail);
 }
+
+window.addEventListener(
+    "meridianVestigePhotoUpdated",
+    refreshOpenVestigePhoto
+);
+
+window.addEventListener(
+    "pagehide",
+    releaseVestigeDetailPhotoUrl
+);
 
 migrateVestigeRecords();
 renderVestigeList();

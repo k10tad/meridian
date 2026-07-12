@@ -1,6 +1,6 @@
 //========================
 // Meridian Photo Database
-// Vestige Photo Phase 1
+// Vestige Photo Phase 2
 //========================
 
 (function () {
@@ -18,230 +18,124 @@
         }
 
         databasePromise = new Promise(function (resolve, reject) {
-            const request = indexedDB.open(
-                DB_NAME,
-                DB_VERSION
-            );
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-            request.addEventListener(
-                "upgradeneeded",
-                function () {
-                    const database = request.result;
+            request.addEventListener("upgradeneeded", function () {
+                const database = request.result;
 
-                    if (!database.objectStoreNames.contains(STORE_NAME)) {
-                        const store = database.createObjectStore(
-                            STORE_NAME,
-                            {
-                                keyPath: "id"
-                            }
-                        );
-
-                        store.createIndex(
-                            "createdAt",
-                            "createdAt",
-                            {
-                                unique: false
-                            }
-                        );
-
-                        store.createIndex(
-                            "dateKey",
-                            "dateKey",
-                            {
-                                unique: false
-                            }
-                        );
-                    }
-                }
-            );
-
-            request.addEventListener(
-                "success",
-                function () {
-                    const database = request.result;
-
-                    database.addEventListener(
-                        "versionchange",
-                        function () {
-                            database.close();
-                            databasePromise = null;
-                        }
+                if (!database.objectStoreNames.contains(STORE_NAME)) {
+                    const store = database.createObjectStore(
+                        STORE_NAME,
+                        { keyPath: "id" }
                     );
 
-                    resolve(database);
-                }
-            );
+                    store.createIndex("createdAt", "createdAt", {
+                        unique: false
+                    });
 
-            request.addEventListener(
-                "error",
-                function () {
+                    store.createIndex("dateKey", "dateKey", {
+                        unique: false
+                    });
+                }
+            });
+
+            request.addEventListener("success", function () {
+                const database = request.result;
+
+                database.addEventListener("versionchange", function () {
+                    database.close();
                     databasePromise = null;
-                    reject(
-                        request.error ||
-                        new Error(
-                            "Photo database could not be opened."
-                        )
-                    );
-                }
-            );
+                });
 
-            request.addEventListener(
-                "blocked",
-                function () {
-                    console.warn(
-                        "Meridian Photo DB: upgrade is blocked by another open tab."
-                    );
-                }
-            );
+                resolve(database);
+            });
+
+            request.addEventListener("error", function () {
+                databasePromise = null;
+                reject(
+                    request.error ||
+                    new Error("Photo database could not be opened.")
+                );
+            });
+
+            request.addEventListener("blocked", function () {
+                console.warn(
+                    "Meridian Photo DB: upgrade is blocked by another open tab."
+                );
+            });
         });
 
         return databasePromise;
     }
 
-    async function runTransaction(mode, operation) {
+    async function runRequest(mode, callback) {
         const database = await openDatabase();
 
         return new Promise(function (resolve, reject) {
-            const transaction = database.transaction(
-                STORE_NAME,
-                mode
-            );
-
-            const store =
-                transaction.objectStore(STORE_NAME);
-
-            let result;
+            const transaction = database.transaction(STORE_NAME, mode);
+            const store = transaction.objectStore(STORE_NAME);
+            let request;
 
             try {
-                result = operation(store);
+                request = callback(store);
             } catch (error) {
-                transaction.abort();
                 reject(error);
                 return;
             }
 
-            transaction.addEventListener(
-                "complete",
-                function () {
-                    resolve(result);
-                }
-            );
+            request.addEventListener("success", function () {
+                resolve(request.result);
+            });
 
-            transaction.addEventListener(
-                "error",
-                function () {
-                    reject(
-                        transaction.error ||
-                        new Error(
-                            "Photo database transaction failed."
-                        )
-                    );
-                }
-            );
-
-            transaction.addEventListener(
-                "abort",
-                function () {
-                    reject(
-                        transaction.error ||
-                        new Error(
-                            "Photo database transaction was aborted."
-                        )
-                    );
-                }
-            );
+            request.addEventListener("error", function () {
+                reject(request.error);
+            });
         });
     }
 
-    async function countPhotos() {
-        const database = await openDatabase();
-
-        return new Promise(function (resolve, reject) {
-            const transaction = database.transaction(
-                STORE_NAME,
-                "readonly"
-            );
-
-            const store =
-                transaction.objectStore(STORE_NAME);
-
-            const request = store.count();
-
-            request.addEventListener(
-                "success",
-                function () {
-                    resolve(request.result);
-                }
-            );
-
-            request.addEventListener(
-                "error",
-                function () {
-                    reject(request.error);
-                }
-            );
+    function countPhotos() {
+        return runRequest("readonly", function (store) {
+            return store.count();
         });
     }
 
     async function getAllPhotos() {
-        const database = await openDatabase();
+        const photos = await runRequest("readonly", function (store) {
+            return store.getAll();
+        });
 
-        return new Promise(function (resolve, reject) {
-            const transaction = database.transaction(
-                STORE_NAME,
-                "readonly"
-            );
+        const normalized = Array.isArray(photos) ? photos : [];
 
-            const store =
-                transaction.objectStore(STORE_NAME);
+        normalized.sort(function (left, right) {
+            return String(right.dateKey || right.createdAt)
+                .localeCompare(String(left.dateKey || left.createdAt));
+        });
 
-            const request = store.getAll();
+        return normalized;
+    }
 
-            request.addEventListener(
-                "success",
-                function () {
-                    const photos = Array.isArray(request.result)
-                        ? request.result
-                        : [];
-
-                    photos.sort(function (left, right) {
-                        return String(right.createdAt)
-                            .localeCompare(
-                                String(left.createdAt)
-                            );
-                    });
-
-                    resolve(photos);
-                }
-            );
-
-            request.addEventListener(
-                "error",
-                function () {
-                    reject(request.error);
-                }
-            );
+    function getPhotoByDate(dateKey) {
+        return runRequest("readonly", function (store) {
+            return store.index("dateKey").get(dateKey);
         });
     }
 
-    async function addPhoto(photoRecord) {
-        return runTransaction(
-            "readwrite",
-            function (store) {
-                store.add(photoRecord);
-                return photoRecord;
-            }
-        );
+    function addPhoto(photoRecord) {
+        return runRequest("readwrite", function (store) {
+            return store.add(photoRecord);
+        });
     }
 
-    async function deletePhoto(id) {
-        return runTransaction(
-            "readwrite",
-            function (store) {
-                store.delete(id);
-                return id;
-            }
-        );
+    function updatePhoto(photoRecord) {
+        return runRequest("readwrite", function (store) {
+            return store.put(photoRecord);
+        });
+    }
+
+    function deletePhoto(id) {
+        return runRequest("readwrite", function (store) {
+            return store.delete(id);
+        });
     }
 
     window.MeridianPhotoDB = {
@@ -251,8 +145,9 @@
         open: openDatabase,
         count: countPhotos,
         getAll: getAllPhotos,
+        getByDate: getPhotoByDate,
         add: addPhoto,
+        update: updatePhoto,
         delete: deletePhoto
     };
 })();
-

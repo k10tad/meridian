@@ -1959,3 +1959,294 @@ Vestige Photo Phase 1
 .vestige-photo-delete-btn:active {
     transform: scale(0.97);
 }
+
+
+/*==========================
+Vestige Photo Phase 2
+==========================*/
+
+.vestige-photo-form {
+    display: grid;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.vestige-photo-field {
+    display: grid;
+    gap: 7px;
+}
+
+.vestige-photo-field span {
+    color: var(--color-muted);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+}
+
+.vestige-photo-field input,
+.vestige-photo-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--color-card-border);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--color-text);
+    font: inherit;
+    font-size: 14px;
+}
+
+.vestige-photo-field input {
+    min-height: 44px;
+    padding: 0 12px;
+}
+
+.vestige-photo-field textarea {
+    padding: 12px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.vestige-photo-item {
+    margin-top: 14px;
+}
+
+.vestige-photo-image-button {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: zoom-in;
+}
+
+.vestige-photo-memo {
+    margin-top: 7px;
+    color: var(--color-muted);
+    font-size: 12px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+}
+
+.vestige-photo-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vestige-photo-edit-btn {
+    flex-shrink: 0;
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid rgba(123, 157, 202, 0.28);
+    border-radius: var(--radius-pill);
+    color: #b8cce7;
+    background: rgba(123, 157, 202, 0.08);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 680;
+}
+
+.vestige-photo-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: grid;
+    place-items: center;
+    padding: 18px;
+    background: rgba(2, 3, 10, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.vestige-photo-lightbox.hidden {
+    display: none;
+}
+
+.vestige-photo-lightbox-close {
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    right: 16px;
+    z-index: 1;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    background: rgba(5, 7, 17, 0.72);
+    color: var(--color-text);
+    font-size: 28px;
+    line-height: 1;
+}
+
+.vestige-photo-lightbox-body {
+    width: min(100%, 760px);
+    max-height: 88vh;
+    overflow: auto;
+}
+
+.vestige-photo-lightbox-body img {
+    display: block;
+    width: 100%;
+    max-height: 72vh;
+    object-fit: contain;
+    border-radius: 18px;
+    background: #000;
+}
+
+.vestige-photo-lightbox-copy {
+    padding: 14px 4px 0;
+}
+
+#vestigePhotoLightboxTitle {
+    color: var(--color-text);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+#vestigePhotoLightboxMemo {
+    margin: 7px 0 0;
+    color: var(--color-muted);
+    font-size: 13px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+}
+
+
+/*==========================
+Photo Backup Phase 1
+==========================*/
+
+.photo-backup-card {
+    border-color: rgba(127, 168, 139, 0.22);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(127, 168, 139, 0.08),
+            rgba(23, 35, 61, 0.34)
+        );
+}
+
+.photo-backup-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.photo-backup-header h2 {
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+
+.photo-backup-count {
+    flex-shrink: 0;
+    padding: 7px 10px;
+    border: 1px solid rgba(127, 168, 139, 0.28);
+    border-radius: var(--radius-pill);
+    color: #b8d9c1;
+    background: rgba(127, 168, 139, 0.09);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.photo-backup-description {
+    margin: 18px 0 0;
+    color: var(--color-muted);
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+.photo-backup-export-btn {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 18px;
+    border: 1px solid rgba(127, 168, 139, 0.34);
+    border-radius: 14px;
+    color: #c8dfcf;
+    background: rgba(127, 168, 139, 0.12);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.photo-backup-export-btn:active:not(:disabled) {
+    transform: scale(0.985);
+}
+
+.photo-backup-export-btn:disabled {
+    opacity: 0.5;
+}
+
+.photo-backup-status {
+    min-height: 2.9em;
+    margin: 14px 0 0;
+    color: var(--color-muted);
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+
+/*==========================
+Photo Restore Phase 1
+==========================*/
+
+.photo-restore-block {
+    margin-top: 24px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.photo-restore-title {
+    color: var(--color-text);
+    font-size: 16px;
+    font-weight: 720;
+}
+
+.photo-restore-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+.photo-restore-select-btn,
+.photo-restore-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 46px;
+    border-radius: 14px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.photo-restore-select-btn {
+    margin-top: 18px;
+    border: 1px solid var(--color-card-border);
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.045);
+}
+
+.photo-restore-btn {
+    margin-top: 10px;
+    border: 1px solid rgba(212, 175, 55, 0.34);
+    color: var(--color-gold);
+    background: rgba(212, 175, 55, 0.12);
+}
+
+.photo-restore-btn:disabled {
+    opacity: 0.38;
+}
+
+.photo-restore-select-btn:active,
+.photo-restore-btn:active:not(:disabled) {
+    transform: scale(0.985);
+}

@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -450,6 +444,26 @@
             Phase 1では、この端末に1枚だけ保存できる。
         </p>
 
+        <div class="vestige-photo-form">
+            <label class="vestige-photo-field">
+                <span>Photo Date</span>
+                <input
+                    id="vestigePhotoDate"
+                    type="date"
+                >
+            </label>
+
+            <label class="vestige-photo-field">
+                <span>Memo</span>
+                <textarea
+                    id="vestigePhotoMemo"
+                    rows="3"
+                    maxlength="240"
+                    placeholder="この写真について残しておきたいこと"
+                ></textarea>
+            </label>
+        </div>
+
         <input
             id="vestigePhotoInput"
             class="vestige-photo-input"
@@ -465,7 +479,7 @@
         </label>
 
         <p id="vestigePhotoStatus" class="vestige-photo-status">
-            写真を選択すると、端末内へ圧縮保存する。
+            1日につき1枚、端末内へ圧縮保存する。
         </p>
 
         <div
@@ -473,6 +487,75 @@
             class="vestige-photo-gallery"
         ></div>
     </div>
+
+
+    <div class="card photo-backup-card">
+        <div class="photo-backup-header">
+            <div>
+                <div class="meta-label">Photo Safety System</div>
+                <h2>Photo Backup</h2>
+            </div>
+
+            <div id="photoBackupCount" class="photo-backup-count">
+                0 photos
+            </div>
+        </div>
+
+        <p class="photo-backup-description">
+            IndexedDBに保存された写真とメタデータを、
+            復元可能なZIPファイルとして書き出す。
+        </p>
+
+        <button
+            id="photoBackupExportButton"
+            class="photo-backup-export-btn"
+            type="button"
+        >
+            Export Photo Backup
+        </button>
+
+        <p id="photoBackupStatus" class="photo-backup-status">
+            写真バックアップは通常のJSONバックアップとは別に保存される。
+        </p>
+
+        <div class="photo-restore-block">
+            <div class="photo-restore-title">Photo Restore</div>
+
+            <p class="photo-backup-description">
+                Meridian Photo Backup ZIPを検証し、
+                既存写真を消さずに復元する。
+            </p>
+
+            <input
+                id="photoRestoreInput"
+                class="photo-restore-input"
+                type="file"
+                accept=".zip,application/zip"
+            >
+
+            <label
+                for="photoRestoreInput"
+                class="photo-restore-select-btn"
+            >
+                Select Photo Backup ZIP
+            </label>
+
+            <button
+                id="photoRestoreButton"
+                class="photo-restore-btn"
+                type="button"
+                disabled
+            >
+                Restore Photos
+            </button>
+
+            <p id="photoRestoreStatus" class="photo-backup-status">
+                復元前にZIP内容を検証し、現在の写真は自動で緊急バックアップする。
+            </p>
+        </div>
+
+    </div>
+
 
 
     <div class="card backup-card">
@@ -597,8 +680,6 @@
 <script src="js/focus-stats.js"></script>
 <script src="js/focus-messages.js"></script>
 <script src="js/focus.js"></script>
-<script src="js/photo-db.js"></script>
-<script src="js/vestige-photo.js"></script>
 <script src="js/vestige.js"></script>
 <script src="js/update.js"></script>
 <script src="js/backup.js"></script>
@@ -647,6 +728,40 @@
         </section>
     </div>
 
+    <div
+        id="vestigePhotoLightbox"
+        class="vestige-photo-lightbox hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vestigePhotoLightboxTitle"
+    >
+        <button
+            id="vestigePhotoLightboxClose"
+            class="vestige-photo-lightbox-close"
+            type="button"
+            aria-label="Close photo"
+        >
+            ×
+        </button>
+
+        <div class="vestige-photo-lightbox-body">
+            <img
+                id="vestigePhotoLightboxImage"
+                alt="Vestige enlarged photo"
+            >
+
+            <div class="vestige-photo-lightbox-copy">
+                <div id="vestigePhotoLightboxTitle"></div>
+                <p id="vestigePhotoLightboxMemo"></p>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/photo-db.js"></script>
+    <script src="js/vestige-photo.js"></script>
+    <script src="js/photo-backup.js"></script>
+    <script src="js/photo-restore.js"></script>
+
 </body>
 </html>
-
