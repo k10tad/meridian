@@ -1811,3 +1811,151 @@ Meridian Backup Import
 .backup-import-btn:active:not(:disabled) {
     transform: scale(0.985);
 }
+
+
+/*==========================
+Vestige Photo Phase 1
+==========================*/
+
+.vestige-photo-card {
+    border-color: rgba(123, 157, 202, 0.22);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(123, 157, 202, 0.08),
+            rgba(23, 35, 61, 0.34)
+        );
+}
+
+.vestige-photo-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.vestige-photo-header h2 {
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+
+.vestige-photo-count {
+    flex-shrink: 0;
+    padding: 7px 10px;
+    border: 1px solid rgba(123, 157, 202, 0.28);
+    border-radius: var(--radius-pill);
+    color: #b8cce7;
+    background: rgba(123, 157, 202, 0.09);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.vestige-photo-description {
+    margin: 18px 0 0;
+    color: var(--color-muted);
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+.vestige-photo-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+.vestige-photo-select-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 18px;
+    border: 1px solid rgba(123, 157, 202, 0.34);
+    border-radius: 14px;
+    color: #c7d7ec;
+    background: rgba(123, 157, 202, 0.12);
+    font-size: 14px;
+    font-weight: 700;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.vestige-photo-select-btn:active {
+    transform: scale(0.985);
+}
+
+.vestige-photo-status {
+    min-height: 2.9em;
+    margin: 14px 0 0;
+    color: var(--color-muted);
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.vestige-photo-gallery:empty {
+    display: none;
+}
+
+.vestige-photo-gallery {
+    margin-top: 18px;
+}
+
+.vestige-photo-item {
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.vestige-photo-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.vestige-photo-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 13px 14px;
+}
+
+.vestige-photo-name {
+    min-width: 0;
+    color: var(--color-text);
+    font-size: 12px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.vestige-photo-date {
+    margin-top: 2px;
+    color: var(--color-muted);
+    font-size: 11px;
+}
+
+.vestige-photo-delete-btn {
+    flex-shrink: 0;
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid rgba(190, 72, 86, 0.28);
+    border-radius: var(--radius-pill);
+    color: #df9da6;
+    background: rgba(190, 72, 86, 0.08);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 680;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.vestige-photo-delete-btn:active {
+    transform: scale(0.97);
+}

@@ -4,6 +4,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -432,6 +433,48 @@
         </div>
     </div>
 
+    <div class="card vestige-photo-card">
+        <div class="vestige-photo-header">
+            <div>
+                <div class="meta-label">IndexedDB Storage</div>
+                <h2>Photo Memory</h2>
+            </div>
+
+            <div id="vestigePhotoCount" class="vestige-photo-count">
+                0 / 1
+            </div>
+        </div>
+
+        <p class="vestige-photo-description">
+            写真はlocalStorageではなく、写真専用の保管領域へ保存する。
+            Phase 1では、この端末に1枚だけ保存できる。
+        </p>
+
+        <input
+            id="vestigePhotoInput"
+            class="vestige-photo-input"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+        >
+
+        <label
+            for="vestigePhotoInput"
+            class="vestige-photo-select-btn"
+        >
+            Select Photo
+        </label>
+
+        <p id="vestigePhotoStatus" class="vestige-photo-status">
+            写真を選択すると、端末内へ圧縮保存する。
+        </p>
+
+        <div
+            id="vestigePhotoGallery"
+            class="vestige-photo-gallery"
+        ></div>
+    </div>
+
+
     <div class="card backup-card">
         <div class="backup-card-header">
             <div>
@@ -554,6 +597,8 @@
 <script src="js/focus-stats.js"></script>
 <script src="js/focus-messages.js"></script>
 <script src="js/focus.js"></script>
+<script src="js/photo-db.js"></script>
+<script src="js/vestige-photo.js"></script>
 <script src="js/vestige.js"></script>
 <script src="js/update.js"></script>
 <script src="js/backup.js"></script>
