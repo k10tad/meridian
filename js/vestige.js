@@ -605,6 +605,101 @@ function renderRelationshipDetail(relationship) {
 }
 
 //========================
+// Photo linkage / detail safety
+//========================
+
+function releaseVestigeDetailPhotoUrl() {
+    if (!vestigeDetailPhotoUrl) {
+        return;
+    }
+
+    URL.revokeObjectURL(vestigeDetailPhotoUrl);
+    vestigeDetailPhotoUrl = null;
+}
+
+async function getAndLinkPhotoForRecord(record) {
+    if (
+        !record ||
+        !window.MeridianPhotoDB ||
+        typeof window.MeridianPhotoDB.getByDate !== "function"
+    ) {
+        return null;
+    }
+
+    const dateKey = getDateKey(new Date(record.createdAt));
+    const photo = await window.MeridianPhotoDB.getByDate(dateKey);
+
+    if (!photo) {
+        return null;
+    }
+
+    if (
+        String(photo.vestigeRecordId || "") !== String(record.id) &&
+        typeof window.MeridianPhotoDB.update === "function"
+    ) {
+        const linkedPhoto = Object.assign({}, photo, {
+            vestigeRecordId: record.id
+        });
+
+        await window.MeridianPhotoDB.update(linkedPhoto);
+        return linkedPhoto;
+    }
+
+    return photo;
+}
+
+function appendVestigePhotoDetail(photo) {
+    if (!vestigeDetailBody || !photo || !photo.blob) {
+        return;
+    }
+
+    releaseVestigeDetailPhotoUrl();
+    vestigeDetailPhotoUrl = URL.createObjectURL(photo.blob);
+
+    const section = document.createElement("section");
+    section.className = "vestige-detail-section vestige-detail-photo-section";
+
+    const heading = document.createElement("h3");
+    heading.textContent = "Photo Memory";
+
+    const imageButton = document.createElement("button");
+    imageButton.className = "vestige-detail-photo-button";
+    imageButton.type = "button";
+    imageButton.setAttribute("aria-label", "Open photo memory");
+
+    const image = document.createElement("img");
+    image.className = "vestige-detail-photo";
+    image.src = vestigeDetailPhotoUrl;
+    image.alt = "Vestige photo for " + (photo.dateKey || "");
+
+    imageButton.appendChild(image);
+
+    imageButton.addEventListener("click", function () {
+        if (typeof window.openVestigePhotoLightbox === "function") {
+            window.openVestigePhotoLightbox(photo);
+            return;
+        }
+
+        window.open(vestigeDetailPhotoUrl, "_blank", "noopener");
+    });
+
+    const date = document.createElement("div");
+    date.className = "vestige-detail-photo-date";
+    date.textContent = photo.dateKey || "日付なし";
+
+    const memo = document.createElement("p");
+    memo.className = "vestige-detail-photo-memo";
+    memo.textContent = photo.memo || "メモなし";
+
+    section.appendChild(heading);
+    section.appendChild(imageButton);
+    section.appendChild(date);
+    section.appendChild(memo);
+
+    vestigeDetailBody.insertBefore(section, vestigeDetailBody.firstChild);
+}
+
+//========================
 // Render list / detail
 //========================
 
@@ -715,6 +810,9 @@ function closeDetail() {
     releaseVestigeDetailPhotoUrl();
 }
 
+window.openVestigeRecord = openVestigeRecord;
+window.getMeridianVestigeRecords = getVestigeRecords;
+
 //========================
 // Init
 //========================
@@ -727,8 +825,19 @@ if (closeVestigeDetail) {
     closeVestigeDetail.addEventListener("click", closeDetail);
 }
 
-window.openVestigeRecord = openVestigeRecord;
-window.getMeridianVestigeRecords = getVestigeRecords;
+async function refreshOpenVestigePhoto() {
+    if (currentVestigeDetailId === null) {
+        return;
+    }
+
+    if (typeof openVestigeRecord !== "function") {
+        return;
+    }
+
+    await openVestigeRecord(currentVestigeDetailId, {
+        keepScroll: true
+    });
+}
 
 window.addEventListener(
     "meridianVestigePhotoUpdated",
