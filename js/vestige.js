@@ -727,6 +727,9 @@ if (closeVestigeDetail) {
     closeVestigeDetail.addEventListener("click", closeDetail);
 }
 
+window.openVestigeRecord = openVestigeRecord;
+window.getMeridianVestigeRecords = getVestigeRecords;
+
 window.addEventListener(
     "meridianVestigePhotoUpdated",
     refreshOpenVestigePhoto

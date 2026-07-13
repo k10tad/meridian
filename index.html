@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -411,6 +412,28 @@
         <p>Archive and memory</p>
     </div>
 
+    <div class="vestige-view-switch" role="tablist" aria-label="Vestige view">
+        <button
+            id="vestigeArchiveViewButton"
+            class="vestige-view-btn active"
+            type="button"
+            role="tab"
+            aria-selected="true"
+        >
+            Archive
+        </button>
+
+        <button
+            id="vestigeTimelineViewButton"
+            class="vestige-view-btn"
+            type="button"
+            role="tab"
+            aria-selected="false"
+        >
+            Timeline
+        </button>
+    </div>
+
     <div class="card vestige-save-card">
         <h2>Save Today’s Record</h2>
         <p>今日のWeather / Health / Cycle / Mission / CommanderをVestigeへ保存する。</p>
@@ -420,12 +443,81 @@
         </button>
     </div>
 
-    <div class="card">
+    <div id="vestigeArchivePanel" class="card">
         <h2>Archive</h2>
         <div id="vestigeList" class="vestige-list">
             まだ記録は保存されていない。
         </div>
     </div>
+
+    <section
+        id="vestigeTimelinePanel"
+        class="card vestige-timeline-panel is-hidden"
+        aria-hidden="true"
+    >
+        <div class="timeline-heading">
+            <div>
+                <div class="meta-label">VESTIGE TIMELINE</div>
+                <h2>Your Memory Grid</h2>
+            </div>
+
+            <div id="timelineMonthRecordCount" class="timeline-record-count">
+                0 days
+            </div>
+        </div>
+
+        <div class="timeline-month-nav">
+            <button
+                id="timelinePrevMonth"
+                class="timeline-month-btn"
+                type="button"
+                aria-label="Previous month"
+            >
+                ‹
+            </button>
+
+            <div id="timelineMonthLabel" class="timeline-month-label">
+                ----年--月
+            </div>
+
+            <button
+                id="timelineNextMonth"
+                class="timeline-month-btn"
+                type="button"
+                aria-label="Next month"
+            >
+                ›
+            </button>
+        </div>
+
+        <div class="timeline-weekdays" aria-hidden="true">
+            <span>Sun</span>
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+        </div>
+
+        <div
+            id="timelineGrid"
+            class="timeline-grid"
+            aria-live="polite"
+        ></div>
+
+        <div class="timeline-legend">
+            <span><i class="timeline-dot focus"></i> Focus</span>
+            <span>🎯 Mission</span>
+            <span>☂ Rain</span>
+            <span>🌙 No photo</span>
+        </div>
+
+        <p id="timelineStatus" class="timeline-status">
+            Vestigeと写真を読み込んでいる。
+        </p>
+    </section>
+
 
     <div class="card vestige-photo-card">
         <div class="vestige-photo-header">
@@ -762,6 +854,7 @@
     <script src="js/vestige-photo.js"></script>
     <script src="js/photo-backup.js"></script>
     <script src="js/photo-restore.js"></script>
+    <script src="js/timeline.js"></script>
 
 </body>
 </html>
