@@ -1,11 +1,10 @@
 {
-  "version": "1.9.0",
-  "build": "vestige-album-v1",
+  "version": "1.9.1",
+  "build": "vestige-album-open-hotfix",
   "updatedAt": "2026-07-14",
   "notes": [
-    "Vestige TimelineをVestige Albumへ変更",
-    "写真を5列グリッドで表示",
-    "iPhone画面内に収まる写真カードを追加",
+    "Album写真のタップ処理を修復",
+    "写真カードをPCとiPhoneの両方で開けるように修正",
     "既存の写真・日付・コメントとの互換性を維持"
   ]
 }

@@ -1,6 +1,6 @@
 //========================
 // Meridian Vestige Photo
-// Phase 2: date / memo / one-per-day / lightbox
+// Album v1: five-column grid / date / comment / fitted card
 //========================
 
 (function () {
@@ -334,16 +334,18 @@
 
     function openLightbox(photo, objectUrl) {
         lightboxImage.src = objectUrl;
-        lightboxTitle.textContent =
-            photo.dateKey + " / " + photo.fileName;
+        lightboxTitle.textContent = photo.dateKey || "日付なし";
         lightboxMemo.textContent =
-            photo.memo || "メモなし";
+            photo.memo || "コメントなし";
         lightbox.classList.remove("hidden");
+        document.body.classList.add("vestige-album-open");
+        lightboxClose.focus();
     }
 
     function closeLightbox() {
         lightbox.classList.add("hidden");
         lightboxImage.removeAttribute("src");
+        document.body.classList.remove("vestige-album-open");
     }
 
     function createPhotoElement(photo) {
@@ -354,7 +356,7 @@
         const imageButton = document.createElement("button");
         imageButton.className = "vestige-photo-image-button";
         imageButton.type = "button";
-        imageButton.setAttribute("aria-label", "Enlarge photo");
+        imageButton.setAttribute("aria-label", (photo.dateKey || "日付なし") + "の写真を開く");
 
         const image = document.createElement("img");
         const objectUrl = URL.createObjectURL(photo.blob);
@@ -366,6 +368,9 @@
         image.alt = "Vestige photo";
 
         imageButton.appendChild(image);
+        imageButton.addEventListener("click", function () {
+            openLightbox(photo, objectUrl);
+        });
 
         const meta = document.createElement("div");
         meta.className = "vestige-photo-meta";
@@ -373,18 +378,13 @@
         const text = document.createElement("div");
         text.className = "vestige-photo-name";
 
-        const name = document.createElement("div");
-        name.textContent = photo.dateKey + " / " + photo.fileName;
+        const date = document.createElement("div");
+        date.className = "vestige-photo-date";
+        date.textContent = photo.dateKey || "日付なし";
 
-        const createdAt = document.createElement("div");
-        createdAt.className = "vestige-photo-date";
-        createdAt.textContent =
-            "保存: " +
-            new Date(photo.createdAt).toLocaleString("ja-JP");
-
-        const memo = document.createElement("div");
-        memo.className = "vestige-photo-memo";
-        memo.textContent = photo.memo || "メモなし";
+        const comment = document.createElement("div");
+        comment.className = "vestige-photo-memo";
+        comment.textContent = photo.memo || "コメントなし";
 
         const actions = document.createElement("div");
         actions.className = "vestige-photo-actions";
@@ -405,9 +405,8 @@
             removePhoto(photo);
         });
 
-        text.appendChild(name);
-        text.appendChild(createdAt);
-        text.appendChild(memo);
+        text.appendChild(date);
+        text.appendChild(comment);
 
         actions.appendChild(editButton);
         actions.appendChild(deleteButton);
