@@ -2528,3 +2528,234 @@ Vestige Timeline Phase 1
         display: none;
     }
 }
+
+
+/*==========================
+Static Photo View Fix
+==========================*/
+
+.vestige-detail-photo-frame {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.vestige-detail-photo {
+    display: block;
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.vestige-photo-image-button {
+    cursor: default;
+    pointer-events: none;
+}
+
+.vestige-photo-item.is-photo-target {
+    outline: 2px solid rgba(212, 175, 55, 0.68);
+    outline-offset: 3px;
+    box-shadow:
+        0 0 0 6px rgba(212, 175, 55, 0.08),
+        var(--shadow-card);
+}
+
+@media (max-width: 430px) {
+    .vestige-detail-photo {
+        height: 280px;
+    }
+}
+
+
+.vestige-detail-photo-button {
+    pointer-events: none;
+    cursor: default;
+}
+
+/* iPhone photo size guard */
+.vestige-detail-photo-section,
+.vestige-detail-photo-frame,
+.vestige-detail-photo-button {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.vestige-detail-photo {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 280px !important;
+    max-height: 280px !important;
+    object-fit: cover !important;
+    object-position: center;
+    border-radius: 16px;
+}
+
+@media (max-width: 430px) {
+    .vestige-detail-photo {
+        height: 240px !important;
+        max-height: 240px !important;
+    }
+}
+
+/* Vestige detail photo size guard */
+#vestigeDetailCard,
+#vestigeDetailBody,
+.vestige-detail-section,
+.vestige-detail-photo-section,
+.vestige-detail-photo-frame,
+.vestige-detail-photo-button {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+#vestigeDetailCard,
+#vestigeDetailBody,
+.vestige-detail-photo-section,
+.vestige-detail-photo-frame,
+.vestige-detail-photo-button {
+    overflow: hidden;
+}
+
+.vestige-detail-photo {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    height: 260px !important;
+    max-height: 260px !important;
+
+    object-fit: cover !important;
+    object-position: center;
+    border-radius: 16px;
+}
+
+@media (max-width: 430px) {
+    .vestige-detail-photo {
+        height: 220px !important;
+        max-height: 220px !important;
+    }
+}
+
+/*==========================
+Vestige Album v1
+==========================*/
+
+.vestige-photo-gallery {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    margin-top: 18px;
+}
+
+.vestige-photo-gallery:empty {
+    display: none;
+}
+
+.vestige-photo-item {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.vestige-photo-image-button {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    pointer-events: auto;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.vestige-photo-image-button:active {
+    transform: scale(0.96);
+}
+
+.vestige-photo-image {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+}
+
+.vestige-photo-meta {
+    display: none;
+}
+
+body.vestige-album-open {
+    overflow: hidden;
+}
+
+.vestige-photo-lightbox {
+    padding:
+        max(18px, env(safe-area-inset-top))
+        max(14px, env(safe-area-inset-right))
+        max(18px, env(safe-area-inset-bottom))
+        max(14px, env(safe-area-inset-left));
+    background: rgba(2, 3, 10, 0.78);
+}
+
+.vestige-photo-lightbox-close {
+    position: absolute;
+    top: max(24px, calc(env(safe-area-inset-top) + 8px));
+    right: max(22px, calc(env(safe-area-inset-right) + 8px));
+}
+
+.vestige-photo-lightbox-body {
+    display: flex;
+    flex-direction: column;
+    width: min(100%, 390px);
+    max-width: calc(100vw - 28px);
+    max-height: calc(100dvh - 36px);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 22px;
+    background: #0b0e18;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+}
+
+.vestige-photo-lightbox-body img {
+    width: 100%;
+    height: auto;
+    max-height: calc(100dvh - 170px);
+    object-fit: contain;
+    border-radius: 0;
+    background: #05060a;
+}
+
+.vestige-photo-lightbox-copy {
+    flex: 0 0 auto;
+    max-height: 128px;
+    overflow-y: auto;
+    padding: 14px 16px 16px;
+}
+
+#vestigePhotoLightboxTitle {
+    font-size: 12px;
+    letter-spacing: 0.04em;
+}
+
+#vestigePhotoLightboxMemo {
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+@media (max-width: 360px) {
+    .vestige-photo-gallery {
+        gap: 3px;
+    }
+}

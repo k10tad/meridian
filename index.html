@@ -1,5 +1,7 @@
 
 
+
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -11,7 +13,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/main.css?v=1.9.0-album1">
 </head>
 
 <body>
@@ -408,122 +410,15 @@
 
     <section id="vestigePage" class="app-page">
     <div class="title">
-        <h1>Vestige</h1>
-        <p>Archive and memory</p>
+        <h1>Vestige Album</h1>
+        <p>Photographs and memories</p>
     </div>
-
-    <div class="vestige-view-switch" role="tablist" aria-label="Vestige view">
-        <button
-            id="vestigeArchiveViewButton"
-            class="vestige-view-btn active"
-            type="button"
-            role="tab"
-            aria-selected="true"
-        >
-            Archive
-        </button>
-
-        <button
-            id="vestigeTimelineViewButton"
-            class="vestige-view-btn"
-            type="button"
-            role="tab"
-            aria-selected="false"
-        >
-            Timeline
-        </button>
-    </div>
-
-    <div class="card vestige-save-card">
-        <h2>Save Today’s Record</h2>
-        <p>今日のWeather / Health / Cycle / Mission / CommanderをVestigeへ保存する。</p>
-
-        <button id="saveVestigeButton" class="vestige-save-btn" type="button">
-            Save Record
-        </button>
-    </div>
-
-    <div id="vestigeArchivePanel" class="card">
-        <h2>Archive</h2>
-        <div id="vestigeList" class="vestige-list">
-            まだ記録は保存されていない。
-        </div>
-    </div>
-
-    <section
-        id="vestigeTimelinePanel"
-        class="card vestige-timeline-panel is-hidden"
-        aria-hidden="true"
-    >
-        <div class="timeline-heading">
-            <div>
-                <div class="meta-label">VESTIGE TIMELINE</div>
-                <h2>Your Memory Grid</h2>
-            </div>
-
-            <div id="timelineMonthRecordCount" class="timeline-record-count">
-                0 days
-            </div>
-        </div>
-
-        <div class="timeline-month-nav">
-            <button
-                id="timelinePrevMonth"
-                class="timeline-month-btn"
-                type="button"
-                aria-label="Previous month"
-            >
-                ‹
-            </button>
-
-            <div id="timelineMonthLabel" class="timeline-month-label">
-                ----年--月
-            </div>
-
-            <button
-                id="timelineNextMonth"
-                class="timeline-month-btn"
-                type="button"
-                aria-label="Next month"
-            >
-                ›
-            </button>
-        </div>
-
-        <div class="timeline-weekdays" aria-hidden="true">
-            <span>Sun</span>
-            <span>Mon</span>
-            <span>Tue</span>
-            <span>Wed</span>
-            <span>Thu</span>
-            <span>Fri</span>
-            <span>Sat</span>
-        </div>
-
-        <div
-            id="timelineGrid"
-            class="timeline-grid"
-            aria-live="polite"
-        ></div>
-
-        <div class="timeline-legend">
-            <span><i class="timeline-dot focus"></i> Focus</span>
-            <span>🎯 Mission</span>
-            <span>☂ Rain</span>
-            <span>🌙 No photo</span>
-        </div>
-
-        <p id="timelineStatus" class="timeline-status">
-            Vestigeと写真を読み込んでいる。
-        </p>
-    </section>
-
 
     <div class="card vestige-photo-card">
         <div class="vestige-photo-header">
             <div>
-                <div class="meta-label">IndexedDB Storage</div>
-                <h2>Photo Memory</h2>
+                <div class="meta-label">PRIVATE PHOTO ARCHIVE</div>
+                <h2>Album</h2>
             </div>
 
             <div id="vestigePhotoCount" class="vestige-photo-count">
@@ -532,8 +427,7 @@
         </div>
 
         <p class="vestige-photo-description">
-            写真はlocalStorageではなく、写真専用の保管領域へ保存する。
-            Phase 1では、この端末に1枚だけ保存できる。
+            写真と、その日付・コメントを端末内へ保存する。
         </p>
 
         <div class="vestige-photo-form">
@@ -546,12 +440,12 @@
             </label>
 
             <label class="vestige-photo-field">
-                <span>Memo</span>
+                <span>Comment</span>
                 <textarea
                     id="vestigePhotoMemo"
                     rows="3"
                     maxlength="240"
-                    placeholder="この写真について残しておきたいこと"
+                    placeholder="この写真に残しておきたいコメント"
                 ></textarea>
             </label>
         </div>
@@ -718,20 +612,6 @@
     </div>
 
 
-    <div id="vestigeDetailCard" class="card vestige-detail-card is-hidden">
-        <div class="vestige-detail-header">
-            <div>
-                <div id="vestigeDetailNo" class="vestige-detail-no">Archive No.0000</div>
-                <h2 id="vestigeDetailDate">Record</h2>
-            </div>
-
-            <button id="closeVestigeDetail" class="vestige-close-btn" type="button">
-                Close
-            </button>
-        </div>
-
-        <div id="vestigeDetailBody" class="vestige-detail-body"></div>
-    </div>
 </section>
 
     <nav class="tabbar">
@@ -772,8 +652,7 @@
 <script src="js/focus-stats.js"></script>
 <script src="js/focus-messages.js"></script>
 <script src="js/focus.js"></script>
-<script src="js/vestige.js"></script>
-<script src="js/update.js"></script>
+<script src="js/update.js?v=1.9.0-album1"></script>
 <script src="js/backup.js"></script>
 
     <!-- Meridian Updater -->
@@ -851,10 +730,9 @@
 
 
     <script src="js/photo-db.js"></script>
-    <script src="js/vestige-photo.js"></script>
+    <script src="js/vestige-photo.js?v=1.9.0-album1"></script>
     <script src="js/photo-backup.js"></script>
     <script src="js/photo-restore.js"></script>
-    <script src="js/timeline.js"></script>
 
 </body>
 </html>

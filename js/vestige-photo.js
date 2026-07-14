@@ -349,6 +349,7 @@
     function createPhotoElement(photo) {
         const item = document.createElement("article");
         item.className = "vestige-photo-item";
+        item.dataset.photoId = photo.id;
 
         const imageButton = document.createElement("button");
         imageButton.className = "vestige-photo-image-button";
@@ -365,9 +366,6 @@
         image.alt = "Vestige photo";
 
         imageButton.appendChild(image);
-        imageButton.addEventListener("click", function () {
-            openLightbox(photo, objectUrl);
-        });
 
         const meta = document.createElement("div");
         meta.className = "vestige-photo-meta";
@@ -451,15 +449,34 @@
         }
     }
 
-    window.openVestigePhotoLightbox = function (photo) {
-        if (!photo || !photo.blob) {
+    window.openVestigePhotoCard = function (photo) {
+        if (!photo || !photo.id) {
             return;
         }
 
-        const objectUrl = URL.createObjectURL(photo.blob);
-        activeObjectUrls.push(objectUrl);
-        openLightbox(photo, objectUrl);
+        const selector =
+            '.vestige-photo-item[data-photo-id="' +
+            CSS.escape(String(photo.id)) +
+            '"]';
+
+        const item = document.querySelector(selector);
+
+        if (!item) {
+            return;
+        }
+
+        item.classList.add("is-photo-target");
+
+        item.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+        window.setTimeout(function () {
+            item.classList.remove("is-photo-target");
+        }, 1800);
     };
+
 
     input.addEventListener("change", saveSelectedPhoto);
     lightboxClose.addEventListener("click", closeLightbox);
