@@ -342,10 +342,10 @@
 
         if (
             entry.photo &&
-            typeof window.openVestigePhotoLightbox ===
+            typeof window.openVestigePhotoCard ===
             "function"
         ) {
-            window.openVestigePhotoLightbox(
+            window.openVestigePhotoCard(
                 entry.photo
             );
         }

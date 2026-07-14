@@ -662,26 +662,15 @@ function appendVestigePhotoDetail(photo) {
     const heading = document.createElement("h3");
     heading.textContent = "Photo Memory";
 
-    const imageButton = document.createElement("button");
-    imageButton.className = "vestige-detail-photo-button";
-    imageButton.type = "button";
-    imageButton.setAttribute("aria-label", "Open photo memory");
-
+    const imageButton = document.createElement("div");
+    imageButton.className = "vestige-detail-photo-frame";
+    
     const image = document.createElement("img");
     image.className = "vestige-detail-photo";
     image.src = vestigeDetailPhotoUrl;
     image.alt = "Vestige photo for " + (photo.dateKey || "");
 
     imageButton.appendChild(image);
-
-    imageButton.addEventListener("click", function () {
-        if (typeof window.openVestigePhotoLightbox === "function") {
-            window.openVestigePhotoLightbox(photo);
-            return;
-        }
-
-        window.open(vestigeDetailPhotoUrl, "_blank", "noopener");
-    });
 
     const date = document.createElement("div");
     date.className = "vestige-detail-photo-date";
