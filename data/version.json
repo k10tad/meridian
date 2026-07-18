@@ -1,10 +1,11 @@
 {
-  "version": "1.9.1",
-  "build": "vestige-album-open-hotfix",
-  "updatedAt": "2026-07-14",
+  "version": "1.9.2",
+  "build": "meridian-app-icon",
+  "updatedAt": "2026-07-19",
   "notes": [
-    "Album写真のタップ処理を修復",
-    "写真カードをPCとiPhoneの両方で開けるように修正",
-    "既存の写真・日付・コメントとの互換性を維持"
+    "Meridianのホーム画面用アプリアイコンを追加",
+    "iPhone用apple-touch-iconを追加",
+    "PWA manifestのアイコン設定をPNGへ更新",
+    "既存機能と保存データには変更なし"
   ]
 }
