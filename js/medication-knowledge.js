@@ -272,13 +272,17 @@
 
     function saveLatest(alert) {
         if (!alert) return;
-        localStorage.setItem("meridianMedicationAlert", JSON.stringify(alert));
+        // Keep Commander medication speech only for the current app/tab session.
+        localStorage.removeItem("meridianMedicationAlert");
+        sessionStorage.setItem("meridianMedicationAlert", JSON.stringify(alert));
         window.dispatchEvent(new CustomEvent("meridian:medication-alert", { detail: alert }));
     }
 
     function readLatest() {
         try {
-            const value = JSON.parse(localStorage.getItem("meridianMedicationAlert"));
+            localStorage.removeItem("meridianMedicationAlert");
+            const raw = sessionStorage.getItem("meridianMedicationAlert");
+            const value = raw ? JSON.parse(raw) : null;
             return value && value.medicine ? value : null;
         } catch (error) {
             return null;

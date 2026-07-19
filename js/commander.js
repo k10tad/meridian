@@ -58,10 +58,16 @@ function commanderReadHealth() {
 }
 
 function commanderReadMedicationAlert() {
-    const alert = commanderSafeJsonRead("meridianMedicationAlert", null);
-    if (!alert || !alert.createdAt) return null;
-    const age = Date.now() - new Date(alert.createdAt).getTime();
-    return age <= 86400000 ? alert : null;
+    // Medication speech is session-only. Closing the app/tab clears it.
+    try {
+        localStorage.removeItem("meridianMedicationAlert");
+        const value = sessionStorage.getItem("meridianMedicationAlert");
+        const alert = value ? JSON.parse(value) : null;
+        return alert && alert.medicine ? alert : null;
+    } catch (error) {
+        console.warn("Meridian session alert parse failed:", error);
+        return null;
+    }
 }
 
 function commanderReadRelationship() {
