@@ -3,7 +3,7 @@
 // Updater Step 2
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-2.0.0";
+const MERIDIAN_SW_VERSION = "meridian-runtime-2.3.0";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {

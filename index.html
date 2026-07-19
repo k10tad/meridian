@@ -434,11 +434,21 @@
             <button class="med-btn prn" data-medication="トラベルミン" data-slot="頓服">
                 トラベルミン
             </button>
+            <button class="med-btn prn" data-medication="エルペイン" data-slot="頓服">
+                エルペイン
+            </button>
         </div>
     </div>
 
     <div id="medicationCommanderMessage" class="medication-commander-message">
         服薬状況を確認中だ。
+    </div>
+
+    <div id="medicationAlertCard" class="medication-alert-card" data-level="info" hidden>
+        <div id="medicationAlertTitle" class="medication-alert-title">Medication Notice</div>
+        <p id="medicationAlertText" class="medication-alert-text"></p>
+        <div id="medicationAlertMeta" class="medication-alert-meta"></div>
+        <div class="medication-alert-disclaimer">記録補助用。服用量や中止の判断は処方・添付文書・医療者の指示を優先する。</div>
     </div>
 
     <div class="medication-records">
@@ -684,7 +694,8 @@
 <script src="js/mission.js"></script>
 
 <script src="js/planner.js?v=2.0.0-health-planner"></script>
-<script src="js/health.js?v=2.0.0-health-planner"></script>
+<script src="js/medication-knowledge.js?v=2.3.0-proactive-alerts"></script>
+<script src="js/health.js?v=2.3.0-proactive-alerts"></script>
 <script src="js/cycleInsight.js"></script>
 <script src="js/weather.js"></script>
 <script src="js/condition.js"></script>
@@ -701,7 +712,7 @@
 <script src="js/engine.js"></script>
 
 <script src="js/commander-messages.js"></script>
-<script src="js/commander.js"></script>
+<script src="js/commander.js?v=2.1.0-medication-intel"></script>
 
 <script src="js/focus-stats.js"></script>
 <script src="js/focus-messages.js"></script>

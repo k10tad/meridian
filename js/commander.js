@@ -57,6 +57,13 @@ function commanderReadHealth() {
     );
 }
 
+function commanderReadMedicationAlert() {
+    const alert = commanderSafeJsonRead("meridianMedicationAlert", null);
+    if (!alert || !alert.createdAt) return null;
+    const age = Date.now() - new Date(alert.createdAt).getTime();
+    return age <= 86400000 ? alert : null;
+}
+
 function commanderReadRelationship() {
     return commanderSafeJsonRead("relationship", {
         level: 1,
@@ -148,7 +155,8 @@ function collectCommanderData() {
         mission: mission,
         missionPercent: commanderMissionPercent(mission),
         plannerCount: commanderReadPlannerCount(),
-        cycle: commanderReadCycleStatus()
+        cycle: commanderReadCycleStatus(),
+        medicationAlert: commanderReadMedicationAlert()
     };
 }
 
@@ -225,7 +233,9 @@ function renderCommanderIntel() {
     renderCommanderPriorities(result.priorities);
 
     if (commanderIntelMessage) {
-        commanderIntelMessage.textContent = result.message;
+        commanderIntelMessage.textContent = data.medicationAlert
+            ? data.medicationAlert.title + "。" + data.medicationAlert.message
+            : result.message;
     }
 
     if (deskGreetingCommander) {
@@ -236,6 +246,8 @@ function renderCommanderIntel() {
         if (!firstConnectionSeen && typeof engine.getFirstConnection === "function") {
             deskGreetingCommander.textContent = engine.getFirstConnection();
             localStorage.setItem("meridianFirstConnectionSeen", "true");
+        } else if (data.medicationAlert) {
+            deskGreetingCommander.textContent = data.medicationAlert.title + "。" + data.medicationAlert.message;
         } else {
             deskGreetingCommander.textContent = heroMessage;
         }
@@ -249,6 +261,7 @@ function renderCommanderIntel() {
             readiness: result.readiness,
             risk: result.risk + " / 10",
             priority: result.priorities,
+            medicationAlert: data.medicationAlert,
             updatedAt: Date.now()
         })
     );
@@ -264,3 +277,5 @@ window.addEventListener("meridianBootCompleted", renderCommanderIntel);
 window.addEventListener("meridianDataUpdated", renderCommanderIntel);
 window.addEventListener("storage", renderCommanderIntel);
 
+
+window.addEventListener("meridian:medication-alert", renderCommanderIntel);

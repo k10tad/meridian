@@ -1,5 +1,5 @@
 //========================
-// Meridian Health v2.0
+// Meridian Health v2.3
 // Health toggles + persistent medication history
 //========================
 
@@ -84,6 +84,10 @@ loadHealthLog();
     const todayMedicationList = document.getElementById("todayMedicationList");
     const medicationHistoryList = document.getElementById("medicationHistoryList");
     const commanderMessage = document.getElementById("medicationCommanderMessage");
+    const medicationAlertCard = document.getElementById("medicationAlertCard");
+    const medicationAlertTitle = document.getElementById("medicationAlertTitle");
+    const medicationAlertText = document.getElementById("medicationAlertText");
+    const medicationAlertMeta = document.getElementById("medicationAlertMeta");
 
     if (!medicationButtons.length || !todayMedicationList) return;
 
@@ -158,6 +162,50 @@ loadHealthLog();
         });
     }
 
+    function updateMedicationRestrictions(logs) {
+        const engine = window.MeridianMedicationKnowledge;
+        if (!engine || typeof engine.getTodayRestrictions !== "function") return;
+        const restrictions = engine.getTodayRestrictions(logs, new Date());
+        medicationButtons.forEach(function (button) {
+            const medicine = button.dataset.medication;
+            const isAvoid = restrictions.avoid.indexOf(medicine) !== -1;
+            const isConfirm = !isAvoid && restrictions.confirm.indexOf(medicine) !== -1;
+            button.classList.toggle("med-avoid-today", isAvoid);
+            button.classList.toggle("med-confirm-today", isConfirm);
+            if (isAvoid) {
+                button.setAttribute("aria-label", medicine + "。本日は併用回避の警告あり");
+                button.title = "本日は避ける薬として警告されています";
+            } else if (isConfirm) {
+                button.setAttribute("aria-label", medicine + "。服用前に確認が必要");
+                button.title = "服用前に処方指示を確認してください";
+            } else {
+                button.removeAttribute("aria-label");
+                button.removeAttribute("title");
+            }
+        });
+    }
+
+    function shouldProceedWithRestrictedMedicine(medicine, logs) {
+        const engine = window.MeridianMedicationKnowledge;
+        if (!engine || typeof engine.getTodayRestrictions !== "function") return true;
+        const restrictions = engine.getTodayRestrictions(logs, new Date());
+        if (restrictions.avoid.indexOf(medicine) !== -1) {
+            return window.confirm(
+                medicine + "は、本日の服薬記録との組み合わせから『今日は避ける薬』として警告されています。\n\n" +
+                (restrictions.reasons[medicine] || "自己判断で追加せず、処方・添付文書または医療者の指示を確認してください。") +
+                "\n\nそれでも記録しますか？"
+            );
+        }
+        if (restrictions.confirm.indexOf(medicine) !== -1) {
+            return window.confirm(
+                medicine + "は、本日の服薬記録との組み合わせで注意が必要です。\n\n" +
+                (restrictions.reasons[medicine] || "処方指示を確認してください。") +
+                "\n\n確認済みとして記録しますか？"
+            );
+        }
+        return true;
+    }
+
     function renderCommanderMessage(logs) {
         if (!commanderMessage) return;
         const hour = new Date().getHours();
@@ -175,6 +223,29 @@ loadHealthLog();
         } else {
             commanderMessage.textContent = "服薬した時刻を、その場で記録しておけ。記憶より記録だ。";
         }
+    }
+
+
+    function renderMedicationAlert(alert) {
+        if (!medicationAlertCard || !alert) return;
+        medicationAlertCard.hidden = false;
+        medicationAlertCard.dataset.level = alert.level || "info";
+        if (medicationAlertTitle) medicationAlertTitle.textContent = alert.title;
+        if (medicationAlertText) medicationAlertText.textContent = alert.message + " " + alert.detail;
+        if (medicationAlertMeta) {
+            medicationAlertMeta.textContent = alert.category + " / " + alert.ingredient;
+        }
+    }
+
+    function updateMedicationKnowledge(logs, currentLog) {
+        const engine = window.MeridianMedicationKnowledge;
+        if (!engine || typeof engine.evaluate !== "function" || !currentLog) return;
+        const alert = engine.evaluate(currentLog.name, logs, currentLog);
+        if (!alert) return;
+        engine.saveLatest(alert);
+        renderMedicationAlert(alert);
+        if (commanderMessage) commanderMessage.textContent = alert.title + "。" + alert.message;
+        if (typeof window.renderCommanderIntel === "function") window.renderCommanderIntel();
     }
 
     function itemHtml(log, includeDate) {
@@ -229,8 +300,15 @@ loadHealthLog();
         saveHealthLog();
         renderHealthLog();
         updateDailyButtons(logs);
+        updateMedicationRestrictions(logs);
         renderCommanderMessage(logs);
         bindDeleteButtons();
+
+        const knowledge = window.MeridianMedicationKnowledge;
+        if (knowledge && typeof knowledge.readLatest === "function") {
+            const latestAlert = knowledge.readLatest();
+            if (latestAlert) renderMedicationAlert(latestAlert);
+        }
     }
 
     medicationButtons.forEach(function (button) {
@@ -248,6 +326,10 @@ loadHealthLog();
                 return;
             }
 
+            if (medication !== "ロメリジン" && !shouldProceedWithRestrictedMedicine(medication, logs)) {
+                return;
+            }
+
             const now = new Date();
             logs.push({
                 id: now.getTime().toString(36) + Math.random().toString(36).slice(2, 7),
@@ -257,11 +339,13 @@ loadHealthLog();
                 takenAt: now.toISOString()
             });
             saveLogs(logs);
+            const currentLog = logs[logs.length - 1];
 
             if (typeof addTrust === "function") addTrust(1);
             if (typeof completeMission === "function") completeMission("health");
 
             renderAll();
+            updateMedicationKnowledge(getLogs(), currentLog);
         });
     });
 

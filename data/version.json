@@ -1,12 +1,12 @@
 {
-  "version": "2.0.0",
-  "build": "health-planner-integration",
-  "updatedAt": "2026-07-19",
+  "version": "2.3.0",
+  "build": "proactive-medication-alerts",
+  "updatedAt": "2026-07-20",
   "notes": [
-    "Sleep MemoをHealthから削除",
-    "Body NoteをPlannerの選択日へ統合",
-    "服薬記録をlocalStorageへ永続保存",
-    "過去90日分の服薬履歴と削除操作を追加",
-    "ロメリジン午前・夜の記録状態とCommanderメッセージを追加"
+    "最初の薬を記録した時点で、今日は避ける薬を先回り表示",
+    "併用回避対象のボタンを赤、要確認対象を橙で表示",
+    "警告対象の薬を押した場合は記録前に確認ダイアログを表示",
+    "日付変更または記録削除時に当日の制限を自動再計算",
+    "エルペイン、イブプロフェン、トラベルミン、レイボーの方向別注意を追加"
   ]
 }

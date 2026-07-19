@@ -2916,3 +2916,44 @@ Planner Body Note + Medication v2.0
 @media (max-width: 390px) {
     .medication-grid { grid-template-columns: 1fr; }
 }
+
+/* Medication Intelligence v2.1 */
+.medication-alert-card {
+    margin-top: 12px;
+    padding: 14px;
+    border: 1px solid rgba(241, 215, 123, 0.28);
+    border-radius: 14px;
+    background: rgba(12, 18, 28, 0.78);
+}
+.medication-alert-card[hidden] { display: none; }
+.medication-alert-card[data-level="warning"] { border-color: rgba(245, 177, 83, 0.62); }
+.medication-alert-card[data-level="high"] { border-color: rgba(231, 112, 112, 0.72); }
+.medication-alert-title { font-size: 14px; font-weight: 750; color: var(--color-text); }
+.medication-alert-text { margin: 7px 0 0; font-size: 13px; line-height: 1.65; color: var(--color-text); }
+.medication-alert-meta { margin-top: 9px; font-size: 11px; color: #f1d77b; }
+.medication-alert-disclaimer { margin-top: 9px; font-size: 10px; line-height: 1.55; color: var(--color-muted); }
+
+
+/* Medication proactive restrictions v2.3 */
+.med-btn.med-avoid-today {
+    position: relative;
+    border-color: rgba(231, 112, 112, 0.82);
+    background: rgba(121, 32, 39, 0.22);
+    color: #ffd5d5;
+}
+.med-btn.med-confirm-today {
+    position: relative;
+    border-color: rgba(245, 177, 83, 0.72);
+    background: rgba(128, 84, 24, 0.20);
+    color: #ffe2ad;
+}
+.med-btn.med-avoid-today::after,
+.med-btn.med-confirm-today::after {
+    display: block;
+    margin-top: 4px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+.med-btn.med-avoid-today::after { content: "TODAY: AVOID"; }
+.med-btn.med-confirm-today::after { content: "CHECK FIRST"; }
