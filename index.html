@@ -2,7 +2,6 @@
 
 
 
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -15,7 +14,7 @@
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json?v=1.9.2">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png?v=1.9.2">
-    <link rel="stylesheet" href="css/main.css?v=1.9.1-album-hotfix">
+    <link rel="stylesheet" href="css/main.css?v=2.0.0-health-planner">
 </head>
 
 <body>
@@ -289,6 +288,17 @@
         <h2>Today’s Brief</h2>
         <div id="plannerBrief">予定はまだ登録されていない。</div>
     </div>
+
+    <div class="card planner-body-note-card">
+        <div class="planner-note-header">
+            <div>
+                <h2>Body Note</h2>
+                <p>選択日の体調や出来事を記録する。</p>
+            </div>
+            <span id="plannerBodyNoteStatus" class="planner-note-status">未保存</span>
+        </div>
+        <textarea id="plannerBodyNoteInput" class="health-textarea" placeholder="選択日の体調メモ"></textarea>
+    </div>
 </section>
 
     <section id="focusPage" class="app-page">
@@ -394,15 +404,57 @@
         </div>
     </div>
 
-    <div class="card">
-        <h2>Sleep Memo</h2>
-        <input id="sleepMemoInput" class="health-input" type="text" placeholder="例：5時間、浅い、よく眠れた">
+    <section class="health-card medication-card">
+    <div class="health-card-header">
+        <h3>Medication Log</h3>
+        <p>毎日の服薬と頓服を記録する。</p>
     </div>
 
-    <div class="card">
-        <h2>Body Note</h2>
-        <textarea id="bodyNoteInput" class="health-textarea" placeholder="今日の体調メモ"></textarea>
+    <div class="medication-section">
+        <div class="medication-label">Daily Medicine</div>
+        <div class="medication-grid">
+            <button class="med-btn" data-medication="ロメリジン" data-slot="午前">
+                ロメリジン（午前）
+            </button>
+            <button class="med-btn" data-medication="ロメリジン" data-slot="夜">
+                ロメリジン（夜）
+            </button>
+        </div>
     </div>
+
+    <div class="medication-section">
+        <div class="medication-label">PRN Medicine</div>
+        <div class="medication-grid">
+            <button class="med-btn prn" data-medication="イブプロフェン" data-slot="頓服">
+                イブプロフェン
+            </button>
+            <button class="med-btn prn" data-medication="レイボー" data-slot="頓服">
+                レイボー
+            </button>
+            <button class="med-btn prn" data-medication="トラベルミン" data-slot="頓服">
+                トラベルミン
+            </button>
+        </div>
+    </div>
+
+    <div id="medicationCommanderMessage" class="medication-commander-message">
+        服薬状況を確認中だ。
+    </div>
+
+    <div class="medication-records">
+        <div class="medication-label">Today’s Records</div>
+        <div id="todayMedicationList" class="medication-list">
+            <div class="medication-empty">まだ記録なし</div>
+        </div>
+    </div>
+
+    <details class="medication-history-panel">
+        <summary>Past 3 Months</summary>
+        <div id="medicationHistoryList" class="medication-history-list">
+            <div class="medication-empty">履歴はまだない</div>
+        </div>
+    </details>
+</section>
 
     <div class="card">
         <h2>Commander Analysis</h2>
@@ -631,8 +683,8 @@
 <script src="js/relationship.js"></script>
 <script src="js/mission.js"></script>
 
-<script src="js/planner.js"></script>
-<script src="js/health.js"></script>
+<script src="js/planner.js?v=2.0.0-health-planner"></script>
+<script src="js/health.js?v=2.0.0-health-planner"></script>
 <script src="js/cycleInsight.js"></script>
 <script src="js/weather.js"></script>
 <script src="js/condition.js"></script>

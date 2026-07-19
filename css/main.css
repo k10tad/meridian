@@ -2759,3 +2759,160 @@ body.vestige-album-open {
         gap: 3px;
     }
 }
+
+
+/*==========================
+Planner Body Note + Medication v2.0
+==========================*/
+
+.planner-note-header,
+.health-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.planner-note-header p,
+.health-card-header p {
+    margin: 5px 0 14px;
+    color: var(--color-muted);
+    font-size: 13px;
+}
+
+.planner-note-status {
+    flex: 0 0 auto;
+    padding: 6px 10px;
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    border-radius: 999px;
+    color: var(--color-gold);
+    font-size: 11px;
+}
+
+.planner-note-brief {
+    margin-top: 12px;
+    padding: 13px 14px;
+    border-left: 2px solid rgba(212, 175, 55, 0.6);
+    border-radius: 0 14px 14px 0;
+    background: rgba(212, 175, 55, 0.06);
+    color: rgba(244, 241, 234, 0.82);
+    white-space: pre-wrap;
+    line-height: 1.55;
+}
+
+.planner-note-brief span {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--color-gold);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.medication-card {
+    margin-top: 24px;
+    padding: 20px;
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-card);
+    background: var(--color-card);
+    box-shadow: var(--shadow-card);
+}
+
+.medication-section { margin-top: 18px; }
+.medication-label {
+    margin-bottom: 10px;
+    color: rgba(244, 241, 234, 0.66);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.medication-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.med-btn {
+    min-height: 54px;
+    padding: 12px 10px;
+    border: 1px solid rgba(255,255,255,0.11);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    color: var(--color-text);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 650;
+}
+.med-btn:active { transform: scale(0.98); }
+.med-btn.selected {
+    border-color: rgba(212,175,55,0.7);
+    background: rgba(212,175,55,0.16);
+    color: #f1d77b;
+}
+.medication-commander-message {
+    margin-top: 18px;
+    padding: 14px 15px;
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 16px;
+    background: rgba(212,175,55,0.07);
+    color: rgba(244,241,234,0.84);
+    font-size: 13px;
+    line-height: 1.55;
+}
+.medication-records { margin-top: 18px; }
+.medication-list,
+.medication-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+.medication-empty {
+    padding: 13px 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.035);
+    color: var(--color-muted);
+    font-size: 13px;
+}
+.medication-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 13px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+}
+.medication-item-main { min-width: 0; }
+.medication-item-name { color: var(--color-text); font-size: 14px; font-weight: 650; }
+.medication-item-sub { margin-top: 3px; color: var(--color-muted); font-size: 12px; }
+.medication-item-actions { display: flex; align-items: center; gap: 9px; }
+.medication-item-time { color: #f1d77b; font-size: 13px; font-weight: 700; }
+.medication-delete {
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    color: rgba(244,241,234,0.55);
+    font-size: 17px;
+}
+.medication-history-panel {
+    margin-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 14px;
+}
+.medication-history-panel summary {
+    cursor: pointer;
+    color: var(--color-gold);
+    font-size: 13px;
+    font-weight: 650;
+    list-style: none;
+}
+.medication-history-panel summary::-webkit-details-marker { display: none; }
+.medication-history-panel summary::after { content: " ＋"; }
+.medication-history-panel[open] summary::after { content: " −"; }
+.medication-history-list { margin-top: 12px; max-height: 420px; overflow-y: auto; }
+
+@media (max-width: 390px) {
+    .medication-grid { grid-template-columns: 1fr; }
+}

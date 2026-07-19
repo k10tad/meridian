@@ -1,11 +1,12 @@
 {
-  "version": "1.9.2",
-  "build": "meridian-app-icon",
+  "version": "2.0.0",
+  "build": "health-planner-integration",
   "updatedAt": "2026-07-19",
   "notes": [
-    "Meridianのホーム画面用アプリアイコンを追加",
-    "iPhone用apple-touch-iconを追加",
-    "PWA manifestのアイコン設定をPNGへ更新",
-    "既存機能と保存データには変更なし"
+    "Sleep MemoをHealthから削除",
+    "Body NoteをPlannerの選択日へ統合",
+    "服薬記録をlocalStorageへ永続保存",
+    "過去90日分の服薬履歴と削除操作を追加",
+    "ロメリジン午前・夜の記録状態とCommanderメッセージを追加"
   ]
 }

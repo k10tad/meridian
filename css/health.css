@@ -1,0 +1,100 @@
+.medication-card {
+    margin-top: 24px;
+}
+
+.medication-section {
+    margin-top: 18px;
+}
+
+.medication-label {
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.72);
+    margin-bottom: 10px;
+}
+
+.medication-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.med-btn {
+    min-height: 56px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px 12px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.med-btn:active {
+    transform: scale(0.98);
+}
+
+.med-btn.selected {
+    background: rgba(214, 176, 74, 0.18);
+    border-color: rgba(214, 176, 74, 0.65);
+    color: #f2d273;
+    box-shadow: 0 0 0 1px rgba(214,176,74,0.15) inset;
+}
+
+.med-btn.prn {
+    font-size: 14px;
+}
+
+.medication-records {
+    margin-top: 20px;
+}
+
+.medication-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.medication-empty {
+    border-radius: 16px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.52);
+    font-size: 14px;
+}
+
+.medication-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-radius: 16px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.medication-item-main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.medication-item-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.medication-item-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.62);
+}
+
+.medication-item-time {
+    font-size: 14px;
+    font-weight: 700;
+    color: #f2d273;
+}

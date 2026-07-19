@@ -251,6 +251,15 @@ function renderCalendar() {
     }
 }
 
+function escapePlannerText(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 function renderPlannerBrief() {
     if (!plannerBrief) return;
 
@@ -269,8 +278,10 @@ function renderPlannerBrief() {
         isPeriodStart(key) ||
         isPeriodEnd(key) ||
         getNextPeriodKey() === key;
+    const bodyNotesForDate = getBodyNotes();
+    const hasBodyNote = Boolean(bodyNotesForDate[key]);
 
-    if (items.length === 0 && !hasCycleMark) {
+    if (items.length === 0 && !hasCycleMark && !hasBodyNote) {
         plannerBrief.textContent =
             formatSelectedDate(selectedDate) + "：予定はまだ登録されていない。";
         return;
@@ -286,6 +297,11 @@ function renderPlannerBrief() {
                 "<button type='button' class='plan-delete' data-index='" + index + "'>×</button>" +
             "</div>";
     });
+
+    const bodyNotes = getBodyNotes();
+    if (bodyNotes[key]) {
+        html += "<div class='planner-note-brief'><span>Body Note</span>" + escapePlannerText(bodyNotes[key]) + "</div>";
+    }
 
     if (isPeriodStart(key)) {
         html += "<div class='brief-item'>・生理開始日</div>";
@@ -502,11 +518,97 @@ function renderCycleInfo() {
     });
 }
 
+
+//========================
+// Planner Body Note
+//========================
+
+const plannerBodyNoteInput = document.getElementById("plannerBodyNoteInput");
+const plannerBodyNoteStatus = document.getElementById("plannerBodyNoteStatus");
+let plannerBodyNoteSaveTimer = null;
+
+function getBodyNotes() {
+    try {
+        return JSON.parse(localStorage.getItem("meridianBodyNotes")) || {};
+    } catch (error) {
+        return {};
+    }
+}
+
+function saveBodyNotes(notes) {
+    localStorage.setItem("meridianBodyNotes", JSON.stringify(notes));
+}
+
+function migrateTodayBodyNote() {
+    const legacyKey = "meridianHealthLog_" + new Date().toDateString();
+    const legacyRaw = localStorage.getItem(legacyKey);
+    if (!legacyRaw) return;
+
+    try {
+        const legacy = JSON.parse(legacyRaw);
+        if (!legacy.bodyNote || !legacy.bodyNote.trim()) return;
+
+        const notes = getBodyNotes();
+        const key = getDateKey(new Date());
+        if (!notes[key]) {
+            notes[key] = legacy.bodyNote.trim();
+            saveBodyNotes(notes);
+        }
+    } catch (error) {
+        // 古い保存形式が壊れていてもPlanner本体は止めない。
+    }
+}
+
+function renderPlannerBodyNote() {
+    if (!plannerBodyNoteInput) return;
+
+    const key = getDateKey(selectedDate);
+    const notes = getBodyNotes();
+    plannerBodyNoteInput.value = notes[key] || "";
+
+    if (plannerBodyNoteStatus) {
+        plannerBodyNoteStatus.textContent = notes[key] ? "保存済み" : "未記録";
+    }
+}
+
+function savePlannerBodyNote() {
+    if (!plannerBodyNoteInput) return;
+
+    const key = getDateKey(selectedDate);
+    const notes = getBodyNotes();
+    const value = plannerBodyNoteInput.value.trim();
+
+    if (value) {
+        notes[key] = value;
+    } else {
+        delete notes[key];
+    }
+
+    saveBodyNotes(notes);
+
+    if (plannerBodyNoteStatus) {
+        plannerBodyNoteStatus.textContent = value ? "保存済み" : "未記録";
+    }
+
+    renderPlannerBrief();
+}
+
+if (plannerBodyNoteInput) {
+    plannerBodyNoteInput.addEventListener("input", function () {
+        if (plannerBodyNoteStatus) plannerBodyNoteStatus.textContent = "入力中";
+        window.clearTimeout(plannerBodyNoteSaveTimer);
+        plannerBodyNoteSaveTimer = window.setTimeout(savePlannerBodyNote, 350);
+    });
+}
+
+migrateTodayBodyNote();
+
 function renderPlanner() {
     renderSelectedDate();
     renderCalendar();
     renderPlannerBrief();
     renderCycleInfo();
+    renderPlannerBodyNote();
 }
 
 if (prevMonthButton) {
@@ -536,3 +638,4 @@ if (periodEndButton) {
 }
 
 renderPlanner();
+
