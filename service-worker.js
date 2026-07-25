@@ -3,7 +3,7 @@
 // Updater Step 2
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-2.4.0-notification-foundation";
+const MERIDIAN_SW_VERSION = "meridian-runtime-2.5.0-push-subscription";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {
@@ -63,6 +63,32 @@ self.addEventListener("notificationclick", function (event) {
                 return undefined;
             })
     );
+});
+
+self.addEventListener("push", function (event) {
+    let payload = {};
+
+    if (event.data) {
+        try {
+            payload = event.data.json();
+        } catch (error) {
+            payload = { body: event.data.text() };
+        }
+    }
+
+    const title = payload.title || "MERIDIAN // Commander";
+    const options = {
+        body: payload.body || "通知が届いている。Meridianを確認してくれ。",
+        icon: payload.icon || "./assets/icons/icon-192.png",
+        badge: payload.badge || "./assets/icons/icon-192.png",
+        tag: payload.tag || "meridian-push",
+        renotify: payload.renotify !== false,
+        data: {
+            url: payload.url || "./"
+        }
+    };
+
+    event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener("fetch", function (event) {

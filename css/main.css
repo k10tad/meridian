@@ -248,6 +248,68 @@ Notification Foundation
     accent-color: var(--color-gold);
 }
 
+.notification-device-panel {
+    margin-top: 16px;
+    padding: 14px;
+    border: 1px solid rgba(212, 175, 55, 0.18);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.notification-device-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.notification-device-heading > span:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.notification-device-heading strong {
+    font-size: 13px;
+}
+
+.notification-device-heading small {
+    color: var(--color-muted);
+    font-size: 10px;
+}
+
+.notification-subscription-badge {
+    flex-shrink: 0;
+    padding: 5px 8px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 999px;
+    color: var(--color-muted);
+    font-size: 10px;
+    font-weight: 750;
+}
+
+.notification-subscription-badge[data-state="registered"] {
+    border-color: rgba(120, 201, 160, 0.35);
+    color: #a8e3c4;
+    background: rgba(80, 170, 125, 0.10);
+}
+
+.notification-subscription-badge[data-state="error"] {
+    border-color: rgba(231, 112, 112, 0.38);
+    color: #f0aaaa;
+    background: rgba(190, 70, 70, 0.10);
+}
+
+.notification-action.danger {
+    border-color: rgba(231, 112, 112, 0.25);
+    color: #e9a2a2;
+    background: rgba(190, 70, 70, 0.07);
+}
+
+.notification-status.compact {
+    margin: 10px 0 0;
+}
+
 /*==========================
 Commander Hero
 ==========================*/

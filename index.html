@@ -15,7 +15,7 @@
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json?v=1.9.2">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png?v=1.9.2">
-    <link rel="stylesheet" href="css/main.css?v=2.4.0-notification-foundation">
+    <link rel="stylesheet" href="css/main.css?v=2.5.0-push-subscription">
 </head>
 
 <body>
@@ -103,6 +103,30 @@
                 テスト通知を送る
             </button>
 
+            <div class="notification-device-panel">
+                <div class="notification-device-heading">
+                    <span>
+                        <strong>この端末で通知を受け取る</strong>
+                        <small>Meridianを閉じている間のPush通知</small>
+                    </span>
+                    <span id="notificationSubscriptionBadge" class="notification-subscription-badge">
+                        未登録
+                    </span>
+                </div>
+
+                <button id="notificationSubscribeButton" class="notification-action primary" type="button" disabled>
+                    この端末を登録
+                </button>
+
+                <button id="notificationUnsubscribeButton" class="notification-action danger" type="button" hidden>
+                    この端末の登録を解除
+                </button>
+
+                <p id="notificationSubscriptionStatus" class="notification-status compact">
+                    通知を許可すると、端末登録を確認できる。
+                </p>
+            </div>
+
             <div class="notification-setting-list" aria-label="通知設定">
                 <label class="notification-setting-row">
                     <span>
@@ -128,7 +152,7 @@
             </div>
 
             <p class="notification-note">
-                第一段階では許可・テスト・設定保存のみ。定時送信は次段階で接続する。
+                端末登録後、次段階で服薬・Planner・気圧の送信予定を接続する。
             </p>
         </div>
 
@@ -770,7 +794,7 @@
 <script src="js/focus.js"></script>
 <script src="js/update.js?v=1.9.1-album-hotfix"></script>
 <script src="js/backup.js"></script>
-<script src="js/notifications.js?v=1.0.0-notification-foundation"></script>
+<script src="js/notifications.js?v=2.0.0-push-subscription"></script>
 
     <!-- Meridian Updater -->
     <div
