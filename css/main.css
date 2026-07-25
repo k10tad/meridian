@@ -132,6 +132,123 @@ App Layout
 }
 
 /*==========================
+Notification Foundation
+==========================*/
+
+.notification-card {
+    border-color: rgba(212, 175, 55, 0.22);
+}
+
+.notification-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.notification-card-header h2 {
+    margin: 5px 0 0;
+}
+
+.notification-permission-badge {
+    flex-shrink: 0;
+    padding: 7px 10px;
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-muted);
+    background: rgba(255, 255, 255, 0.045);
+    font-size: 10px;
+    font-weight: 750;
+}
+
+.notification-permission-badge[data-state="granted"] {
+    border-color: rgba(120, 201, 160, 0.35);
+    color: #a8e3c4;
+    background: rgba(80, 170, 125, 0.10);
+}
+
+.notification-permission-badge[data-state="denied"] {
+    border-color: rgba(231, 112, 112, 0.38);
+    color: #f0aaaa;
+    background: rgba(190, 70, 70, 0.10);
+}
+
+.notification-status,
+.notification-note {
+    color: var(--color-muted);
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.notification-status {
+    margin: 16px 0 14px;
+}
+
+.notification-note {
+    margin: 14px 0 0;
+}
+
+.notification-action {
+    width: 100%;
+    min-height: 46px;
+    margin-top: 9px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 14px;
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.045);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 750;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.notification-action.primary {
+    border-color: rgba(212, 175, 55, 0.35);
+    color: var(--color-gold);
+    background: rgba(212, 175, 55, 0.11);
+}
+
+.notification-action:disabled {
+    opacity: 0.38;
+}
+
+.notification-setting-list {
+    margin-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.notification-setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 58px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.notification-setting-row span {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.notification-setting-row strong {
+    font-size: 13px;
+}
+
+.notification-setting-row small {
+    color: var(--color-muted);
+    font-size: 10px;
+}
+
+.notification-setting-row input {
+    width: 22px;
+    height: 22px;
+    accent-color: var(--color-gold);
+}
+
+/*==========================
 Commander Hero
 ==========================*/
 

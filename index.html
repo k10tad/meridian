@@ -2,6 +2,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -14,7 +15,7 @@
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json?v=1.9.2">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png?v=1.9.2">
-    <link rel="stylesheet" href="css/main.css?v=2.0.0-health-planner">
+    <link rel="stylesheet" href="css/main.css?v=2.4.0-notification-foundation">
 </head>
 
 <body>
@@ -79,6 +80,56 @@
             </div>
             <div class="brief-line"></div>
             <p id="briefMessage">今日の状態を確認する。</p>
+        </div>
+
+        <div class="card notification-card">
+            <div class="notification-card-header">
+                <div>
+                    <div class="meta-label">Notification System</div>
+                    <h2>Commander Dispatch</h2>
+                </div>
+                <span id="notificationPermissionBadge" class="notification-permission-badge">未確認</span>
+            </div>
+
+            <p id="notificationStatus" class="notification-status">
+                ホーム画面版Meridianから通知を許可して、接続を確認する。
+            </p>
+
+            <button id="notificationPermissionButton" class="notification-action primary" type="button">
+                通知を許可
+            </button>
+
+            <button id="notificationTestButton" class="notification-action" type="button" disabled>
+                テスト通知を送る
+            </button>
+
+            <div class="notification-setting-list" aria-label="通知設定">
+                <label class="notification-setting-row">
+                    <span>
+                        <strong>Medication</strong>
+                        <small>定期服薬</small>
+                    </span>
+                    <input type="checkbox" data-notification-setting="medication" checked>
+                </label>
+                <label class="notification-setting-row">
+                    <span>
+                        <strong>Planner</strong>
+                        <small>予定の事前通知</small>
+                    </span>
+                    <input type="checkbox" data-notification-setting="planner" checked>
+                </label>
+                <label class="notification-setting-row">
+                    <span>
+                        <strong>Pressure</strong>
+                        <small>気圧変動</small>
+                    </span>
+                    <input type="checkbox" data-notification-setting="pressure" checked>
+                </label>
+            </div>
+
+            <p class="notification-note">
+                第一段階では許可・テスト・設定保存のみ。定時送信は次段階で接続する。
+            </p>
         </div>
 
         <div class="card mission-card">
@@ -719,6 +770,7 @@
 <script src="js/focus.js"></script>
 <script src="js/update.js?v=1.9.1-album-hotfix"></script>
 <script src="js/backup.js"></script>
+<script src="js/notifications.js?v=1.0.0-notification-foundation"></script>
 
     <!-- Meridian Updater -->
     <div

@@ -3,7 +3,7 @@
 // Updater Step 2
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-2.3.1";
+const MERIDIAN_SW_VERSION = "meridian-runtime-2.4.0-notification-foundation";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {
@@ -36,6 +36,33 @@ self.addEventListener("message", function (event) {
     if (event.data && event.data.type === "SKIP_WAITING") {
         self.skipWaiting();
     }
+});
+
+self.addEventListener("notificationclick", function (event) {
+    event.notification.close();
+
+    const targetUrl = new URL(
+        (event.notification.data && event.notification.data.url) || "./",
+        self.registration.scope
+    ).href;
+
+    event.waitUntil(
+        self.clients.matchAll({ type: "window", includeUncontrolled: true })
+            .then(function (clientList) {
+                for (const client of clientList) {
+                    if ("focus" in client) {
+                        client.navigate(targetUrl);
+                        return client.focus();
+                    }
+                }
+
+                if (self.clients.openWindow) {
+                    return self.clients.openWindow(targetUrl);
+                }
+
+                return undefined;
+            })
+    );
 });
 
 self.addEventListener("fetch", function (event) {
