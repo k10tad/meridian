@@ -41,19 +41,24 @@
         Object.keys(audio).forEach(function (name) {
             const element = audio[name];
             const previousVolume = element.volume;
+            const previousMuted = element.muted;
+            element.muted = true;
             element.volume = 0;
-            const promise = element.play();
-            if (promise && typeof promise.then === "function") {
-                promise.then(function () {
-                    element.pause();
-                    element.currentTime = 0;
-                    element.volume = previousVolume;
-                }).catch(function () { element.volume = previousVolume; });
-            } else {
+            try {
+                const promise = element.play();
+                if (promise && typeof promise.catch === "function") promise.catch(function () {});
+                element.pause();
+                element.currentTime = 0;
+            } catch (_) {}
+
+            // iOS may resolve media playback after the pointer event has ended.
+            // Keep the element muted briefly so no unlock sample can leak out.
+            window.setTimeout(function () {
                 element.pause();
                 element.currentTime = 0;
                 element.volume = previousVolume;
-            }
+                element.muted = previousMuted;
+            }, 180);
         });
     }
 
