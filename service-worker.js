@@ -3,7 +3,7 @@
 // Updater Step 2
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-2.5.0-push-subscription";
+const MERIDIAN_SW_VERSION = "meridian-runtime-3.1.0-training-sounds";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {
@@ -14,6 +14,9 @@ self.addEventListener("activate", function (event) {
     event.waitUntil(
         Promise.all([
             self.clients.claim(),
+            self.registration.pushManager.getSubscription().then(function (subscription) {
+                return subscription ? subscription.unsubscribe() : false;
+            }).catch(function () { return false; }),
             caches.keys().then(function (cacheNames) {
                 return Promise.all(
                     cacheNames
@@ -36,59 +39,6 @@ self.addEventListener("message", function (event) {
     if (event.data && event.data.type === "SKIP_WAITING") {
         self.skipWaiting();
     }
-});
-
-self.addEventListener("notificationclick", function (event) {
-    event.notification.close();
-
-    const targetUrl = new URL(
-        (event.notification.data && event.notification.data.url) || "./",
-        self.registration.scope
-    ).href;
-
-    event.waitUntil(
-        self.clients.matchAll({ type: "window", includeUncontrolled: true })
-            .then(function (clientList) {
-                for (const client of clientList) {
-                    if ("focus" in client) {
-                        client.navigate(targetUrl);
-                        return client.focus();
-                    }
-                }
-
-                if (self.clients.openWindow) {
-                    return self.clients.openWindow(targetUrl);
-                }
-
-                return undefined;
-            })
-    );
-});
-
-self.addEventListener("push", function (event) {
-    let payload = {};
-
-    if (event.data) {
-        try {
-            payload = event.data.json();
-        } catch (error) {
-            payload = { body: event.data.text() };
-        }
-    }
-
-    const title = payload.title || "MERIDIAN // Commander";
-    const options = {
-        body: payload.body || "通知が届いている。Meridianを確認してくれ。",
-        icon: payload.icon || "./assets/icons/icon-192.png",
-        badge: payload.badge || "./assets/icons/icon-192.png",
-        tag: payload.tag || "meridian-push",
-        renotify: payload.renotify !== false,
-        data: {
-            url: payload.url || "./"
-        }
-    };
-
-    event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener("fetch", function (event) {

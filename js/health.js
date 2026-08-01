@@ -72,6 +72,7 @@ healthButtons.forEach(function (button) {
 
         saveHealthLog();
         renderHealthLog();
+        window.MeridianSounds?.play("record");
     });
 });
 
@@ -83,6 +84,9 @@ loadHealthLog();
     const medicationButtons = document.querySelectorAll(".med-btn");
     const todayMedicationList = document.getElementById("todayMedicationList");
     const medicationHistoryList = document.getElementById("medicationHistoryList");
+    const medicationHistoryModal = document.getElementById("medicationHistoryModal");
+    const openMedicationHistory = document.getElementById("openMedicationHistory");
+    const closeMedicationHistory = document.getElementById("closeMedicationHistory");
     const commanderMessage = document.getElementById("medicationCommanderMessage");
     const medicationAlertCard = document.getElementById("medicationAlertCard");
     const medicationAlertTitle = document.getElementById("medicationAlertTitle");
@@ -244,6 +248,7 @@ loadHealthLog();
         if (!alert) return;
         engine.saveLatest(alert);
         renderMedicationAlert(alert);
+        if (alert.level === "high") window.MeridianSounds?.play("beep");
         if (commanderMessage) commanderMessage.textContent = alert.title + "。" + alert.message;
         if (typeof window.renderCommanderIntel === "function") window.renderCommanderIntel();
     }
@@ -340,6 +345,7 @@ loadHealthLog();
             });
             saveLogs(logs);
             const currentLog = logs[logs.length - 1];
+            window.MeridianSounds?.play("record");
 
             if (typeof addTrust === "function") addTrust(1);
             if (typeof completeMission === "function") completeMission("health");
@@ -347,6 +353,17 @@ loadHealthLog();
             renderAll();
             updateMedicationKnowledge(getLogs(), currentLog);
         });
+    });
+
+    function setMedicationHistoryOpen(open) {
+        if (!medicationHistoryModal) return;
+        medicationHistoryModal.hidden = !open;
+        document.body.classList.toggle("modal-open", open);
+    }
+    if (openMedicationHistory) openMedicationHistory.addEventListener("click", function () { setMedicationHistoryOpen(true); });
+    if (closeMedicationHistory) closeMedicationHistory.addEventListener("click", function () { setMedicationHistoryOpen(false); });
+    document.querySelectorAll('[data-close-record-modal="medication"]').forEach(function (button) {
+        button.addEventListener("click", function () { setMedicationHistoryOpen(false); });
     });
 
     renderAll();

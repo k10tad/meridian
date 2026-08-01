@@ -15,7 +15,7 @@
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json?v=1.9.2">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png?v=1.9.2">
-    <link rel="stylesheet" href="css/main.css?v=2.5.0-push-subscription">
+    <link rel="stylesheet" href="css/main.css?v=3.0.0-training-archive">
 </head>
 
 <body>
@@ -24,6 +24,7 @@
     <img src="assets/icons/meridian-logo.svg" class="boot-symbol" alt="Meridian Logo">
     <div class="boot-logo">MERIDIAN</div>
     <div id="bootText" class="boot-text">Initializing...</div>
+    <button id="bootSkipButton" class="boot-skip" type="button">SKIP</button>
 </div>
 
 <main id="app" class="app hidden">
@@ -82,80 +83,6 @@
             <p id="briefMessage">今日の状態を確認する。</p>
         </div>
 
-        <div class="card notification-card">
-            <div class="notification-card-header">
-                <div>
-                    <div class="meta-label">Notification System</div>
-                    <h2>Commander Dispatch</h2>
-                </div>
-                <span id="notificationPermissionBadge" class="notification-permission-badge">未確認</span>
-            </div>
-
-            <p id="notificationStatus" class="notification-status">
-                ホーム画面版Meridianから通知を許可して、接続を確認する。
-            </p>
-
-            <button id="notificationPermissionButton" class="notification-action primary" type="button">
-                通知を許可
-            </button>
-
-            <button id="notificationTestButton" class="notification-action" type="button" disabled>
-                テスト通知を送る
-            </button>
-
-            <div class="notification-device-panel">
-                <div class="notification-device-heading">
-                    <span>
-                        <strong>この端末で通知を受け取る</strong>
-                        <small>Meridianを閉じている間のPush通知</small>
-                    </span>
-                    <span id="notificationSubscriptionBadge" class="notification-subscription-badge">
-                        未登録
-                    </span>
-                </div>
-
-                <button id="notificationSubscribeButton" class="notification-action primary" type="button" disabled>
-                    この端末を登録
-                </button>
-
-                <button id="notificationUnsubscribeButton" class="notification-action danger" type="button" hidden>
-                    この端末の登録を解除
-                </button>
-
-                <p id="notificationSubscriptionStatus" class="notification-status compact">
-                    通知を許可すると、端末登録を確認できる。
-                </p>
-            </div>
-
-            <div class="notification-setting-list" aria-label="通知設定">
-                <label class="notification-setting-row">
-                    <span>
-                        <strong>Medication</strong>
-                        <small>定期服薬</small>
-                    </span>
-                    <input type="checkbox" data-notification-setting="medication" checked>
-                </label>
-                <label class="notification-setting-row">
-                    <span>
-                        <strong>Planner</strong>
-                        <small>予定の事前通知</small>
-                    </span>
-                    <input type="checkbox" data-notification-setting="planner" checked>
-                </label>
-                <label class="notification-setting-row">
-                    <span>
-                        <strong>Pressure</strong>
-                        <small>気圧変動</small>
-                    </span>
-                    <input type="checkbox" data-notification-setting="pressure" checked>
-                </label>
-            </div>
-
-            <p class="notification-note">
-                端末登録後、次段階で服薬・Planner・気圧の送信予定を接続する。
-            </p>
-        </div>
-
         <div class="card mission-card">
     <h2>Mission Status</h2>
 
@@ -173,7 +100,7 @@
         <li id="missionWeather">☐ Weather Sync</li>
         <li id="missionPlanner">☐ Planner</li>
         <li id="missionHealth">☐ Health Log</li>
-        <li id="missionFocus">☐ Focus Session</li>
+        <li id="missionFocus">☐ Training Session</li>
     </ul>
 </div>
 
@@ -224,15 +151,8 @@
     <ol id="commanderPriority" class="priority-list">
         <li>Health</li>
         <li>Planner</li>
-        <li>Focus</li>
+        <li>Training</li>
     </ol>
-
-    <div class="brief-line"></div>
-
-    <p id="commanderIntelMessage">
-        データを同期中だ。
-    </p>
-</div>
 
     <div class="brief-line"></div>
 
@@ -356,7 +276,8 @@
             </div>
         </div>
 
-        <div id="cycleHistory" class="cycle-history"></div>
+        <div class="record-section-head"><span>Recent Records</span><button id="openCycleHistory" class="record-link-btn" type="button">View All</button></div>
+        <div id="cycleHistory" class="cycle-history compact-record-list"></div>
     </div>
 
     <div class="card">
@@ -376,68 +297,38 @@
     </div>
 </section>
 
-    <section id="focusPage" class="app-page">
-        <div class="title">
-            <h1>Focus</h1>
-            <p>Work and concentration</p>
+    <section id="trainingPage" class="app-page">
+        <div class="title"><h1>Training</h1><p>Movement and conditioning</p></div>
+        <div class="card training-card">
+            <div class="training-mode-grid" id="trainingModeGrid">
+                <button class="training-mode-btn active" data-training-mode="boxing">BOXING</button>
+                <button class="training-mode-btn" data-training-mode="treadmill">TREADMILL</button>
+                <button class="training-mode-btn" data-training-mode="custom">CUSTOM</button>
+            </div>
+            <div id="trainingPresetRow" class="training-presets">
+                <button class="training-preset-btn active" data-work="120" data-rest="60" data-rounds="3">Light<br><small>2/1 × 3</small></button>
+                <button class="training-preset-btn" data-work="180" data-rest="60" data-rounds="5">Standard<br><small>3/1 × 5</small></button>
+                <button class="training-preset-btn" data-work="180" data-rest="60" data-rounds="8">Long<br><small>3/1 × 8</small></button>
+            </div>
+            <div id="trainingCustomFields" class="training-custom-fields" hidden>
+                <label>Work<input id="trainingWorkInput" type="number" min="1" max="90" value="3"><span>min</span></label>
+                <label>Rest<input id="trainingRestInput" type="number" min="0" max="30" value="1"><span>min</span></label>
+                <label>Rounds<input id="trainingRoundsInput" type="number" min="1" max="30" value="5"></label>
+            </div>
+            <div class="training-status-row"><span id="trainingPhaseLabel">READY</span><span id="trainingRoundLabel">Round 1 / 3</span></div>
+            <div id="trainingTimerDisplay" class="training-timer-display" role="timer">02:00</div>
+            <div class="training-controls">
+                <button id="trainingStartButton" class="training-control primary" type="button">Start</button>
+                <button id="trainingPauseButton" class="training-control" type="button" disabled>Pause</button>
+                <button id="trainingResetButton" class="training-control" type="button">Reset</button>
+            </div>
+            <div class="training-secondary-controls">
+                <button id="trainingSetButton" class="training-control" type="button" hidden>＋ Set</button>
+                <button id="trainingCompleteButton" class="training-control" type="button">Finish &amp; Record</button>
+            </div>
+            <p id="trainingMessage" class="training-message">Light interval is ready.</p>
         </div>
-
-        <div class="card focus-timer-card">
-            <div class="focus-timer-header">
-                <div>
-                    <div class="meta-label">Current Session</div>
-                    <h2 id="focusModeLabel">Focus</h2>
-                </div>
-
-                <div id="focusTimerStatus" class="focus-timer-status">
-                    READY
-                </div>
-            </div>
-
-            <div
-                id="focusTimerDisplay"
-                class="focus-timer-display"
-                role="timer"
-                aria-live="polite"
-            >
-                25:00
-            </div>
-
-            <div class="focus-progress-track" aria-hidden="true">
-                <div id="focusProgressFill" class="focus-progress-fill"></div>
-            </div>
-
-            <div class="focus-controls">
-                <button
-                    id="focusStartButton"
-                    class="focus-control-btn primary"
-                    type="button"
-                >
-                    Start
-                </button>
-
-                <button
-                    id="focusPauseButton"
-                    class="focus-control-btn"
-                    type="button"
-                    disabled
-                >
-                    Pause
-                </button>
-
-                <button
-                    id="focusResetButton"
-                    class="focus-control-btn"
-                    type="button"
-                >
-                    Reset
-                </button>
-            </div>
-
-            <p id="focusTimerMessage" class="focus-timer-message">
-                25分の集中を開始できる。
-            </p>
-        </div>
+        <div class="card training-history-card"><div class="record-section-head"><h2>Recent Training</h2></div><div id="trainingHistory" class="compact-record-list"></div></div>
     </section>
 
    <section id="healthPage" class="app-page">
@@ -533,12 +424,7 @@
         </div>
     </div>
 
-    <details class="medication-history-panel">
-        <summary>Past 3 Months</summary>
-        <div id="medicationHistoryList" class="medication-history-list">
-            <div class="medication-empty">履歴はまだない</div>
-        </div>
-    </details>
+    <button id="openMedicationHistory" class="record-open-btn" type="button">Past 3 Months</button>
 </section>
 
     <div class="card">
@@ -547,13 +433,31 @@
     </div>
 </section>
 
-    <section id="vestigePage" class="app-page">
+    <section id="archivePage" class="app-page">
     <div class="title">
-        <h1>Vestige Album</h1>
-        <p>Photographs and memories</p>
+        <h1>Archive</h1>
+        <p>Private operational records</p>
     </div>
 
-    <div class="card vestige-photo-card">
+    <div class="archive-tabs" role="tablist">
+        <button class="archive-tab active" type="button" data-archive-tab="classified">CLASSIFIED</button>
+        <button class="archive-tab" type="button" data-archive-tab="redfile">RED FILE</button>
+        <button class="archive-tab" type="button" data-archive-tab="terms">TERMS</button>
+    </div>
+    <section id="archiveClassified" class="archive-panel active"><div id="classifiedFiles" class="archive-file-list"></div></section>
+    <section id="archiveRedfile" class="archive-panel">
+        <div class="card archive-editor-card">
+            <input id="redFileTitle" class="archive-input" maxlength="80" placeholder="Case title">
+            <textarea id="redFileText" class="archive-textarea" maxlength="1000" placeholder="Record only what must not be lost."></textarea>
+            <div class="archive-editor-row"><select id="redFileStatus" class="archive-select"><option>SEALED</option><option>HELD</option><option>REVIEW</option><option>CLOSED</option></select><button id="saveRedFile" class="archive-save-btn" type="button">Save Red File</button></div>
+        </div><div id="redFileList" class="archive-file-list"></div>
+    </section>
+    <section id="archiveTerms" class="archive-panel">
+        <div class="card archive-editor-card"><textarea id="termText" class="archive-textarea" maxlength="600" placeholder="Define a rule, boundary, or commitment."></textarea><button id="saveTerm" class="archive-save-btn" type="button">Register Term</button></div>
+        <div id="termList" class="archive-file-list"></div>
+    </section>
+
+    <div class="card vestige-photo-card legacy-album-hidden" hidden>
         <div class="vestige-photo-header">
             <div>
                 <div class="meta-label">PRIVATE PHOTO ARCHIVE</div>
@@ -614,7 +518,7 @@
     </div>
 
 
-    <div class="card photo-backup-card">
+    <div class="card photo-backup-card legacy-album-hidden" hidden>
         <div class="photo-backup-header">
             <div>
                 <div class="meta-label">Photo Safety System</div>
@@ -683,7 +587,7 @@
 
 
 
-    <div class="card backup-card">
+    <div id="archiveBackupCard" class="card backup-card archive-classified-only">
         <div class="backup-card-header">
             <div>
                 <div class="meta-label">Safety System</div>
@@ -696,7 +600,7 @@
         </div>
 
         <p class="backup-description">
-            Planner、Health、Relationship、Vestigeなど、
+            Planner、Health、Relationship、Archiveなど、
             この端末に保存されているMeridianデータをJSONとして書き出す。
         </p>
 
@@ -753,24 +657,34 @@
 
 </section>
 
-    <nav class="tabbar">
-        <button class="tab-btn active" data-page="deskPage">🏠</button>
-        <button class="tab-btn" data-page="plannerPage">📆</button>
-        <button class="tab-btn" data-page="focusPage">🎯</button>
-        <button class="tab-btn" data-page="healthPage">💊</button>
-        <button class="tab-btn" data-page="vestigePage">📕</button>
+    <div id="cycleHistoryModal" class="record-modal" hidden>
+        <button class="record-modal-backdrop" type="button" data-close-record-modal="cycle" aria-label="閉じる"></button>
+        <section class="record-modal-card" role="dialog" aria-modal="true" aria-labelledby="cycleHistoryTitle"><header><div><div class="meta-label">CYCLE ARCHIVE</div><h2 id="cycleHistoryTitle">All Records</h2></div><button id="closeCycleHistory" class="record-modal-close" type="button">×</button></header><div id="cycleHistoryFullList" class="record-modal-list"></div></section>
+    </div>
+    <div id="medicationHistoryModal" class="record-modal" hidden>
+        <button class="record-modal-backdrop" type="button" data-close-record-modal="medication" aria-label="閉じる"></button>
+        <section class="record-modal-card" role="dialog" aria-modal="true" aria-labelledby="medicationHistoryTitle"><header><div><div class="meta-label">90 DAY LOG</div><h2 id="medicationHistoryTitle">Medication History</h2></div><button id="closeMedicationHistory" class="record-modal-close" type="button">×</button></header><div id="medicationHistoryList" class="medication-history-list record-modal-list"><div class="medication-empty">履歴はまだない</div></div></section>
+    </div>
+
+    <nav class="tabbar meridian-line" aria-label="Primary">
+        <button class="tab-btn active" data-page="deskPage"><span>00</span><strong>Desk</strong></button>
+        <button class="tab-btn" data-page="plannerPage"><span>01</span><strong>Planner</strong></button>
+        <button class="tab-btn" data-page="trainingPage"><span>02</span><strong>Training</strong></button>
+        <button class="tab-btn" data-page="healthPage"><span>03</span><strong>Health</strong></button>
+        <button class="tab-btn" data-page="archivePage"><span>04</span><strong>Archive</strong></button>
     </nav>
 
 </main>
 
-<script src="js/boot.js"></script>
-<script src="js/navigation.js"></script>
+<script src="js/boot.js?v=3.0.0"></script>
+<script src="js/sounds.js?v=3.1.0"></script>
+<script src="js/navigation.js?v=3.1.0-sounds"></script>
 <script src="js/relationship.js"></script>
-<script src="js/mission.js"></script>
+<script src="js/mission.js?v=3.0.0"></script>
 
-<script src="js/planner.js?v=2.0.0-health-planner"></script>
+<script src="js/planner.js?v=3.0.0-compact-history"></script>
 <script src="js/medication-knowledge.js?v=2.3.0-proactive-alerts"></script>
-<script src="js/health.js?v=2.3.0-proactive-alerts"></script>
+<script src="js/health.js?v=3.0.0-compact-history"></script>
 <script src="js/cycleInsight.js"></script>
 <script src="js/weather.js"></script>
 <script src="js/condition.js"></script>
@@ -789,12 +703,10 @@
 <script src="js/commander-messages.js"></script>
 <script src="js/commander.js?v=2.1.0-medication-intel"></script>
 
-<script src="js/focus-stats.js"></script>
-<script src="js/focus-messages.js"></script>
-<script src="js/focus.js"></script>
+<script src="js/training.js?v=3.1.0-three-modes"></script>
+<script src="js/archive.js?v=3.1.0-layout-sounds"></script>
 <script src="js/update.js?v=1.9.1-album-hotfix"></script>
 <script src="js/backup.js"></script>
-<script src="js/notifications.js?v=2.0.0-push-subscription"></script>
 
     <!-- Meridian Updater -->
     <div
@@ -817,7 +729,7 @@
             <ul id="meridianUpdateNotes" class="update-modal-notes"></ul>
 
             <p id="meridianUpdateStatus" class="update-modal-status">
-                更新しても、Planner・Health・Relationship・Vestigeの保存データは消えない。
+                更新しても、Planner・Health・Relationship・Archiveの保存データは消えない。
             </p>
 
             <div class="update-modal-actions">

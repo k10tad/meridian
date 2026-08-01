@@ -1,46 +1,45 @@
-//========================
-// Meridian Boot Sequence
-//========================
+// Meridian Boot Sequence v3
+(function () {
+    const bootScreen = document.getElementById("bootScreen");
+    const bootText = document.getElementById("bootText");
+    const skipButton = document.getElementById("bootSkipButton");
+    const app = document.getElementById("app");
+    const bootLines = [
+        "Initializing Meridian...",
+        "Loading Archive...",
+        "Syncing Local Conditions...",
+        "Connecting Madrid Headquarters...",
+        "Commander Connected."
+    ];
+    let intervalId = null;
+    let finishId = null;
+    let complete = false;
 
-const bootScreen = document.getElementById("bootScreen");
-const bootText = document.getElementById("bootText");
-const app = document.getElementById("app");
-const deskGreetingBoot = document.getElementById("deskGreeting");
-
-const bootLines = [
-    "Initializing Meridian...",
-    "Loading Vestige Archive...",
-    "Syncing Local Conditions...",
-    "Connecting Madrid Headquarters...",
-    "Commander Connected."
-];
-
-let bootIndex = 0;
-
-function runBootSequence() {
-    bootText.textContent = bootLines[bootIndex];
-
-    const bootTimer = setInterval(function () {
-        bootIndex++;
-
-        if (bootIndex < bootLines.length) {
-            bootText.textContent = bootLines[bootIndex];
-            return;
-        }
-
-        clearInterval(bootTimer);
-
-        setTimeout(function () {
-            bootScreen.classList.add("fade-out");
-            app.classList.remove("hidden");
-
-          if (deskGreetingBoot) {
-    window.dispatchEvent(new Event("meridianBootCompleted"));
+    function finishBoot(immediate) {
+        if (complete) return;
+        complete = true;
+        window.clearInterval(intervalId);
+        window.clearTimeout(finishId);
+        app.classList.remove("hidden");
+        bootScreen.classList.add("fade-out");
+        if (immediate) bootScreen.classList.add("boot-skipped");
+        window.dispatchEvent(new Event("meridianBootCompleted"));
     }
 
+    function runBootSequence() {
+        let index = 0;
+        bootText.textContent = bootLines[index];
+        intervalId = window.setInterval(function () {
+            index += 1;
+            if (index < bootLines.length) {
+                bootText.textContent = bootLines[index];
+                return;
+            }
+            window.clearInterval(intervalId);
+            finishId = window.setTimeout(function () { finishBoot(false); }, 500);
         }, 700);
+    }
 
-    }, 850);
-}
-
-window.addEventListener("load", runBootSequence);
+    if (skipButton) skipButton.addEventListener("click", function () { finishBoot(true); });
+    window.addEventListener("load", runBootSequence);
+})();

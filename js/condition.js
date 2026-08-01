@@ -119,6 +119,7 @@ function applyCondition(condition, shouldAddTrust) {
 conditionButtons.forEach(function (button) {
     button.addEventListener("click", function () {
         applyCondition(button.dataset.condition, true);
+        window.MeridianSounds?.play("record");
     });
 });
 

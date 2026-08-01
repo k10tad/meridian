@@ -17,6 +17,10 @@ const lastPeriodDate = document.getElementById("lastPeriodDate");
 const nextPeriodDate = document.getElementById("nextPeriodDate");
 const averageCycleDays = document.getElementById("averageCycleDays");
 const cycleHistory = document.getElementById("cycleHistory");
+const cycleHistoryFullList = document.getElementById("cycleHistoryFullList");
+const cycleHistoryModal = document.getElementById("cycleHistoryModal");
+const openCycleHistory = document.getElementById("openCycleHistory");
+const closeCycleHistory = document.getElementById("closeCycleHistory");
 
 let plannerDate = new Date();
 let selectedDate = new Date();
@@ -349,6 +353,7 @@ function addPlan() {
     });
 
     savePlans(plans);
+    window.MeridianSounds?.play("record");
 
     if (typeof addTrust === "function") addTrust(1);
 
@@ -413,6 +418,7 @@ function addCycleStart() {
     }
 
     saveCycleData(cycle);
+    if (!exists) window.MeridianSounds?.play("record");
 
     if (typeof completeMission === "function") completeMission("health");
     if (typeof addTrust === "function") addTrust(1);
@@ -450,10 +456,12 @@ function setCycleEnd() {
         return;
     }
 
+    const endChanged = target.end !== key;
     target.end = key;
 
     cycle.records = records;
     saveCycleData(cycle);
+    if (endChanged) window.MeridianSounds?.play("record");
 
     if (typeof addTrust === "function") addTrust(1);
 
@@ -470,6 +478,24 @@ function deleteCycleRecord(index) {
     saveCycleData(cycle);
 
     renderPlanner();
+}
+
+function cycleRecordHtml(record, index) {
+    return (
+        "<div class='cycle-record'>" +
+            "<div><div class='cycle-record-main'>" +
+                formatShortDateFromKey(record.start) + " → " +
+                (record.end ? formatShortDateFromKey(record.end) : "終了未設定") +
+            "</div><div class='cycle-record-sub'>Cycle Record</div></div>" +
+            "<button type='button' class='cycle-delete' data-index='" + index + "' aria-label='記録を削除'>×</button>" +
+        "</div>"
+    );
+}
+
+function bindCycleDeleteButtons() {
+    document.querySelectorAll(".cycle-delete").forEach(function (button) {
+        button.addEventListener("click", function () { deleteCycleRecord(Number(button.dataset.index)); });
+    });
 }
 
 function renderCycleInfo() {
@@ -495,27 +521,12 @@ function renderCycleInfo() {
         return;
     }
 
-    cycleHistory.innerHTML = records.map(function (record, index) {
-        return (
-            "<div class='cycle-record'>" +
-                "<div>" +
-                    "<div class='cycle-record-main'>" +
-                        formatShortDateFromKey(record.start) +
-                        " → " +
-                        (record.end ? formatShortDateFromKey(record.end) : "終了未設定") +
-                    "</div>" +
-                    "<div class='cycle-record-sub'>Cycle Record</div>" +
-                "</div>" +
-                "<button type='button' class='cycle-delete' data-index='" + index + "'>×</button>" +
-            "</div>"
-        );
-    }).join("");
-
-    document.querySelectorAll(".cycle-delete").forEach(function (button) {
-        button.addEventListener("click", function () {
-            deleteCycleRecord(Number(button.dataset.index));
-        });
-    });
+    const recent = records.map(function (record, index) { return { record: record, index: index }; }).reverse();
+    cycleHistory.innerHTML = recent.slice(0, 3).map(function (item) { return cycleRecordHtml(item.record, item.index); }).join("");
+    if (cycleHistoryFullList) {
+        cycleHistoryFullList.innerHTML = recent.map(function (item) { return cycleRecordHtml(item.record, item.index); }).join("");
+    }
+    bindCycleDeleteButtons();
 }
 
 
@@ -636,6 +647,17 @@ if (periodStartButton) {
 if (periodEndButton) {
     periodEndButton.addEventListener("click", setCycleEnd);
 }
+
+function setCycleHistoryOpen(open) {
+    if (!cycleHistoryModal) return;
+    cycleHistoryModal.hidden = !open;
+    document.body.classList.toggle("modal-open", open);
+}
+if (openCycleHistory) openCycleHistory.addEventListener("click", function () { setCycleHistoryOpen(true); });
+if (closeCycleHistory) closeCycleHistory.addEventListener("click", function () { setCycleHistoryOpen(false); });
+document.querySelectorAll('[data-close-record-modal="cycle"]').forEach(function (button) {
+    button.addEventListener("click", function () { setCycleHistoryOpen(false); });
+});
 
 renderPlanner();
 

@@ -61,7 +61,7 @@
         });
 
         statusText.textContent =
-            "更新しても、Planner・Health・Relationship・Vestigeなどの保存データは消えない。";
+            "更新しても、Planner・Health・Relationship・Archiveなどの保存データは消えない。";
 
         updateButton.disabled = false;
         laterButton.disabled = false;

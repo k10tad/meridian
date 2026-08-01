@@ -64,7 +64,7 @@ function renderMission() {
     updateMissionLabel("missionWeather", missionItems.weather, "Weather Sync");
     updateMissionLabel("missionPlanner", missionItems.planner, "Planner");
     updateMissionLabel("missionHealth", missionItems.health, "Health Log");
-    updateMissionLabel("missionFocus", missionItems.focus, "Focus Session");
+    updateMissionLabel("missionFocus", missionItems.focus, "Training Session");
 
     if (percent === 100) {
         const greeting = document.getElementById("deskGreeting");
