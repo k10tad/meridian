@@ -81,11 +81,33 @@
             return '<div class="training-wheel-column"><div class="training-wheel-scroll" data-wheel-index="' + index + '">' + items + '<div class="training-wheel-spacer"></div></div><span class="training-wheel-label">' + definition.label + '</span></div>';
         }).join("");
         Array.from(wheelColumns.querySelectorAll(".training-wheel-scroll")).forEach(function (scroller, index) {
-            selectWheelItem(scroller, index, false);
+            let dragging = false, startY = 0, startScroll = 0;
+            window.requestAnimationFrame(function () { selectWheelItem(scroller, index, false); });
             scroller.addEventListener("scroll", function () {
+                if (dragging) return;
                 window.clearTimeout(wheelSettleTimers[index]);
                 wheelSettleTimers[index] = window.setTimeout(function () { settleWheel(scroller, index); }, 120);
             }, { passive: true });
+            scroller.addEventListener("pointerdown", function (event) {
+                if (event.pointerType === "mouse" && event.button !== 0) return;
+                dragging = true; startY = event.clientY; startScroll = scroller.scrollTop;
+                scroller.classList.add("dragging");
+                scroller.setPointerCapture?.(event.pointerId);
+                event.preventDefault();
+            });
+            scroller.addEventListener("pointermove", function (event) {
+                if (!dragging) return;
+                scroller.scrollTop = startScroll + (startY - event.clientY);
+                event.preventDefault();
+            });
+            function finishDrag(event) {
+                if (!dragging) return;
+                dragging = false; scroller.classList.remove("dragging");
+                if (event && scroller.hasPointerCapture?.(event.pointerId)) scroller.releasePointerCapture(event.pointerId);
+                settleWheel(scroller, index);
+            }
+            scroller.addEventListener("pointerup", finishDrag);
+            scroller.addEventListener("pointercancel", finishDrag);
         });
     }
 

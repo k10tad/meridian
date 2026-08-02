@@ -3,7 +3,7 @@
 // Updater Step 2
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-4.0.0-training-wheel";
+const MERIDIAN_SW_VERSION = "meridian-runtime-4.0.1-training-wheel-drag";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {

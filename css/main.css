@@ -2970,9 +2970,10 @@ body.modal-open{overflow:hidden}.record-modal[hidden]{display:none}.record-modal
 .training-wheel-selection{position:absolute;z-index:0;top:var(--wheel-row);left:8px;right:8px;height:var(--wheel-row);border-top:1px solid rgba(212,175,55,.28);border-bottom:1px solid rgba(212,175,55,.28);border-radius:10px;background:rgba(212,175,55,.075);pointer-events:none}
 .training-wheel-columns{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);height:100%}.training-wheel-column{position:relative;min-width:0;text-align:center}
 .training-wheel-label{position:absolute;z-index:3;top:50%;right:8px;transform:translateY(-50%);color:rgba(240,217,138,.72);font-size:9px;font-weight:700;letter-spacing:.08em;pointer-events:none}
-.training-wheel-scroll{height:100%;overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-y}.training-wheel-scroll::-webkit-scrollbar{display:none}
+.training-wheel-scroll{height:100%;overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none}.training-wheel-scroll.dragging{cursor:grabbing;scroll-snap-type:none}.training-wheel-scroll::-webkit-scrollbar{display:none}
 .training-wheel-spacer,.training-wheel-item{height:var(--wheel-row)}.training-wheel-item{display:flex;align-items:center;justify-content:center;padding-right:22px;scroll-snap-align:center;color:rgba(244,241,234,.3);font-size:19px;font-variant-numeric:tabular-nums;transition:color .15s ease,transform .15s ease}.training-wheel-item.selected{color:var(--color-text);font-size:23px;transform:scale(1.03)}
 .training-wheel-picker.locked{opacity:.42;pointer-events:none}@media(max-width:360px){.training-wheel-item{font-size:17px;padding-right:18px}.training-wheel-item.selected{font-size:21px}.training-wheel-label{right:5px}}
+.training-presets[hidden]{display:none!important}
 
 /* Meridian v3.1 — compact Archive and three-mode Training */
 #archivePage { padding-bottom: calc(124px + env(safe-area-inset-bottom)); }
