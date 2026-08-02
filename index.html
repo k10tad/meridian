@@ -15,7 +15,7 @@
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json?v=1.9.2">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png?v=1.9.2">
-    <link rel="stylesheet" href="css/main.css?v=4.0.1-training-wheel-drag">
+    <link rel="stylesheet" href="css/main.css?v=4.1.0-native-training-picker">
 </head>
 
 <body>
@@ -310,9 +310,19 @@
                 <button class="training-preset-btn" data-work="180" data-rest="60" data-rounds="5">Standard<br><small>3/1 × 5</small></button>
                 <button class="training-preset-btn" data-work="180" data-rest="60" data-rounds="8">Long<br><small>3/1 × 8</small></button>
             </div>
-            <div id="trainingWheelPicker" class="training-wheel-picker" aria-label="Training time selector">
-                <div class="training-wheel-selection" aria-hidden="true"></div>
-                <div id="trainingWheelColumns" class="training-wheel-columns"></div>
+            <div id="trainingNativePicker" class="training-native-picker" aria-label="Training time selector">
+                <label id="trainingWorkField" class="training-native-field">
+                    <span>WORK</span>
+                    <input id="trainingWorkTime" type="time" step="1" value="00:02:00">
+                </label>
+                <label id="trainingRestField" class="training-native-field">
+                    <span>REST</span>
+                    <input id="trainingRestTime" type="time" step="1" value="00:01:00">
+                </label>
+                <label id="trainingRoundsField" class="training-native-field training-rounds-field">
+                    <span>ROUNDS</span>
+                    <select id="trainingRoundsSelect" aria-label="Rounds"></select>
+                </label>
             </div>
             <div class="training-status-row"><span id="trainingPhaseLabel">READY</span><span id="trainingRoundLabel">Round 1 / 3</span></div>
             <div id="trainingTimerDisplay" class="training-timer-display" role="timer">02:00</div>
@@ -702,7 +712,7 @@
 <script src="js/commander-messages.js"></script>
 <script src="js/commander.js?v=2.1.0-medication-intel"></script>
 
-<script src="js/training.js?v=4.0.1-wheel-drag"></script>
+<script src="js/training.js?v=4.1.0-native-picker"></script>
 <script src="js/archive.js?v=3.1.0-layout-sounds"></script>
 <script src="js/update.js?v=1.9.1-album-hotfix"></script>
 <script src="js/backup.js"></script>
