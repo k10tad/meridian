@@ -15,7 +15,7 @@
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json?v=1.9.2">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png?v=1.9.2">
-    <link rel="stylesheet" href="css/main.css?v=3.0.0-training-archive">
+    <link rel="stylesheet" href="css/main.css?v=4.0.0-training-wheel">
 </head>
 
 <body>
@@ -310,10 +310,9 @@
                 <button class="training-preset-btn" data-work="180" data-rest="60" data-rounds="5">Standard<br><small>3/1 × 5</small></button>
                 <button class="training-preset-btn" data-work="180" data-rest="60" data-rounds="8">Long<br><small>3/1 × 8</small></button>
             </div>
-            <div id="trainingCustomFields" class="training-custom-fields" hidden>
-                <label>Work<input id="trainingWorkInput" type="number" min="1" max="90" value="3"><span>min</span></label>
-                <label>Rest<input id="trainingRestInput" type="number" min="0" max="30" value="1"><span>min</span></label>
-                <label>Rounds<input id="trainingRoundsInput" type="number" min="1" max="30" value="5"></label>
+            <div id="trainingWheelPicker" class="training-wheel-picker" aria-label="Training time selector">
+                <div class="training-wheel-selection" aria-hidden="true"></div>
+                <div id="trainingWheelColumns" class="training-wheel-columns"></div>
             </div>
             <div class="training-status-row"><span id="trainingPhaseLabel">READY</span><span id="trainingRoundLabel">Round 1 / 3</span></div>
             <div id="trainingTimerDisplay" class="training-timer-display" role="timer">02:00</div>
@@ -703,7 +702,7 @@
 <script src="js/commander-messages.js"></script>
 <script src="js/commander.js?v=2.1.0-medication-intel"></script>
 
-<script src="js/training.js?v=3.1.0-three-modes"></script>
+<script src="js/training.js?v=4.0.0-wheel-picker"></script>
 <script src="js/archive.js?v=3.1.0-layout-sounds"></script>
 <script src="js/update.js?v=1.9.1-album-hotfix"></script>
 <script src="js/backup.js"></script>
