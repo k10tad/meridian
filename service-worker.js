@@ -1,13 +1,13 @@
-﻿//========================
+//========================
 // Meridian Service Worker
-// Updater Step 2
+// Commander image refresh
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-4.1.0-native-training-picker";
+const MERIDIAN_SW_VERSION = "meridian-runtime-4.2.0-commander-refresh";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {
-    // The new worker waits until the user accepts the update.
+    // The updater activates this worker after the user accepts the update.
 });
 
 self.addEventListener("activate", function (event) {
@@ -84,4 +84,3 @@ self.addEventListener("fetch", function (event) {
             })
     );
 });
-

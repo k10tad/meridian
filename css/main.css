@@ -2965,25 +2965,177 @@ body.modal-open{overflow:hidden}.record-modal[hidden]{display:none}.record-modal
 .med-btn.med-avoid-today::after { content: "TODAY: AVOID"; }
 .med-btn.med-confirm-today::after { content: "CHECK FIRST"; }
 
-/* Meridian Training v4 — three-column wheel picker */
-.training-presets[hidden]{display:none!important}
-
-/* Training v4.1: use the platform's native iOS/Android pickers. */
-.training-native-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
-.training-native-field{display:flex;min-width:0;flex-direction:column;gap:7px;color:var(--color-muted);font-size:9px;font-weight:700;letter-spacing:.1em}
-.training-native-field input,.training-native-field select{box-sizing:border-box;width:100%;min-height:48px;padding:0 8px;border:1px solid rgba(255,255,255,.1);border-radius:13px;background:rgba(255,255,255,.04);color:var(--color-text);font:inherit;font-size:15px;font-weight:500;letter-spacing:.02em;text-align:center;font-variant-numeric:tabular-nums;color-scheme:dark;-webkit-appearance:none;appearance:none}
-.training-native-field input::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:auto;height:auto;opacity:0;cursor:pointer}
-.training-native-field input[type="time"]{position:relative}
-.training-native-field select{padding-inline:12px;text-align-last:center}
-.training-native-picker.locked{opacity:.42;pointer-events:none}
-.training-native-picker.single-duration{grid-template-columns:1fr}
-.training-native-picker.single-duration .training-native-field{max-width:100%}
-.training-native-field[hidden]{display:none!important}
-@media(max-width:360px){.training-native-picker{gap:6px}.training-native-field input,.training-native-field select{padding-inline:4px;font-size:13px}}
-
 /* Meridian v3.1 — compact Archive and three-mode Training */
 #archivePage { padding-bottom: calc(124px + env(safe-area-inset-bottom)); }
 #archivePage .backup-card { margin-top: 18px; margin-bottom: 28px; }
+
+/* Meridian Weather Station */
+.weather-station-card {
+    margin-bottom: 18px;
+    border-color: rgba(212, 175, 55, .24);
+}
+
+.weather-station-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.weather-station-header h2 {
+    margin: 5px 0 0;
+}
+
+.weather-station-status {
+    flex: 0 0 auto;
+    padding: 6px 8px;
+    border: 1px solid rgba(212, 175, 55, .22);
+    border-radius: 999px;
+    color: var(--color-gold);
+    font-size: 8px;
+    font-weight: 750;
+    letter-spacing: .12em;
+}
+
+.weather-station-description {
+    margin: 14px 0;
+    color: var(--color-muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.weather-station-field {
+    display: grid;
+    gap: 7px;
+    color: var(--color-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+}
+
+.weather-station-field input {
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 13px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 12px;
+    outline: none;
+    background: rgba(255, 255, 255, .04);
+    color: var(--color-text);
+    font: inherit;
+    font-size: 14px;
+    letter-spacing: normal;
+}
+
+.weather-station-field input:focus {
+    border-color: rgba(212, 175, 55, .55);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, .08);
+}
+
+.weather-station-field input::placeholder {
+    color: rgba(221, 225, 235, .35);
+}
+
+.weather-resolved-location,
+.weather-location-message {
+    margin: 9px 0 0;
+    color: var(--color-muted);
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+.weather-resolved-location {
+    color: rgba(240, 226, 178, .82);
+}
+
+.weather-location-save {
+    width: 100%;
+    min-height: 46px;
+    margin-top: 14px;
+    border: 1px solid rgba(212, 175, 55, .38);
+    border-radius: 12px;
+    background: rgba(212, 175, 55, .09);
+    color: var(--color-gold);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: .08em;
+}
+
+.weather-location-save:disabled {
+    opacity: .5;
+}
+
+.weather-reregistration-modal[hidden] {
+    display: none;
+}
+
+.weather-reregistration-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 11000;
+    display: grid;
+    place-items: center;
+    padding: calc(18px + env(safe-area-inset-top)) 16px calc(18px + env(safe-area-inset-bottom));
+}
+
+.weather-reregistration-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 4, 10, .82);
+    backdrop-filter: blur(10px);
+}
+
+.weather-reregistration-card {
+    position: relative;
+    width: min(100%, 390px);
+    padding: 24px;
+    border: 1px solid rgba(212, 175, 55, .3);
+    border-radius: 24px;
+    background: linear-gradient(155deg, rgba(19, 27, 45, .99), rgba(7, 10, 19, .99));
+    box-shadow: 0 28px 90px rgba(0, 0, 0, .6);
+}
+
+.weather-reregistration-card h2 {
+    margin: 8px 0 12px;
+    color: var(--color-text);
+    font-size: 20px;
+}
+
+.weather-reregistration-card p {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 12px;
+    line-height: 1.75;
+}
+
+.weather-reregistration-actions {
+    display: grid;
+    grid-template-columns: .8fr 1.4fr;
+    gap: 9px;
+    margin-top: 22px;
+}
+
+.weather-reregistration-actions button {
+    min-height: 46px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .04);
+    color: var(--color-muted);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.weather-reregistration-actions button.primary {
+    border-color: rgba(212, 175, 55, .45);
+    background: rgba(212, 175, 55, .11);
+    color: var(--color-gold);
+}
+
+body.weather-reregistration-open {
+    overflow: hidden;
+}
 #archivePage .backup-import-block { margin-top: 18px; }
 .training-mode-grid { grid-template-columns: repeat(3, 1fr); }
 @media (max-width: 360px) {

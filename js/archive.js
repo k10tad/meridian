@@ -8,7 +8,7 @@
     const classified = document.getElementById("classifiedFiles");
     const redList = document.getElementById("redFileList");
     const termList = document.getElementById("termList");
-    const backupCard = document.getElementById("archiveBackupCard");
+    const classifiedOnlyCards = Array.from(document.querySelectorAll(".archive-classified-only"));
     if (!classified) return;
 
     function read(key) { try { const value = JSON.parse(localStorage.getItem(key)); return Array.isArray(value) ? value : []; } catch (_) { return []; } }
@@ -45,7 +45,7 @@
         termList.querySelectorAll("[data-term-id]").forEach(function (button) { button.addEventListener("click", function () { write(TERMS_KEY, read(TERMS_KEY).filter(function (item) { return item.id !== button.dataset.termId; })); renderTerms(); }); });
     }
 
-    tabs.forEach(function (tab) { tab.addEventListener("click", function () { tabs.forEach(function (item) { item.classList.toggle("active", item === tab); }); panels.forEach(function (panel) { panel.classList.toggle("active", panel.id.toLowerCase() === ("archive" + tab.dataset.archiveTab).toLowerCase()); }); if (backupCard) backupCard.hidden = tab.dataset.archiveTab !== "classified"; }); });
+    tabs.forEach(function (tab) { tab.addEventListener("click", function () { tabs.forEach(function (item) { item.classList.toggle("active", item === tab); }); panels.forEach(function (panel) { panel.classList.toggle("active", panel.id.toLowerCase() === ("archive" + tab.dataset.archiveTab).toLowerCase()); }); classifiedOnlyCards.forEach(function (card) { card.hidden = tab.dataset.archiveTab !== "classified"; }); }); });
     document.getElementById("saveRedFile").addEventListener("click", function () { const title = document.getElementById("redFileTitle"), text = document.getElementById("redFileText"), status = document.getElementById("redFileStatus"); if (!title.value.trim() || !text.value.trim()) return; const items = read(RED_KEY); items.push({ id: Date.now().toString(36), title: title.value.trim(), text: text.value.trim(), status: status.value, createdAt: new Date().toISOString() }); write(RED_KEY, items); title.value = ""; text.value = ""; window.MeridianSounds?.play("record"); renderRed(); });
     document.getElementById("saveTerm").addEventListener("click", function () { const text = document.getElementById("termText"); if (!text.value.trim()) return; const items = read(TERMS_KEY); items.push({ id: Date.now().toString(36), text: text.value.trim(), active: true, createdAt: new Date().toISOString() }); write(TERMS_KEY, items); text.value = ""; window.MeridianSounds?.play("record"); renderTerms(); });
     renderClassified(); renderRed(); renderTerms();

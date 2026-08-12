@@ -1,11 +1,10 @@
 {
-  "version": "2.3.1",
-  "build": "session-only-medication-speech",
-  "updatedAt": "2026-07-20",
+  "version": "2.3.2",
+  "build": "commander-image-refresh",
+  "updatedAt": "2026-08-12",
   "notes": [
-    "服薬後のCommander警告を現在のアプリ起動中だけ保持",
-    "アプリまたはタブを閉じて再起動すると通常のCommander Intelligenceへ復帰",
-    "旧localStorageに残った服薬警告を自動削除",
-    "服薬履歴と当日のボタン制限は従来どおり保持"
+    "Commanderのホーム画像を最新版へ更新",
+    "画像キャッシュとService Workerの更新経路を修正",
+    "Planner・Health・Relationship・Archiveなどの保存データは維持"
   ]
 }
