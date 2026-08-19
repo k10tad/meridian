@@ -1,11 +1,11 @@
 {
-  "version": "2.3.4",
-  "build": "training-timer-layout",
+  "version": "2.3.5",
+  "build": "training-timer-compact-layout",
   "updatedAt": "2026-08-19",
   "notes": [
     "TrainingタイマーのStart・Pause・Resetを修正",
-    "時間・休憩・ラウンド入力を3つのカードへ整理",
-    "スマートフォンでの余白と入力欄の表示バランスを調整",
+    "時間・休憩・ラウンド入力を小型カードへ整理",
+    "設定欄を約3割縮小しタイマー表示との視覚バランスを調整",
     "Planner・Health・Relationship・Archiveなどの保存データは維持"
   ]
 }

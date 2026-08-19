@@ -3152,15 +3152,15 @@ body.weather-reregistration-open {
 }
 .training-card .training-native-field {
     display: grid;
-    grid-template-rows: auto 48px;
-    gap: 7px;
+    grid-template-rows: auto 36px;
+    gap: 5px;
     min-width: 0;
-    padding: 10px 8px 9px;
+    padding: 8px 7px 7px;
     border: 1px solid rgba(255, 255, 255, .08);
-    border-radius: 13px;
+    border-radius: 12px;
     background: rgba(255, 255, 255, .025);
     color: var(--color-muted);
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 750;
     letter-spacing: .12em;
     text-align: center;
@@ -3177,14 +3177,15 @@ body.weather-reregistration-open {
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
-    height: 48px;
+    height: 36px;
+    min-height: 36px;
     margin: 0;
     padding: 0 5px;
     border: 1px solid rgba(212, 175, 55, .18);
-    border-radius: 10px;
+    border-radius: 9px;
     background: rgba(5, 7, 17, .58);
     color: var(--color-text);
-    font: 500 15px/1 var(--font-main);
+    font: 500 13px/1 var(--font-main);
     font-variant-numeric: tabular-nums;
     letter-spacing: 0;
     text-align: center;
@@ -3193,14 +3194,14 @@ body.weather-reregistration-open {
     appearance: none;
     -webkit-appearance: none;
 }
-.training-card .training-status-row { margin-top: 22px; }
+.training-card .training-status-row { margin-top: 18px; }
 .training-card .training-timer-display { margin: 27px 0 26px; }
 .training-card .training-native-picker.single-duration { grid-template-columns: 1fr; }
 .training-card .training-native-picker.single-duration .training-native-field { width: 100%; }
 .training-card .training-native-field[hidden] { display: none !important; }
 @media (max-width: 360px) {
     .training-card .training-native-picker { gap: 6px; }
-    .training-card .training-native-field { padding-inline: 6px; }
+    .training-card .training-native-field { padding-inline: 5px; }
     .training-card .training-native-field input,
-    .training-card .training-native-field select { font-size: 13px; }
+    .training-card .training-native-field select { font-size: 12px; }
 }
