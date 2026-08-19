@@ -3,7 +3,7 @@
 // Commander image refresh
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-4.2.0-commander-refresh";
+const MERIDIAN_SW_VERSION = "meridian-runtime-4.2.1-training-timer-repair";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {

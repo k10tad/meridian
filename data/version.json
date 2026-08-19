@@ -1,10 +1,10 @@
 {
-  "version": "2.3.2",
-  "build": "commander-image-refresh",
-  "updatedAt": "2026-08-12",
+  "version": "2.3.3",
+  "build": "training-timer-repair",
+  "updatedAt": "2026-08-19",
   "notes": [
-    "Commanderのホーム画像を最新版へ更新",
-    "画像キャッシュとService Workerの更新経路を修正",
+    "TrainingタイマーのStart・Pause・Resetを修正",
+    "時間・休憩・ラウンド入力とタイマー処理の接続を復旧",
     "Planner・Health・Relationship・Archiveなどの保存データは維持"
   ]
 }
