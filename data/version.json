@@ -1,11 +1,12 @@
 {
-  "version": "2.3.5",
-  "build": "training-timer-compact-layout",
+  "version": "2.3.6",
+  "build": "training-timer-number-alignment",
   "updatedAt": "2026-08-19",
   "notes": [
     "TrainingタイマーのStart・Pause・Resetを修正",
     "時間・休憩・ラウンド入力を小型カードへ整理",
     "設定欄を約3割縮小しタイマー表示との視覚バランスを調整",
+    "iPhoneの時刻入力値を枠内の縦中央へ補正",
     "Planner・Health・Relationship・Archiveなどの保存データは維持"
   ]
 }
