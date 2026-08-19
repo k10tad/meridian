@@ -1,10 +1,11 @@
 {
-  "version": "2.3.3",
-  "build": "training-timer-repair",
+  "version": "2.3.4",
+  "build": "training-timer-layout",
   "updatedAt": "2026-08-19",
   "notes": [
     "TrainingタイマーのStart・Pause・Resetを修正",
-    "時間・休憩・ラウンド入力とタイマー処理の接続を復旧",
+    "時間・休憩・ラウンド入力を3つのカードへ整理",
+    "スマートフォンでの余白と入力欄の表示バランスを調整",
     "Planner・Health・Relationship・Archiveなどの保存データは維持"
   ]
 }

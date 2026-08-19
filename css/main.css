@@ -3142,3 +3142,65 @@ body.weather-reregistration-open {
     .training-mode-grid { grid-template-columns: repeat(3, 1fr); }
     .training-mode-btn { font-size: 8px; letter-spacing: .035em; }
 }
+
+/* Meridian Training timer layout repair v4.1.2 */
+.training-card .training-native-picker {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 14px 0 0;
+}
+.training-card .training-native-field {
+    display: grid;
+    grid-template-rows: auto 48px;
+    gap: 7px;
+    min-width: 0;
+    padding: 10px 8px 9px;
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .025);
+    color: var(--color-muted);
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: .12em;
+    text-align: center;
+}
+.training-card .training-native-field > span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.training-card .training-native-field input,
+.training-card .training-native-field select {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: 48px;
+    margin: 0;
+    padding: 0 5px;
+    border: 1px solid rgba(212, 175, 55, .18);
+    border-radius: 10px;
+    background: rgba(5, 7, 17, .58);
+    color: var(--color-text);
+    font: 500 15px/1 var(--font-main);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+    text-align: center;
+    text-align-last: center;
+    color-scheme: dark;
+    appearance: none;
+    -webkit-appearance: none;
+}
+.training-card .training-status-row { margin-top: 22px; }
+.training-card .training-timer-display { margin: 27px 0 26px; }
+.training-card .training-native-picker.single-duration { grid-template-columns: 1fr; }
+.training-card .training-native-picker.single-duration .training-native-field { width: 100%; }
+.training-card .training-native-field[hidden] { display: none !important; }
+@media (max-width: 360px) {
+    .training-card .training-native-picker { gap: 6px; }
+    .training-card .training-native-field { padding-inline: 6px; }
+    .training-card .training-native-field input,
+    .training-card .training-native-field select { font-size: 13px; }
+}
