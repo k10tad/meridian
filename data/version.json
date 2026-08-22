@@ -1,13 +1,13 @@
 {
-  "version": "3.0.0",
-  "build": "command-intelligence-and-observatory",
-  "updatedAt": "2026-08-21",
+  "version": "3.0.1",
+  "build": "observatory-sync-and-ui-fix",
+  "updatedAt": "2026-08-22",
   "notes": [
-    "Trustを日次リセットし同一操作の重複加算を防止",
-    "Trainingの前回設定保存・振動・画面スリープ防止を追加",
-    "30日コンディション分析とMorning Brief・Night Reportを追加",
-    "定時薬・頓服を編集できるMedication Settingsを追加",
-    "雲量・視程・風・月相から今夜の観測条件を判定するObservatory Briefを追加",
+    "旧WeatherキャッシュからObservatory時間別予報へ自動移行",
+    "観測予報を2日分へ拡張し再同期ボタンを追加",
+    "未受信時の判定をPOORからSTANDBYへ修正",
+    "Medication Logの見出しと説明文の重なりを修正",
+    "Observatoryカード内の区切りと余白を調整",
     "Planner・Health・Relationship・Archiveなどの保存データは維持"
   ]
 }

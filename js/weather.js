@@ -268,6 +268,14 @@
         }
     }
 
+    function hasObservationForecast(cache) {
+        return Boolean(
+            cache && cache.forecast && cache.forecast.hourly &&
+            Array.isArray(cache.forecast.hourly.time) &&
+            cache.forecast.hourly.time.length > 0
+        );
+    }
+
     function clearWeatherCache() {
         localStorage.removeItem(CACHE_KEY);
     }
@@ -283,7 +291,7 @@
         if (weatherRequest) return weatherRequest;
         if (!force) {
             const freshCache = readCache(false);
-            if (freshCache) {
+            if (freshCache && hasObservationForecast(freshCache)) {
                 renderWeather(freshCache.current, freshCache.savedAt, freshCache.forecast);
                 return true;
             }
@@ -296,7 +304,7 @@
             hourly: "cloud_cover,visibility,precipitation_probability,wind_speed_10m",
             daily: "sunrise,sunset",
             timezone: String(currentLocation.timezone || "auto"),
-            forecast_days: "1"
+            forecast_days: "2"
         });
 
         weatherRequest = (async function () {

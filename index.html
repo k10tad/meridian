@@ -2,6 +2,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -14,7 +15,7 @@
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json?v=1.9.2">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png?v=1.9.2">
-    <link rel="stylesheet" href="css/main.css?v=4.0.0-command-intelligence">
+    <link rel="stylesheet" href="css/main.css?v=4.0.1-observatory-sync-ui">
 </head>
 
 <body>
@@ -197,6 +198,7 @@
             <div class="observatory-head"><div><div class="meta-label">CELESTIAL OPERATIONS</div><h2>Observatory Brief</h2></div><span id="observatoryStatus" class="observatory-status">STANDBY</span></div>
             <div class="observatory-grid"><div><span>Observation Window</span><strong id="observatoryWindow">--:--</strong></div><div><span>Moon</span><strong id="observatoryMoon">--</strong></div><div><span>Tonight’s Target</span><strong id="observatoryTarget">--</strong></div><div><span>Conditions</span><strong id="observatoryConditions">--</strong></div></div>
             <p id="observatoryCommander" class="observatory-commander">今夜の空を確認している。</p>
+            <button id="observatoryRetry" class="observatory-retry" type="button" hidden>RETRY OBSERVATION DATA</button>
         </div>
 
         <div class="card condition-card">
@@ -781,8 +783,8 @@
 <script src="js/medication-settings.js?v=1.0.0"></script>
 <script src="js/health.js?v=3.0.0-compact-history"></script>
 <script src="js/cycleInsight.js"></script>
-<script src="js/weather.js?v=3.3.0-observatory"></script>
-<script src="js/observatory.js?v=1.0.0"></script>
+<script src="js/weather.js?v=3.3.1-observatory-sync"></script>
+<script src="js/observatory.js?v=1.0.1-sync-ui"></script>
 <script src="js/condition.js"></script>
 <script src="js/dailyBrief.js"></script>
 <script src="js/desk.js"></script>
