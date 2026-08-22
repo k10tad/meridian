@@ -12,7 +12,11 @@ const relationship = {
 
     totalTrust: 18,
 
-    firstLaunch: null
+    firstLaunch: null,
+
+    trustDate: null,
+
+    dailyAwards: {}
 
 };
 
@@ -49,6 +53,13 @@ function initializeRelationship(){
 
     }
 
+    const today = new Date().toDateString();
+    if (relationship.trustDate !== today) {
+        relationship.trustToday = 0;
+        relationship.trustDate = today;
+        relationship.dailyAwards = {};
+    }
+    if (!relationship.dailyAwards || typeof relationship.dailyAwards !== "object") relationship.dailyAwards = {};
     normalizeRelationshipProgress();
     saveRelationship();
     renderRelationship();
@@ -131,17 +142,30 @@ function renderRelationship(){
 // Trust追加
 //========================
 
-function addTrust(value){
+function addTrust(value, awardKey){
+
+    const today = new Date().toDateString();
+    if (relationship.trustDate !== today) {
+        relationship.trustToday = 0;
+        relationship.trustDate = today;
+        relationship.dailyAwards = {};
+    }
+
+    if (awardKey && relationship.dailyAwards[awardKey]) return false;
 
     relationship.trustToday += value;
 
     relationship.totalTrust += value;
+
+    if (awardKey) relationship.dailyAwards[awardKey] = true;
 
     normalizeRelationshipProgress();
 
     saveRelationship();
 
     renderRelationship();
+
+    return true;
 
 }
 

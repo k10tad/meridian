@@ -355,7 +355,7 @@ function addPlan() {
     savePlans(plans);
     window.MeridianSounds?.play("record");
 
-    if (typeof addTrust === "function") addTrust(1);
+    if (typeof addTrust === "function") addTrust(1, "plan:add:" + key + ":" + title.trim());
 
     renderPlanner();
 }
@@ -377,7 +377,7 @@ function togglePlanDone(index) {
         plans[key].every(function (item) { return item.done; })
     ) {
         if (typeof completeMission === "function") completeMission("planner");
-        if (typeof addTrust === "function") addTrust(2);
+        if (typeof addTrust === "function") addTrust(2, "plan:complete:" + key);
     }
 
     renderPlanner();
@@ -421,7 +421,7 @@ function addCycleStart() {
     if (!exists) window.MeridianSounds?.play("record");
 
     if (typeof completeMission === "function") completeMission("health");
-    if (typeof addTrust === "function") addTrust(1);
+    if (!exists && typeof addTrust === "function") addTrust(1, "cycle:start:" + key);
 
     renderPlanner();
 }
@@ -463,7 +463,7 @@ function setCycleEnd() {
     saveCycleData(cycle);
     if (endChanged) window.MeridianSounds?.play("record");
 
-    if (typeof addTrust === "function") addTrust(1);
+    if (endChanged && typeof addTrust === "function") addTrust(1, "cycle:end:" + key);
 
     renderPlanner();
 }

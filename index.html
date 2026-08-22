@@ -2,7 +2,6 @@
 
 
 
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -15,7 +14,7 @@
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json?v=1.9.2">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png?v=1.9.2">
-    <link rel="stylesheet" href="css/main.css?v=3.2.3-training-number-align">
+    <link rel="stylesheet" href="css/main.css?v=4.0.0-command-intelligence">
 </head>
 
 <body>
@@ -81,6 +80,12 @@
             </div>
             <div class="brief-line"></div>
             <p id="briefMessage">今日の状態を確認する。</p>
+        </div>
+
+        <div class="card operations-report-card">
+            <div class="meta-label">DAILY OPERATIONS</div>
+            <h2 id="operationsReportTitle">Morning Brief</h2>
+            <p id="operationsReportBody">本日の情報を整理している。</p>
         </div>
 
         <div class="card mission-card">
@@ -186,6 +191,12 @@
                 <span id="weatherHumidity">湿度 --%</span>
                 <span id="weatherPressureNote">Local sync standby</span>
             </div>
+        </div>
+
+        <div id="observatoryBrief" class="card observatory-card">
+            <div class="observatory-head"><div><div class="meta-label">CELESTIAL OPERATIONS</div><h2>Observatory Brief</h2></div><span id="observatoryStatus" class="observatory-status">STANDBY</span></div>
+            <div class="observatory-grid"><div><span>Observation Window</span><strong id="observatoryWindow">--:--</strong></div><div><span>Moon</span><strong id="observatoryMoon">--</strong></div><div><span>Tonight’s Target</span><strong id="observatoryTarget">--</strong></div><div><span>Conditions</span><strong id="observatoryConditions">--</strong></div></div>
+            <p id="observatoryCommander" class="observatory-commander">今夜の空を確認している。</p>
         </div>
 
         <div class="card condition-card">
@@ -387,7 +398,7 @@
 
     <div class="medication-section">
         <div class="medication-label">Daily Medicine</div>
-        <div class="medication-grid">
+        <div id="dailyMedicationGrid" class="medication-grid">
             <button class="med-btn" data-medication="ロメリジン" data-slot="午前">
                 ロメリジン（午前）
             </button>
@@ -399,7 +410,7 @@
 
     <div class="medication-section">
         <div class="medication-label">PRN Medicine</div>
-        <div class="medication-grid">
+        <div id="prnMedicationGrid" class="medication-grid">
             <button class="med-btn prn" data-medication="イブプロフェン" data-slot="頓服">
                 イブプロフェン
             </button>
@@ -440,6 +451,7 @@
         <h2>Commander Analysis</h2>
         <p id="healthSummary">今日の記録はまだない。</p>
     </div>
+    <div class="card thirty-day-card"><div class="meta-label">30 DAY TRACE</div><h2>Condition Analysis</h2><div id="thirtyDayAnalysis">記録を分析している。</div></div>
 </section>
 
     <section id="archivePage" class="app-page">
@@ -663,6 +675,19 @@
 
     </div>
 
+    <div class="card medication-settings-card archive-classified-only">
+        <div class="meta-label">HEALTH CONFIGURATION</div>
+        <h2>Medication Settings</h2>
+        <p class="settings-description">Meridianに表示する定時薬と頓服を管理する。過去の服薬記録は削除されない。</p>
+        <div class="medication-setting-form">
+            <input id="medicationSettingName" class="archive-input" maxlength="60" placeholder="薬剤名">
+            <select id="medicationSettingType" class="archive-select"><option value="daily">定時薬</option><option value="prn">頓服</option></select>
+            <input id="medicationSettingSlot" class="archive-input" maxlength="20" placeholder="服用枠（午前・夜など）">
+            <button id="addMedicationSetting" class="archive-save-btn" type="button">Add Medication</button>
+        </div>
+        <div id="medicationSettingsList" class="medication-settings-list"></div>
+    </div>
+
     <div id="weatherStationCard" class="card weather-station-card archive-classified-only">
         <div class="weather-station-header">
             <div>
@@ -748,14 +773,16 @@
 <script src="js/boot.js?v=3.0.0"></script>
 <script src="js/sounds.js?v=3.1.0"></script>
 <script src="js/navigation.js?v=3.1.0-sounds"></script>
-<script src="js/relationship.js"></script>
+<script src="js/relationship.js?v=4.0.0-daily-trust"></script>
 <script src="js/mission.js?v=3.0.0"></script>
 
 <script src="js/planner.js?v=3.0.0-compact-history"></script>
 <script src="js/medication-knowledge.js?v=2.3.0-proactive-alerts"></script>
+<script src="js/medication-settings.js?v=1.0.0"></script>
 <script src="js/health.js?v=3.0.0-compact-history"></script>
 <script src="js/cycleInsight.js"></script>
-<script src="js/weather.js?v=3.2.1-location-layout"></script>
+<script src="js/weather.js?v=3.3.0-observatory"></script>
+<script src="js/observatory.js?v=1.0.0"></script>
 <script src="js/condition.js"></script>
 <script src="js/dailyBrief.js"></script>
 <script src="js/desk.js"></script>
@@ -771,8 +798,9 @@
 
 <script src="js/commander-messages.js"></script>
 <script src="js/commander.js?v=2.1.0-medication-intel"></script>
+<script src="js/insights.js?v=1.0.0"></script>
 
-<script src="js/training.js?v=4.1.1-timer-repair"></script>
+<script src="js/training.js?v=4.2.0-persistent-session"></script>
 <script src="js/archive.js?v=3.2.1-weather-layout"></script>
 <script src="js/update.js?v=1.9.1-album-hotfix"></script>
 <script src="js/backup.js"></script>

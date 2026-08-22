@@ -208,7 +208,19 @@
         return values;
     }
 
-    function renderWeather(current, savedAt) {
+    function saveDailyWeatherSnapshot(values, weatherInfo, savedAt) {
+        const key = "meridianWeatherHistory";
+        let history = {};
+        try { history = JSON.parse(localStorage.getItem(key)) || {}; } catch (_) {}
+        const date = new Date(savedAt || Date.now());
+        const dateKey = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+        history[dateKey] = { pressure: values.pressure, humidity: values.humidity, temp: values.temp, code: values.code, text: weatherInfo.text, savedAt: Number(savedAt) || Date.now() };
+        const keys = Object.keys(history).sort().slice(-30);
+        const trimmed = {}; keys.forEach(function (item) { trimmed[item] = history[item]; });
+        localStorage.setItem(key, JSON.stringify(trimmed));
+    }
+
+    function renderWeather(current, savedAt, forecast) {
         const values = extractWeatherValues(current);
         const weatherInfo = weatherCodeMap[values.code] || { text: "天気不明", icon: "—" };
         const note = getPressureNote(values.pressure);
@@ -237,6 +249,8 @@
             commanderLine: commanderLine,
             savedAt: Number(savedAt) || Date.now()
         }));
+        if (forecast) localStorage.setItem("meridianWeatherForecast", JSON.stringify({ savedAt: Number(savedAt) || Date.now(), location: currentLocation, hourly: forecast.hourly || null, daily: forecast.daily || null }));
+        saveDailyWeatherSnapshot(values, weatherInfo, savedAt);
 
         if (typeof window.completeMission === "function") window.completeMission("weather");
         window.dispatchEvent(new Event("meridianWeatherUpdated"));
@@ -270,7 +284,7 @@
         if (!force) {
             const freshCache = readCache(false);
             if (freshCache) {
-                renderWeather(freshCache.current, freshCache.savedAt);
+                renderWeather(freshCache.current, freshCache.savedAt, freshCache.forecast);
                 return true;
             }
         }
@@ -279,6 +293,8 @@
             latitude: String(currentLocation.latitude),
             longitude: String(currentLocation.longitude),
             current: "temperature_2m,relative_humidity_2m,weather_code,pressure_msl",
+            hourly: "cloud_cover,visibility,precipitation_probability,wind_speed_10m",
+            daily: "sunrise,sunset",
             timezone: String(currentLocation.timezone || "auto"),
             forecast_days: "1"
         });
@@ -296,17 +312,18 @@
                 if (!data.current) throw new Error("Weather current data is missing.");
 
                 const savedAt = Date.now();
-                renderWeather(data.current, savedAt);
+                renderWeather(data.current, savedAt, data);
                 localStorage.setItem(CACHE_KEY, JSON.stringify({
                     savedAt: savedAt,
                     locationKey: getLocationKey(currentLocation),
-                    current: data.current
+                    current: data.current,
+                    forecast: { hourly: data.hourly || null, daily: data.daily || null }
                 }));
                 window.clearTimeout(retryTimer);
                 return true;
             } catch (error) {
                 const staleCache = readCache(true);
-                if (staleCache) renderWeather(staleCache.current, staleCache.savedAt);
+                if (staleCache) renderWeather(staleCache.current, staleCache.savedAt, staleCache.forecast);
                 else renderWeatherError();
                 window.clearTimeout(retryTimer);
                 retryTimer = window.setTimeout(function () { fetchWeather(false); }, 20000);

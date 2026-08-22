@@ -67,7 +67,7 @@ healthButtons.forEach(function (button) {
         const key = button.dataset.health;
         healthLog[key] = !healthLog[key];
 
-        if (typeof addTrust === "function") addTrust(1);
+        if (healthLog[key] && typeof addTrust === "function") addTrust(1, "health:" + key);
         if (typeof completeMission === "function") completeMission("health");
 
         saveHealthLog();
@@ -81,7 +81,7 @@ loadHealthLog();
 (function () {
     const STORAGE_KEY = "meridianMedicationLogs";
     const HISTORY_DAYS = 90;
-    const medicationButtons = document.querySelectorAll(".med-btn");
+    let medicationButtons = document.querySelectorAll(".med-btn");
     const todayMedicationList = document.getElementById("todayMedicationList");
     const medicationHistoryList = document.getElementById("medicationHistoryList");
     const medicationHistoryModal = document.getElementById("medicationHistoryModal");
@@ -153,16 +153,16 @@ loadHealthLog();
         return logs.filter(function (log) { return log.date === today; });
     }
 
-    function hasDailySlot(logs, slot) {
+    function hasDailySlot(logs, slot, name) {
         return todayLogs(logs).some(function (log) {
-            return log.name === "ロメリジン" && log.slot === slot;
+            return log.name === (name || "ロメリジン") && log.slot === slot;
         });
     }
 
     function updateDailyButtons(logs) {
         medicationButtons.forEach(function (button) {
-            if (button.dataset.medication !== "ロメリジン") return;
-            button.classList.toggle("selected", hasDailySlot(logs, button.dataset.slot));
+            if (button.classList.contains("prn")) return;
+            button.classList.toggle("selected", hasDailySlot(logs, button.dataset.slot, button.dataset.medication));
         });
     }
 
@@ -212,20 +212,20 @@ loadHealthLog();
 
     function renderCommanderMessage(logs) {
         if (!commanderMessage) return;
-        const hour = new Date().getHours();
-        const morning = hasDailySlot(logs, "午前");
-        const night = hasDailySlot(logs, "夜");
+        const settings = window.MeridianMedicationSettings && window.MeridianMedicationSettings.read
+            ? window.MeridianMedicationSettings.read()
+            : [];
+        const daily = settings.filter(function (item) { return item.type === "daily" && item.active !== false; });
+        const missing = daily.filter(function (item) { return !hasDailySlot(logs, item.slot, item.name); });
 
-        if (morning && night) {
+        if (daily.length && missing.length === 0) {
             commanderMessage.textContent = "本日の定時薬は完了。よく管理できている。";
-        } else if (!morning && hour >= 15) {
-            commanderMessage.textContent = "午前のロメリジンが未記録だ。飲んだなら記録、まだなら確認しろ。";
-        } else if (!night && hour >= 23) {
-            commanderMessage.textContent = "夜のロメリジンが未記録だ。忘れたふりは通用しないぞ、レイ。";
-        } else if (morning && !night) {
-            commanderMessage.textContent = "午前分は確認済み。夜分も忘れずに。";
+        } else if (daily.length && missing.length < daily.length) {
+            commanderMessage.textContent = "定時薬は一部確認済み。未記録は " + missing.map(function (item) { return item.name + "（" + item.slot + "）"; }).join("、") + "。";
+        } else if (daily.length) {
+            commanderMessage.textContent = "本日の定時薬はまだ未記録だ。服用した時刻を、その場で残しておけ。";
         } else {
-            commanderMessage.textContent = "服薬した時刻を、その場で記録しておけ。記憶より記録だ。";
+            commanderMessage.textContent = "定時薬は未設定だ。必要ならArchiveから登録しろ。";
         }
     }
 
@@ -284,6 +284,7 @@ loadHealthLog();
     }
 
     function renderAll() {
+        medicationButtons = document.querySelectorAll(".med-btn");
         let logs = pruneOldLogs(getLogs());
         logs.sort(function (a, b) {
             return new Date(b.takenAt) - new Date(a.takenAt);
@@ -316,13 +317,13 @@ loadHealthLog();
         }
     }
 
-    medicationButtons.forEach(function (button) {
-        button.addEventListener("click", function () {
+    function handleMedicationClick(button) {
             const medication = button.dataset.medication;
             const slot = button.dataset.slot;
             let logs = getLogs();
 
-            if (medication === "ロメリジン" && hasDailySlot(logs, slot)) {
+            const isDaily = !button.classList.contains("prn");
+            if (isDaily && hasDailySlot(logs, slot, medication)) {
                 logs = logs.filter(function (log) {
                     return !(log.date === dateKey(new Date()) && log.name === medication && log.slot === slot);
                 });
@@ -331,7 +332,7 @@ loadHealthLog();
                 return;
             }
 
-            if (medication !== "ロメリジン" && !shouldProceedWithRestrictedMedicine(medication, logs)) {
+            if (!isDaily && !shouldProceedWithRestrictedMedicine(medication, logs)) {
                 return;
             }
 
@@ -347,13 +348,21 @@ loadHealthLog();
             const currentLog = logs[logs.length - 1];
             window.MeridianSounds?.play("record");
 
-            if (typeof addTrust === "function") addTrust(1);
+            if (typeof addTrust === "function") addTrust(1, "medication:" + currentLog.id);
             if (typeof completeMission === "function") completeMission("health");
 
             renderAll();
             updateMedicationKnowledge(getLogs(), currentLog);
+    }
+
+    [document.getElementById("dailyMedicationGrid"), document.getElementById("prnMedicationGrid")].forEach(function (grid) {
+        if (!grid) return;
+        grid.addEventListener("click", function (event) {
+            const button = event.target.closest(".med-btn");
+            if (button && grid.contains(button)) handleMedicationClick(button);
         });
     });
+    window.addEventListener("meridianMedicationSettingsChanged", function () { renderAll(); });
 
     function setMedicationHistoryOpen(open) {
         if (!medicationHistoryModal) return;

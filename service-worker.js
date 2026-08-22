@@ -3,7 +3,7 @@
 // Commander image refresh
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-4.2.4-training-number-align";
+const MERIDIAN_SW_VERSION = "meridian-runtime-5.0.0-command-intelligence";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {

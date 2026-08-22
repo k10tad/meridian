@@ -89,6 +89,9 @@ function saveCondition(condition) {
 
 function applyCondition(condition, shouldAddTrust) {
     const data = conditionData[condition];
+    const previousCondition = localStorage.getItem("meridianConditionDate") === new Date().toDateString()
+        ? localStorage.getItem("meridianTodayCondition")
+        : null;
 
     if (!data) return;
 
@@ -107,8 +110,8 @@ function applyCondition(condition, shouldAddTrust) {
         }
     });
 
-    if (shouldAddTrust && typeof addTrust === "function") {
-        addTrust(data.trust);
+    if (shouldAddTrust && previousCondition !== condition && typeof addTrust === "function") {
+        addTrust(data.trust, "condition:" + condition);
     }
 
     if (typeof completeMission === "function") {

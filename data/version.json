@@ -1,12 +1,13 @@
 {
-  "version": "2.3.6",
-  "build": "training-timer-number-alignment",
-  "updatedAt": "2026-08-19",
+  "version": "3.0.0",
+  "build": "command-intelligence-and-observatory",
+  "updatedAt": "2026-08-21",
   "notes": [
-    "TrainingタイマーのStart・Pause・Resetを修正",
-    "時間・休憩・ラウンド入力を小型カードへ整理",
-    "設定欄を約3割縮小しタイマー表示との視覚バランスを調整",
-    "iPhoneの時刻入力値を枠内の縦中央へ補正",
+    "Trustを日次リセットし同一操作の重複加算を防止",
+    "Trainingの前回設定保存・振動・画面スリープ防止を追加",
+    "30日コンディション分析とMorning Brief・Night Reportを追加",
+    "定時薬・頓服を編集できるMedication Settingsを追加",
+    "雲量・視程・風・月相から今夜の観測条件を判定するObservatory Briefを追加",
     "Planner・Health・Relationship・Archiveなどの保存データは維持"
   ]
 }

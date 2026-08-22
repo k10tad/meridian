@@ -3143,6 +3143,38 @@ body.weather-reregistration-open {
     .training-mode-btn { font-size: 8px; letter-spacing: .035em; }
 }
 
+/* Meridian Command Intelligence v3 */
+.operations-report-card { border-color: rgba(212,175,55,.24); background: linear-gradient(145deg,rgba(25,31,48,.84),rgba(8,11,20,.9)); }
+.operations-report-card h2 { margin: 7px 0 9px; font-size: 19px; }
+.operations-report-card p { margin: 0; color: var(--color-text); font-size: 13px; line-height: 1.75; }
+.observatory-card { overflow: hidden; border-color: rgba(111,160,202,.28); background: radial-gradient(circle at 88% 4%,rgba(72,112,160,.18),transparent 38%),linear-gradient(150deg,rgba(17,26,46,.96),rgba(6,9,18,.96)); }
+.observatory-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.observatory-head h2 { margin:6px 0 0; font-size:20px; }
+.observatory-status { flex:0 0 auto; padding:6px 9px; border:1px solid rgba(212,175,55,.28); border-radius:999px; color:var(--color-gold); font-size:8px; font-weight:800; letter-spacing:.13em; }
+.observatory-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:18px; }
+.observatory-grid > div { min-width:0; padding:11px; border:1px solid rgba(255,255,255,.07); border-radius:13px; background:rgba(255,255,255,.025); }
+.observatory-grid span,.observatory-grid strong { display:block; }
+.observatory-grid span { color:var(--color-muted); font-size:8px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; }
+.observatory-grid strong { margin-top:6px; color:var(--color-text); font-size:12px; font-weight:600; line-height:1.45; }
+.observatory-commander { margin:15px 0 0; padding-top:13px; border-top:1px solid rgba(255,255,255,.07); color:var(--color-muted); font-size:12px; line-height:1.75; }
+.thirty-day-card h2 { margin:6px 0 15px; }
+.analysis-metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+.analysis-metrics div { padding:10px 4px; border:1px solid rgba(255,255,255,.07); border-radius:11px; text-align:center; }
+.analysis-metrics strong,.analysis-metrics span { display:block; }
+.analysis-metrics strong { color:var(--color-gold); font-size:20px; font-weight:500; }
+.analysis-metrics span { margin-top:4px; color:var(--color-muted); font-size:8px; }
+#thirtyDayAnalysis p { margin:14px 0 7px; color:var(--color-text); font-size:12px; line-height:1.75; }
+#thirtyDayAnalysis small { color:var(--color-muted); font-size:9px; }
+.settings-description { color:var(--color-muted); font-size:11px; line-height:1.7; }
+.medication-setting-form { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:14px 0; }
+.medication-setting-form #medicationSettingName,.medication-setting-form #medicationSettingSlot { grid-column:1/-1; }
+.medication-setting-form .archive-save-btn { min-height:44px; }
+.medication-settings-list { display:grid; gap:7px; }
+.medication-setting-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 11px; border:1px solid rgba(255,255,255,.07); border-radius:12px; background:rgba(255,255,255,.025); }
+.medication-setting-row strong,.medication-setting-row small { display:block; }
+.medication-setting-row strong { font-size:12px; }.medication-setting-row small { margin-top:3px; color:var(--color-muted); font-size:9px; }
+.medication-setting-row button { width:30px; height:30px; border:1px solid var(--color-card-border); border-radius:9px; background:transparent; color:var(--color-muted); }
+
 /* Meridian Training timer layout repair v4.1.2 */
 .training-card .training-native-picker {
     display: grid;

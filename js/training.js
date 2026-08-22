@@ -2,6 +2,7 @@
 (function () {
     "use strict";
     const STORAGE = "meridianTrainingLogs";
+    const SETTINGS_STORAGE = "meridianTrainingSettings";
     const modeButtons = Array.from(document.querySelectorAll(".training-mode-btn"));
     const presetButtons = Array.from(document.querySelectorAll(".training-preset-btn"));
     const presetRow = document.getElementById("trainingPresetRow");
@@ -27,6 +28,13 @@
     let mode = "boxing", work = 120, rest = 60, rounds = 3;
     let phase = "work", round = 1, sets = 0, remaining = work;
     let running = false, endAt = 0, startedAt = 0, accumulated = 0, timer = null;
+    let wakeLock = null;
+
+    function readSettings() { try { return JSON.parse(localStorage.getItem(SETTINGS_STORAGE)) || {}; } catch (_) { return {}; } }
+    function saveSettings() { localStorage.setItem(SETTINGS_STORAGE, JSON.stringify({ mode: mode, work: work, rest: rest, rounds: rounds })); }
+    function vibrate(pattern) { if (navigator.vibrate) navigator.vibrate(pattern); }
+    async function requestWakeLock() { try { if ("wakeLock" in navigator && !wakeLock) wakeLock = await navigator.wakeLock.request("screen"); } catch (_) {} }
+    async function releaseWakeLock() { try { if (wakeLock) await wakeLock.release(); } catch (_) {} wakeLock = null; }
 
     for (let value = 1; value <= 30; value += 1) {
         const option = document.createElement("option");
@@ -68,6 +76,7 @@
         if (mode === "custom" || mode === "treadmill") { rest = 0; rounds = 1; }
         else { rest = inputToSeconds(restTime.value); rounds = Math.max(1, Number(roundsSelect.value) || 1); }
         presetButtons.forEach(function (button) { button.classList.remove("active"); });
+        saveSettings();
         reset();
     }
     function updatePickerLayout() {
@@ -93,6 +102,7 @@
         ]);
         if (mode === "custom") { work = 20 * 60; rest = 0; rounds = 1; }
         updatePickerLayout(); syncInputs(); reset();
+        saveSettings();
         modeButtons.forEach(function (button) { button.classList.toggle("active", button.dataset.trainingMode === mode); });
     }
     function setPresets(presets) {
@@ -118,15 +128,16 @@
         remaining = Math.max(0, (endAt - Date.now()) / 1000);
         if (remaining > 0) return render();
         window.MeridianSounds?.play("alarm");
+        vibrate([160, 80, 160]);
         if (phase === "work" && rest > 0 && round < rounds) { phase = "rest"; remaining = rest; endAt = Date.now() + rest * 1000; message.textContent = "Recover. Keep the next round controlled."; }
         else if (round < rounds) { round += 1; phase = "work"; remaining = work; endAt = Date.now() + work * 1000; message.textContent = "Round " + round + "."; }
-        else { stop(false); remaining = 0; message.textContent = "Session complete. Record it when ready."; }
+        else { stop(false); releaseWakeLock(); remaining = 0; message.textContent = "Session complete. Record it when ready."; }
         render();
     }
-    function start() { if (remaining <= 0) reset(); running = true; startedAt = Date.now(); endAt = Date.now() + remaining * 1000; timer = window.setInterval(tick, 250); message.textContent = "Session active."; render(); }
+    function start() { if (remaining <= 0) reset(); running = true; startedAt = Date.now(); endAt = Date.now() + remaining * 1000; timer = window.setInterval(tick, 250); requestWakeLock(); vibrate(60); message.textContent = "Session active."; render(); }
     function stop(addElapsed) { if (addElapsed && running && startedAt) accumulated += Math.max(0, (Date.now() - startedAt) / 1000); running = false; startedAt = 0; window.clearInterval(timer); timer = null; render(); }
-    function pause() { if (!running) return; remaining = Math.max(0, (endAt - Date.now()) / 1000); stop(false); message.textContent = "Paused."; }
-    function reset() { stop(false); phase = "work"; round = 1; sets = 0; accumulated = 0; startedAt = 0; remaining = work; message.textContent = mode.charAt(0).toUpperCase() + mode.slice(1) + " is ready."; render(); }
+    function pause() { if (!running) return; remaining = Math.max(0, (endAt - Date.now()) / 1000); stop(false); releaseWakeLock(); vibrate(40); message.textContent = "Paused."; }
+    function reset() { stop(false); releaseWakeLock(); phase = "work"; round = 1; sets = 0; accumulated = 0; startedAt = 0; remaining = work; message.textContent = mode.charAt(0).toUpperCase() + mode.slice(1) + " is ready."; render(); }
     function finish() {
         const elapsed = Math.max(0, ((round - 1) * work) + (phase === "rest" ? work : work - remaining));
         stop(false);
@@ -147,10 +158,20 @@
     }
 
     modeButtons.forEach(function (button) { button.addEventListener("click", function () { configureMode(button.dataset.trainingMode); }); });
-    presetButtons.forEach(function (button) { button.addEventListener("click", function () { work = Number(button.dataset.work); rest = Number(button.dataset.rest); rounds = Number(button.dataset.rounds); presetButtons.forEach(function (item) { item.classList.toggle("active", item === button); }); syncInputs(); reset(); }); });
+    presetButtons.forEach(function (button) { button.addEventListener("click", function () { work = Number(button.dataset.work); rest = Number(button.dataset.rest); rounds = Number(button.dataset.rounds); presetButtons.forEach(function (item) { item.classList.toggle("active", item === button); }); syncInputs(); saveSettings(); reset(); }); });
     [workTime, restTime, roundsSelect].forEach(function (control) { control.addEventListener("change", applyInputs); control.addEventListener("input", function () { if (control === roundsSelect) applyInputs(); }); });
     startButton.addEventListener("click", start); pauseButton.addEventListener("click", pause); resetButton.addEventListener("click", reset);
     setButton.addEventListener("click", function () { sets += 1; render(); }); finishButton.addEventListener("click", finish);
-    document.addEventListener("visibilitychange", function () { if (!document.hidden) tick(); });
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) { tick(); if (running) requestWakeLock(); } });
+    const savedSettings = readSettings();
+    if (["boxing", "treadmill", "custom"].includes(savedSettings.mode)) mode = savedSettings.mode;
+    if (Number(savedSettings.work) > 0) work = Number(savedSettings.work);
+    if (Number(savedSettings.rest) >= 0) rest = Number(savedSettings.rest);
+    if (Number(savedSettings.rounds) > 0) rounds = Math.min(30, Number(savedSettings.rounds));
+    if (mode === "treadmill") {
+        [["Quick","10 min",600,0,1],["Standard","20 min",1200,0,1],["Long","30 min",1800,0,1]].forEach(function (preset,index) { const button=presetButtons[index]; button.innerHTML=preset[0]+"<br><small>"+preset[1]+"</small>"; button.dataset.work=preset[2]; button.dataset.rest=preset[3]; button.dataset.rounds=preset[4]; button.classList.remove("active"); });
+    }
+    modeButtons.forEach(function (button) { button.classList.toggle("active", button.dataset.trainingMode === mode); });
+    presetRow.hidden = mode === "custom";
     updatePickerLayout(); syncInputs(); renderHistory(); reset();
 })();
