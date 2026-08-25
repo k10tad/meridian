@@ -195,7 +195,7 @@
         </div>
 
         <div id="observatoryBrief" class="card observatory-card">
-            <div class="observatory-head"><div><div class="meta-label">CELESTIAL OPERATIONS</div><h2>Observatory Brief</h2></div><span id="observatoryStatus" class="observatory-status">STANDBY</span></div>
+            <div class="observatory-head"><div><div class="meta-label">CELESTIAL OPERATIONS</div><h2>Observatory Brief</h2><p id="observatoryLocation" class="observatory-location">Weather station sync</p></div><span id="observatoryStatus" class="observatory-status">STANDBY</span></div>
             <div class="observatory-grid"><div><span>Observation Window</span><strong id="observatoryWindow">--:--</strong></div><div><span>Moon</span><strong id="observatoryMoon">--</strong></div><div><span>Tonight’s Target</span><strong id="observatoryTarget">--</strong></div><div><span>Conditions</span><strong id="observatoryConditions">--</strong></div></div>
             <p id="observatoryCommander" class="observatory-commander">今夜の空を確認している。</p>
             <button id="observatoryRetry" class="observatory-retry" type="button" hidden>RETRY OBSERVATION DATA</button>
@@ -461,14 +461,13 @@
         <p id="healthSummary">今日の記録はまだない。</p>
     </div>
 
-    <section class="health-card headache-log-card">
+    <section class="card health-card headache-log-card">
         <div class="health-card-header"><h3>Headache Quick Log</h3><p>痛みの強さと、その時の服薬だけを残す。</p></div>
         <div class="headache-scale-row"><span>Intensity</span><strong id="headacheIntensityValue">5</strong></div>
         <input id="headacheIntensity" class="headache-range" type="range" min="0" max="10" value="5" step="1">
-        <div class="headache-quick-values"><button type="button" data-headache-value="2">2</button><button type="button" data-headache-value="4">4</button><button type="button" data-headache-value="6">6</button><button type="button" data-headache-value="8">8</button></div>
-        <select id="headacheMedication" class="archive-select"><option value="">服薬なし／未記録</option></select>
-        <input id="headacheMemo" class="archive-input" maxlength="120" placeholder="メモ（任意）">
-        <button id="saveHeadacheLog" class="archive-save-btn" type="button">Record Headache</button>
+        <div class="headache-range-legend"><span>0</span><span>10</span></div>
+        <div class="headache-fields"><select id="headacheMedication" class="archive-select"><option value="">服薬なし／未記録</option></select><input id="headacheMemo" class="archive-input" maxlength="120" placeholder="メモ（任意）"></div>
+        <button id="saveHeadacheLog" class="archive-save-btn headache-save" type="button">Record Headache</button>
         <div id="headacheCommander" class="medication-commander-message">頭痛があった時だけ残せ。毎日埋める必要はない。</div>
         <div id="headacheLogList" class="compact-record-list"></div>
     </section>

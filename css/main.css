@@ -3150,6 +3150,7 @@ body.weather-reregistration-open {
 .observatory-card { overflow: hidden; border-color: rgba(111,160,202,.28); background: radial-gradient(circle at 88% 4%,rgba(72,112,160,.18),transparent 38%),linear-gradient(150deg,rgba(17,26,46,.96),rgba(6,9,18,.96)); }
 .observatory-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
 .observatory-head h2 { margin:6px 0 0; font-size:20px; }
+.observatory-location { margin:5px 0 0!important; color:var(--color-muted); font-size:9px!important; letter-spacing:.04em; }
 .observatory-status { flex:0 0 auto; padding:6px 9px; border:1px solid rgba(212,175,55,.28); border-radius:999px; color:var(--color-gold); font-size:8px; font-weight:800; letter-spacing:.13em; }
 .observatory-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:18px; }
 .observatory-grid > div { min-width:0; padding:11px; border:1px solid rgba(255,255,255,.07); border-radius:13px; background:rgba(255,255,255,.025); }
@@ -3167,8 +3168,14 @@ body.weather-reregistration-open {
 .observatory-planets { display:grid; gap:6px; margin:12px 0; color:var(--color-muted); font-size:10px; }
 .observatory-planets span { display:block; padding:7px 9px; border-left:2px solid rgba(212,175,55,.32); }
 .observation-log-form { display:grid; gap:8px; margin-top:10px; }
+.observation-log-form[hidden] { display:none!important; }
 .observation-log-form input,.observation-log-form textarea { width:100%; border:1px solid rgba(255,255,255,.1); border-radius:10px; background:rgba(5,7,17,.65); color:var(--color-text); padding:10px; font:inherit; }
 .observation-log-form button { min-height:38px; border:1px solid rgba(212,175,55,.25); border-radius:10px; background:rgba(212,175,55,.08); color:var(--color-gold); }
+.observatory-card .observation-log-item { display:block; padding:10px 2px; border-bottom:1px solid rgba(255,255,255,.07); }
+.observatory-card .observation-log-item strong,.observatory-card .observation-log-item small { display:block; }
+.observatory-card .observation-log-item strong { color:var(--color-text); font-size:11px; line-height:1.5; }
+.observatory-card .observation-log-item small { margin-top:3px; color:var(--color-muted); font-size:9px; line-height:1.5; }
+.observatory-card #observationLogList:empty { display:none; }
 .backup-integrity-row { display:flex; justify-content:space-between; gap:12px; margin:13px 0; padding:10px 0; border-top:1px solid rgba(255,255,255,.07); border-bottom:1px solid rgba(255,255,255,.07); color:var(--color-muted); font-size:10px; }
 .backup-integrity-row strong { color:var(--color-text); text-align:right; }
 .health-card-header { display:block; }

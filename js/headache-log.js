@@ -32,7 +32,6 @@
         memo.value=""; window.MeridianSounds?.play("record"); render(); window.dispatchEvent(new CustomEvent("meridianHeadacheLogged"));
     }
     intensity.addEventListener("input",function(){value.textContent=intensity.value;});
-    document.querySelectorAll("[data-headache-value]").forEach(function(button){button.addEventListener("click",function(){intensity.value=button.dataset.headacheValue;value.textContent=intensity.value;});});
     save.addEventListener("click",record); window.addEventListener("meridianMedicationSettingsChanged",fillMedicines); fillMedicines(); render();
     window.MeridianHeadacheLog={read:read};
 })();

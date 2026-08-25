@@ -3,7 +3,7 @@
 // Commander image refresh
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-5.1.0-health-observatory-integrity";
+const MERIDIAN_SW_VERSION = "meridian-runtime-5.1.2-headache-slider";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {

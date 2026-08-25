@@ -1,14 +1,11 @@
 {
-  "version": "3.1.0",
-  "build": "medication-headache-observatory2-data-integrity",
+  "version": "3.1.2",
+  "build": "headache-slider-simplification",
   "updatedAt": "2026-08-25",
   "notes": [
-    "服用前に同一薬・共通成分・重要な注意組み合わせを確認",
-    "頭痛の強度・服薬・メモを短い操作で記録",
-    "30日分析へ頭痛日数と平均強度を反映",
-    "天文薄明・月出没・惑星高度方位を端末内計算",
-    "Observation Logを追加",
-    "バックアップ整合性検証と復元前スナップショット回復を追加",
+    "頭痛強度の2・4・6・8クイックボタンを削除",
+    "0〜10を1刻みで選べるスライダーへ一本化",
+    "スライダー両端へ最小値と最大値だけを表示",
     "Planner・Health・Relationship・Archiveなどの保存データは維持"
   ]
 }
