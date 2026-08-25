@@ -210,6 +210,16 @@ loadHealthLog();
         return true;
     }
 
+    function shouldProceedAfterPreflight(medicine, logs) {
+        const engine = window.MeridianMedicationKnowledge;
+        const alert = engine && typeof engine.preflight === "function" ? engine.preflight(medicine, logs, new Date()) : null;
+        if (!alert) return "clear";
+        renderMedicationAlert(alert);
+        if (commanderMessage) commanderMessage.textContent = alert.title + "。" + alert.message;
+        if (alert.level === "high") window.MeridianSounds?.play("beep");
+        return window.confirm(alert.title + "\n\n" + alert.message + "\n\n確認したうえで、服用記録だけを追加しますか？") ? "confirmed" : "cancel";
+    }
+
     function renderCommanderMessage(logs) {
         if (!commanderMessage) return;
         const settings = window.MeridianMedicationSettings && window.MeridianMedicationSettings.read
@@ -332,7 +342,10 @@ loadHealthLog();
                 return;
             }
 
-            if (!isDaily && !shouldProceedWithRestrictedMedicine(medication, logs)) {
+            const preflightState = shouldProceedAfterPreflight(medication, logs);
+            if (preflightState === "cancel") return;
+
+            if (!isDaily && preflightState === "clear" && !shouldProceedWithRestrictedMedicine(medication, logs)) {
                 return;
             }
 

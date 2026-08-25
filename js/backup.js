@@ -7,8 +7,9 @@
     "use strict";
 
     const BACKUP_FORMAT = "meridian-backup";
-    const BACKUP_SCHEMA_VERSION = 1;
+    const BACKUP_SCHEMA_VERSION = 2;
     const AUTO_SNAPSHOT_KEY = "meridianRecoverySnapshot";
+    const LAST_VERIFIED_KEY = "meridianLastVerifiedBackup";
 
     const exportButton = document.getElementById("backupExportButton");
     const exportStatus = document.getElementById("backupExportStatus");
@@ -17,6 +18,9 @@
     const importInput = document.getElementById("backupImportInput");
     const importButton = document.getElementById("backupImportButton");
     const importStatus = document.getElementById("backupImportStatus");
+    const recoveryButton = document.getElementById("backupRecoveryButton");
+    const recoveryStatus = document.getElementById("backupRecoveryStatus");
+    const lastVerified = document.getElementById("backupLastVerified");
 
     if (
         !exportButton ||
@@ -31,6 +35,13 @@
     }
 
     let selectedBackup = null;
+
+    function fingerprint(data) {
+        const text = JSON.stringify(data);
+        let hash = 2166136261;
+        for (let i = 0; i < text.length; i += 1) { hash ^= text.charCodeAt(i); hash = Math.imul(hash, 16777619); }
+        return (hash >>> 0).toString(16).padStart(8, "0");
+    }
 
     function getLocalDateStamp(date) {
         const year = date.getFullYear();
@@ -66,7 +77,7 @@
         const now = new Date();
         const storageData = readAllLocalStorage();
 
-        return {
+        const payload = {
             format: BACKUP_FORMAT,
             schemaVersion: BACKUP_SCHEMA_VERSION,
             app: "Meridian",
@@ -74,8 +85,10 @@
             origin: window.location.origin,
             pathname: window.location.pathname,
             itemCount: Object.keys(storageData).length,
-            localStorage: storageData
+            localStorage: storageData,
+            integrity: { algorithm: "FNV1A-32", value: fingerprint(storageData) }
         };
+        return payload;
     }
 
     function validateBackupPayload(payload) {
@@ -87,8 +100,12 @@
             return "Meridian形式のバックアップではない。";
         }
 
-        if (payload.schemaVersion !== BACKUP_SCHEMA_VERSION) {
+        if (![1, BACKUP_SCHEMA_VERSION].includes(payload.schemaVersion)) {
             return "対応していないバックアップ形式だ。";
+        }
+
+        if (payload.schemaVersion >= 2 && (!payload.integrity || payload.integrity.value !== fingerprint(payload.localStorage))) {
+            return "バックアップの整合性を確認できない。内容が欠損または変更されている。";
         }
 
         if (
@@ -149,6 +166,8 @@
             }
 
             downloadBackup(payload);
+            localStorage.setItem(LAST_VERIFIED_KEY, payload.exportedAt);
+            updateIntegrityStatus();
 
             exportStatus.textContent =
                 payload.itemCount +
@@ -172,11 +191,28 @@
             createdAt: new Date().toISOString(),
             localStorage: readAllLocalStorage()
         };
+        snapshot.integrity = { algorithm: "FNV1A-32", value: fingerprint(snapshot.localStorage) };
 
         localStorage.setItem(
             AUTO_SNAPSHOT_KEY,
             JSON.stringify(snapshot)
         );
+    }
+
+    function updateIntegrityStatus() {
+        const stamp = localStorage.getItem(LAST_VERIFIED_KEY);
+        if (lastVerified) lastVerified.textContent = stamp ? new Date(stamp).toLocaleString("ja-JP") : "未作成";
+        if (recoveryButton) recoveryButton.disabled = !localStorage.getItem(AUTO_SNAPSHOT_KEY);
+    }
+
+    function restoreRecoverySnapshot() {
+        let snapshot=null; try { snapshot=JSON.parse(localStorage.getItem(AUTO_SNAPSHOT_KEY)); } catch (_) {}
+        if (!snapshot || !snapshot.localStorage || snapshot.integrity?.value !== fingerprint(snapshot.localStorage)) {
+            if (recoveryStatus) recoveryStatus.textContent="復元前退避を検証できない。現在データは変更しない。";
+            return;
+        }
+        if (!window.confirm("直前の復元操作より前の状態へ戻します。現在の状態は上書きされます。続行しますか？")) return;
+        const safety=buildBackupPayload(); sessionStorage.setItem("meridianBeforeRecovery",JSON.stringify(safety)); restoreLocalStorage(snapshot.localStorage); sessionStorage.setItem("meridianRestoreCompleted","true"); window.location.reload();
     }
 
     function restoreLocalStorage(storageData) {
@@ -321,6 +357,7 @@
     exportButton.addEventListener("click", exportBackup);
     importInput.addEventListener("change", handleBackupSelection);
     importButton.addEventListener("click", importBackup);
+    if (recoveryButton) recoveryButton.addEventListener("click", restoreRecoverySnapshot);
 
     window.addEventListener("storage", updateStorageCount);
 
@@ -334,4 +371,5 @@
     }
 
     updateStorageCount();
+    updateIntegrityStatus();
 })();

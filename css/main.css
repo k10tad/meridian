@@ -3158,6 +3158,19 @@ body.weather-reregistration-open {
 .observatory-grid strong { margin-top:6px; color:var(--color-text); font-size:12px; font-weight:600; line-height:1.45; }
 .observatory-commander { margin:20px 0 0; padding:15px 2px 0; border-top:1px solid rgba(255,255,255,.07); color:var(--color-muted); font-size:12px; line-height:1.75; }
 .observatory-retry { width:100%; min-height:38px; margin-top:12px; border:1px solid rgba(212,175,55,.26); border-radius:11px; background:rgba(212,175,55,.07); color:var(--color-gold); font:inherit; font-size:8px; font-weight:750; letter-spacing:.1em; }
+.observatory-phase2 { margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,.07); }
+.observatory-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.observatory-detail-grid>div { padding:10px; border-radius:12px; background:rgba(255,255,255,.025); }
+.observatory-detail-grid span,.observatory-detail-grid strong { display:block; }
+.observatory-detail-grid span { color:var(--color-muted); font-size:8px; text-transform:uppercase; letter-spacing:.08em; }
+.observatory-detail-grid strong { margin-top:5px; font-size:12px; }
+.observatory-planets { display:grid; gap:6px; margin:12px 0; color:var(--color-muted); font-size:10px; }
+.observatory-planets span { display:block; padding:7px 9px; border-left:2px solid rgba(212,175,55,.32); }
+.observation-log-form { display:grid; gap:8px; margin-top:10px; }
+.observation-log-form input,.observation-log-form textarea { width:100%; border:1px solid rgba(255,255,255,.1); border-radius:10px; background:rgba(5,7,17,.65); color:var(--color-text); padding:10px; font:inherit; }
+.observation-log-form button { min-height:38px; border:1px solid rgba(212,175,55,.25); border-radius:10px; background:rgba(212,175,55,.08); color:var(--color-gold); }
+.backup-integrity-row { display:flex; justify-content:space-between; gap:12px; margin:13px 0; padding:10px 0; border-top:1px solid rgba(255,255,255,.07); border-bottom:1px solid rgba(255,255,255,.07); color:var(--color-muted); font-size:10px; }
+.backup-integrity-row strong { color:var(--color-text); text-align:right; }
 .health-card-header { display:block; }
 .health-card-header h3 { margin:0; }
 .health-card-header p { margin:8px 0 0; max-width:none; line-height:1.6; }

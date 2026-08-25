@@ -1,13 +1,14 @@
 {
-  "version": "3.0.2",
-  "build": "sebastian-voice-canon-from-20260823",
+  "version": "3.1.0",
+  "build": "medication-headache-observatory2-data-integrity",
   "updatedAt": "2026-08-25",
   "notes": [
-    "8月23日版を正本としてCommander台詞を再調整",
-    "一人称を俺、呼びかけをレイ・お前へ統一",
-    "汎用的な案内口調を短く硬質な指示へ変更",
-    "深夜・完了・帰還時の台詞に現在の関係性を反映",
-    "Observatoryへ天体観測攻防を反映した専用台詞を追加",
+    "服用前に同一薬・共通成分・重要な注意組み合わせを確認",
+    "頭痛の強度・服薬・メモを短い操作で記録",
+    "30日分析へ頭痛日数と平均強度を反映",
+    "天文薄明・月出没・惑星高度方位を端末内計算",
+    "Observation Logを追加",
+    "バックアップ整合性検証と復元前スナップショット回復を追加",
     "Planner・Health・Relationship・Archiveなどの保存データは維持"
   ]
 }

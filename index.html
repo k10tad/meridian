@@ -199,6 +199,13 @@
             <div class="observatory-grid"><div><span>Observation Window</span><strong id="observatoryWindow">--:--</strong></div><div><span>Moon</span><strong id="observatoryMoon">--</strong></div><div><span>Tonight’s Target</span><strong id="observatoryTarget">--</strong></div><div><span>Conditions</span><strong id="observatoryConditions">--</strong></div></div>
             <p id="observatoryCommander" class="observatory-commander">今夜の空を確認している。</p>
             <button id="observatoryRetry" class="observatory-retry" type="button" hidden>RETRY OBSERVATION DATA</button>
+            <div class="observatory-phase2">
+                <div class="observatory-detail-grid"><div><span>Astronomical Dark</span><strong id="observatoryDark">--:--</strong></div><div><span>Moon Rise / Set</span><strong id="observatoryMoonTimes">--:-- / --:--</strong></div></div>
+                <div id="observatoryPlanets" class="observatory-planets">惑星位置を計算している。</div>
+                <button id="observationLogButton" class="record-open-btn" type="button">MARK AS OBSERVED</button>
+                <div id="observationLogForm" class="observation-log-form" hidden><input id="observationTargetInput" maxlength="80" placeholder="観測した天体"><textarea id="observationNoteInput" maxlength="240" placeholder="短い観測メモ"></textarea><button id="saveObservationLog" type="button">SAVE OBSERVATION</button></div>
+                <div id="observationLogList" class="compact-record-list"></div>
+            </div>
         </div>
 
         <div class="card condition-card">
@@ -453,6 +460,18 @@
         <h2>Commander Analysis</h2>
         <p id="healthSummary">今日の記録はまだない。</p>
     </div>
+
+    <section class="health-card headache-log-card">
+        <div class="health-card-header"><h3>Headache Quick Log</h3><p>痛みの強さと、その時の服薬だけを残す。</p></div>
+        <div class="headache-scale-row"><span>Intensity</span><strong id="headacheIntensityValue">5</strong></div>
+        <input id="headacheIntensity" class="headache-range" type="range" min="0" max="10" value="5" step="1">
+        <div class="headache-quick-values"><button type="button" data-headache-value="2">2</button><button type="button" data-headache-value="4">4</button><button type="button" data-headache-value="6">6</button><button type="button" data-headache-value="8">8</button></div>
+        <select id="headacheMedication" class="archive-select"><option value="">服薬なし／未記録</option></select>
+        <input id="headacheMemo" class="archive-input" maxlength="120" placeholder="メモ（任意）">
+        <button id="saveHeadacheLog" class="archive-save-btn" type="button">Record Headache</button>
+        <div id="headacheCommander" class="medication-commander-message">頭痛があった時だけ残せ。毎日埋める必要はない。</div>
+        <div id="headacheLogList" class="compact-record-list"></div>
+    </section>
     <div class="card thirty-day-card"><div class="meta-label">30 DAY TRACE</div><h2>Condition Analysis</h2><div id="thirtyDayAnalysis">記録を分析している。</div></div>
 </section>
 
@@ -638,6 +657,9 @@
         <p id="backupExportStatus" class="backup-status">
             定期的に保存しておくと、端末変更や再設置時に復元できる。
         </p>
+        <div class="backup-integrity-row"><span>Last verified backup</span><strong id="backupLastVerified">未作成</strong></div>
+        <button id="backupRecoveryButton" class="backup-import-btn" type="button">Restore Pre-Import Snapshot</button>
+        <p id="backupRecoveryStatus" class="backup-status">復元前退避があれば、直前の状態へ戻せる。</p>
 
         <div class="backup-import-block">
             <div class="backup-import-title">Backup Import</div>
@@ -781,10 +803,12 @@
 <script src="js/planner.js?v=3.0.0-compact-history"></script>
 <script src="js/medication-knowledge.js?v=2.3.0-proactive-alerts"></script>
 <script src="js/medication-settings.js?v=1.0.0"></script>
-<script src="js/health.js?v=3.0.0-compact-history"></script>
+<script src="js/health.js?v=3.1.0-medication-preflight"></script>
+<script src="js/headache-log.js?v=1.0.0"></script>
 <script src="js/cycleInsight.js"></script>
 <script src="js/weather.js?v=3.3.1-observatory-sync"></script>
-<script src="js/observatory.js?v=1.0.1-sync-ui"></script>
+<script src="vendor/astronomy.browser.min.js?v=2.1.19"></script>
+<script src="js/observatory.js?v=2.0.0-phase2"></script>
 <script src="js/condition.js"></script>
 <script src="js/dailyBrief.js"></script>
 <script src="js/desk.js"></script>
@@ -805,7 +829,7 @@
 <script src="js/training.js?v=4.2.0-persistent-session"></script>
 <script src="js/archive.js?v=3.2.1-weather-layout"></script>
 <script src="js/update.js?v=1.9.1-album-hotfix"></script>
-<script src="js/backup.js"></script>
+<script src="js/backup.js?v=2.0.0-integrity"></script>
 
     <!-- Meridian Updater -->
     <div

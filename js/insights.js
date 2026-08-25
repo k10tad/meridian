@@ -4,7 +4,7 @@
     function read(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (_) { return fallback; } }
     function healthFor(date) { return read("meridianHealthLog_" + date.toDateString(), {}); }
     function summary() {
-        const weather = read("meridianWeatherHistory", {}), training = read("meridianTrainingLogs", []), meds = read("meridianMedicationLogs", []);
+        const weather = read("meridianWeatherHistory", {}), training = read("meridianTrainingLogs", []), meds = read("meridianMedicationLogs", []), headacheLogs = read("meridianHeadacheLogs", []);
         let recorded = 0, headache = 0, dizzy = 0, period = 0, pms = 0, low = 0, lowHeadache = 0;
         for (let i = 29; i >= 0; i -= 1) {
             const date = new Date(); date.setHours(12, 0, 0, 0); date.setDate(date.getDate() - i);
@@ -15,11 +15,12 @@
         }
         const cutoff = Date.now() - 30 * 86400000;
         const correlation = low < 3 ? "気象履歴は蓄積中だ。3日以上の低気圧記録から傾向を判定する。" : lowHeadache >= Math.ceil(low / 2) ? "低気圧日に頭痛が重なりやすい。気圧低下日は予定を一段軽くしろ。" : "低気圧と頭痛の明確な重なりは、現時点では強くない。";
-        return { recorded: recorded, headache: headache, dizzy: dizzy, period: period, pms: pms, training: training.filter(function (x) { return new Date(x.date).getTime() >= cutoff; }).length, medications: meds.filter(function (x) { return new Date(x.takenAt).getTime() >= cutoff; }).length, correlation: correlation };
+        const recentHeadaches=headacheLogs.filter(function(x){return new Date(x.recordedAt).getTime()>=cutoff;}), averageIntensity=recentHeadaches.length?(recentHeadaches.reduce(function(sum,x){return sum+Number(x.intensity||0);},0)/recentHeadaches.length).toFixed(1):"--";
+        return { recorded: recorded, headache: Math.max(headache, new Set(recentHeadaches.map(function(x){return ymd(new Date(x.recordedAt));})).size), averageIntensity:averageIntensity, dizzy: dizzy, period: period, pms: pms, training: training.filter(function (x) { return new Date(x.date).getTime() >= cutoff; }).length, medications: meds.filter(function (x) { return new Date(x.takenAt).getTime() >= cutoff; }).length, correlation: correlation };
     }
     function renderAnalysis() {
         const target = document.getElementById("thirtyDayAnalysis"); if (!target) return; const s = summary();
-        target.innerHTML = "<div class='analysis-metrics'><div><strong>" + s.recorded + "</strong><span>記録日</span></div><div><strong>" + s.headache + "</strong><span>頭痛</span></div><div><strong>" + s.dizzy + "</strong><span>めまい</span></div><div><strong>" + s.training + "</strong><span>Training</span></div></div><p>" + s.correlation + "</p><small>服薬 " + s.medications + "件 · 生理 " + s.period + "日 · PMS " + s.pms + "日</small>";
+        target.innerHTML = "<div class='analysis-metrics'><div><strong>" + s.recorded + "</strong><span>記録日</span></div><div><strong>" + s.headache + "</strong><span>頭痛日</span></div><div><strong>" + s.averageIntensity + "</strong><span>平均強度</span></div><div><strong>" + s.training + "</strong><span>Training</span></div></div><p>" + s.correlation + "</p><small>服薬 " + s.medications + "件 · 生理 " + s.period + "日 · PMS " + s.pms + "日</small>";
     }
     function renderReport() {
         const title = document.getElementById("operationsReportTitle"), body = document.getElementById("operationsReportBody"); if (!title || !body) return;

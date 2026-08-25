@@ -270,6 +270,26 @@
         };
     }
 
+    function preflight(medicine, logs, now) {
+        const info = KNOWLEDGE[medicine];
+        if (!info) return null;
+        const at = now instanceof Date ? now : new Date();
+        const recent = (Array.isArray(logs) ? logs : []).filter(function (log) {
+            const age = at.getTime() - parseTime(log && log.takenAt);
+            return age >= 0 && age <= 24 * 3600000;
+        });
+        const same = recent.filter(function (log) { return log.name === medicine; }).sort(function(a,b){return parseTime(b.takenAt)-parseTime(a.takenAt);})[0];
+        if (same) {
+            const hours = (at.getTime() - parseTime(same.takenAt)) / 3600000;
+            return { level: hours < 4 ? "high" : "warning", title: "同じ薬の記録がある", message: Math.floor(hours)+"時間"+Math.round((hours%1)*60)+"分前に"+medicine+"を記録している。追加する前に処方・製品の用法と残数を確認しろ。", detail: "前回 "+new Date(same.takenAt).toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"}), category: info.category, ingredient: info.ingredient };
+        }
+        const ingredientHit = recent.find(function (log) { const other=KNOWLEDGE[log.name]; return other && log.name!==medicine && other.ingredient.split("・").some(function(part){return part && info.ingredient.indexOf(part)!==-1;}); });
+        if (ingredientHit) return {level:"high",title:"同一成分の重複可能性",message:ingredientHit.name+"と"+medicine+"には共通成分がある。自己判断で追加せず確認しろ。",detail:"24時間以内の服用記録",category:info.category,ingredient:info.ingredient};
+        const interaction = findInteraction(medicine, recent, null, at);
+        if (interaction) return {level:interaction.level,title:interaction.title,message:interaction.message,detail:interaction.detail,category:info.category,ingredient:info.ingredient};
+        return null;
+    }
+
     function saveLatest(alert) {
         if (!alert) return;
         // Keep Commander medication speech only for the current app/tab session.
@@ -296,6 +316,7 @@
         getPreventiveAlert: getPreventiveAlert,
         getTodayRestrictions: getTodayRestrictions,
         evaluate: evaluate,
+        preflight: preflight,
         saveLatest: saveLatest,
         readLatest: readLatest
     };
