@@ -3455,6 +3455,163 @@ body.weather-reregistration-open {
     text-align: right;
     overflow-wrap: anywhere;
 }
+
+/* Meridian Archive dossiers v4 */
+#archivePage .classified-file-button {
+    display: block;
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    color: var(--color-text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+#archivePage .classified-file-button:active {
+    transform: scale(.992);
+}
+
+#archivePage .classified-file-button .archive-file-open {
+    display: block;
+    margin-top: 14px;
+    color: var(--color-gold);
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: .15em;
+}
+
+.classified-dossier-card {
+    border-color: rgba(212, 175, 55, .34);
+    background: linear-gradient(155deg, rgba(16, 22, 37, .99), rgba(5, 7, 14, .99));
+}
+
+.classified-file-body {
+    display: grid;
+    gap: 15px;
+    padding-right: 3px;
+}
+
+.classified-stamp {
+    width: fit-content;
+    padding: 6px 9px;
+    border: 1px solid rgba(212, 175, 55, .28);
+    border-radius: 999px;
+    color: var(--color-gold);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: .14em;
+}
+
+.classified-lead {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.classified-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.classified-metric {
+    min-width: 0;
+    padding: 11px;
+    border: 1px solid rgba(255, 255, 255, .07);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .025);
+}
+
+.classified-metric span,
+.classified-metric strong {
+    display: block;
+}
+
+.classified-metric span {
+    color: var(--color-muted);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.classified-metric strong {
+    margin-top: 6px;
+    color: var(--color-text);
+    font-size: 13px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.classified-subtitle {
+    margin: 2px 0 -5px;
+    color: var(--color-muted);
+    font-size: 9px;
+    letter-spacing: .13em;
+}
+
+.classified-list {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.classified-list li {
+    padding: 9px 10px;
+    border-left: 2px solid rgba(212, 175, 55, .35);
+    background: rgba(255, 255, 255, .02);
+    color: var(--color-muted);
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+.classified-commander {
+    padding: 14px;
+    border: 1px solid rgba(212, 175, 55, .2);
+    border-radius: 14px;
+    background: rgba(212, 175, 55, .055);
+}
+
+.classified-commander span {
+    color: var(--color-gold);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: .14em;
+}
+
+.classified-commander p {
+    margin: 8px 0 0;
+    color: var(--color-text);
+    font-size: 11px;
+    line-height: 1.75;
+}
+
+#archivePage .archive-body-note-item {
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, .07);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .025);
+}
+
+#archivePage .archive-body-note-item strong {
+    display: block;
+    color: var(--color-gold);
+    font-size: 10px;
+}
+
+#archivePage .archive-body-note-item p {
+    margin: 7px 0 0;
+    color: var(--color-text);
+    font-size: 11px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
 #archivePage .backup-import-block { margin-top: 18px; }
 .training-mode-grid { grid-template-columns: repeat(3, 1fr); }
 @media (max-width: 360px) {

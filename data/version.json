@@ -1,11 +1,12 @@
 {
-  "version": "3.1.4",
-  "build": "collapsible-health-archive",
+  "version": "3.2.0",
+  "build": "classified-dossiers-body-note-archive",
   "updatedAt": "2026-08-25",
   "notes": [
-    "Daily Conditionは通常最新3件だけを表示",
-    "Headache & Pulseも通常最新3件だけを表示",
-    "各履歴を個別に全件展開・折りたたみ可能",
-    "既存の頭痛・脈拍・服薬・日別体調記録は維持"
+    "PlannerのBody Note入力欄を整理し、既存メモをArchiveへ移動表示",
+    "Past Body Notesは最新3件表示と全件展開に対応",
+    "FILE 00〜03をタップ可能な機密ファイルへ変更",
+    "直近7日・Relationship・長期履歴を実データから生成",
+    "既存の予定・Body Note・体調・服薬・Training・観測記録は維持"
   ]
 }

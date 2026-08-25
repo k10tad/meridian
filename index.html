@@ -15,7 +15,7 @@
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json?v=1.9.2">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png?v=1.9.2">
-    <link rel="stylesheet" href="css/main.css?v=4.1.1-collapsible-health-archive">
+    <link rel="stylesheet" href="css/main.css?v=4.2.0-classified-dossiers">
 </head>
 
 <body>
@@ -305,16 +305,6 @@
         <div id="plannerBrief">予定はまだ登録されていない。</div>
     </div>
 
-    <div class="card planner-body-note-card">
-        <div class="planner-note-header">
-            <div>
-                <h2>Body Note</h2>
-                <p>選択日の体調や出来事を記録する。</p>
-            </div>
-            <span id="plannerBodyNoteStatus" class="planner-note-status">未保存</span>
-        </div>
-        <textarea id="plannerBodyNoteInput" class="health-textarea" placeholder="選択日の体調メモ"></textarea>
-    </div>
 </section>
 
     <section id="trainingPage" class="app-page">
@@ -495,6 +485,7 @@
         <p>Healthで保存した体調、頭痛、脈拍、頓服の記録。</p>
         <div class="archive-health-section"><h3>Headache &amp; Pulse</h3><div id="archiveHealthRecords" class="archive-health-records"></div></div>
         <div class="archive-health-section"><h3>Daily Condition</h3><div id="archiveDailyConditions" class="archive-health-records"></div></div>
+        <div class="archive-health-section"><h3>Past Body Notes</h3><div id="archiveBodyNotes" class="archive-health-records"></div></div>
     </section>
     <section id="archiveRedfile" class="archive-panel">
         <div class="card archive-editor-card">
@@ -770,6 +761,13 @@
         <button class="record-modal-backdrop" type="button" data-close-record-modal="medication" aria-label="閉じる"></button>
         <section class="record-modal-card" role="dialog" aria-modal="true" aria-labelledby="medicationHistoryTitle"><header><div><div class="meta-label">90 DAY LOG</div><h2 id="medicationHistoryTitle">Medication History</h2></div><button id="closeMedicationHistory" class="record-modal-close" type="button">×</button></header><div id="medicationHistoryList" class="medication-history-list record-modal-list"><div class="medication-empty">履歴はまだない</div></div></section>
     </div>
+    <div id="classifiedFileModal" class="record-modal" hidden>
+        <button class="record-modal-backdrop" type="button" data-close-classified-file aria-label="閉じる"></button>
+        <section class="record-modal-card classified-dossier-card" role="dialog" aria-modal="true" aria-labelledby="classifiedFileTitle">
+            <header><div><div id="classifiedFileCode" class="meta-label">CLASSIFIED FILE</div><h2 id="classifiedFileTitle">Operational Record</h2></div><button id="closeClassifiedFile" class="record-modal-close" type="button">×</button></header>
+            <div id="classifiedFileBody" class="record-modal-list classified-file-body"></div>
+        </section>
+    </div>
 
     <nav class="tabbar meridian-line" aria-label="Primary">
         <button class="tab-btn active" data-page="deskPage"><span>00</span><strong>Desk</strong></button>
@@ -809,7 +807,7 @@
 <script src="js/relationship.js?v=4.0.0-daily-trust"></script>
 <script src="js/mission.js?v=3.0.0"></script>
 
-<script src="js/planner.js?v=3.0.0-compact-history"></script>
+<script src="js/planner.js?v=3.1.0-body-note-retired"></script>
 <script src="js/medication-knowledge.js?v=2.3.0-proactive-alerts"></script>
 <script src="js/medication-settings.js?v=1.0.0"></script>
 <script src="js/health.js?v=3.2.0-palpitation"></script>
@@ -836,7 +834,7 @@
 <script src="js/insights.js?v=1.0.0"></script>
 
 <script src="js/training.js?v=4.2.0-persistent-session"></script>
-<script src="js/archive.js?v=3.2.1-weather-layout"></script>
+<script src="js/archive.js?v=4.0.0-classified-dossiers"></script>
 <script src="js/update.js?v=1.9.1-album-hotfix"></script>
 <script src="js/backup.js?v=2.0.0-integrity"></script>
 

@@ -3,7 +3,7 @@
 // Commander image refresh
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-5.1.4-collapsible-health-archive";
+const MERIDIAN_SW_VERSION = "meridian-runtime-5.2.0-classified-dossiers";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {
