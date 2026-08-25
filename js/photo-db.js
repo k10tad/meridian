@@ -7,8 +7,9 @@
     "use strict";
 
     const DB_NAME = "meridianPhotoDB";
-    const DB_VERSION = 1;
+    const DB_VERSION = 2;
     const STORE_NAME = "photos";
+    const ASSET_STORE_NAME = "assets";
 
     let databasePromise = null;
 
@@ -36,6 +37,13 @@
                     store.createIndex("dateKey", "dateKey", {
                         unique: false
                     });
+                }
+
+                if (!database.objectStoreNames.contains(ASSET_STORE_NAME)) {
+                    database.createObjectStore(
+                        ASSET_STORE_NAME,
+                        { keyPath: "id" }
+                    );
                 }
             });
 
@@ -68,12 +76,12 @@
         return databasePromise;
     }
 
-    async function runRequest(mode, callback) {
+    async function runStoreRequest(storeName, mode, callback) {
         const database = await openDatabase();
 
         return new Promise(function (resolve, reject) {
-            const transaction = database.transaction(STORE_NAME, mode);
-            const store = transaction.objectStore(STORE_NAME);
+            const transaction = database.transaction(storeName, mode);
+            const store = transaction.objectStore(storeName);
             let request;
 
             try {
@@ -91,6 +99,10 @@
                 reject(request.error);
             });
         });
+    }
+
+    function runRequest(mode, callback) {
+        return runStoreRequest(STORE_NAME, mode, callback);
     }
 
     function countPhotos() {
@@ -138,16 +150,38 @@
         });
     }
 
+    function getAsset(id) {
+        return runStoreRequest(ASSET_STORE_NAME, "readonly", function (store) {
+            return store.get(id);
+        });
+    }
+
+    function putAsset(asset) {
+        return runStoreRequest(ASSET_STORE_NAME, "readwrite", function (store) {
+            return store.put(asset);
+        });
+    }
+
+    function deleteAsset(id) {
+        return runStoreRequest(ASSET_STORE_NAME, "readwrite", function (store) {
+            return store.delete(id);
+        });
+    }
+
     window.MeridianPhotoDB = {
         dbName: DB_NAME,
         dbVersion: DB_VERSION,
         storeName: STORE_NAME,
+        assetStoreName: ASSET_STORE_NAME,
         open: openDatabase,
         count: countPhotos,
         getAll: getAllPhotos,
         getByDate: getPhotoByDate,
         add: addPhoto,
         update: updatePhoto,
-        delete: deletePhoto
+        delete: deletePhoto,
+        getAsset: getAsset,
+        putAsset: putAsset,
+        deleteAsset: deleteAsset
     };
 })();

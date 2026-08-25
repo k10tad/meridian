@@ -7,9 +7,11 @@
     "use strict";
 
     const BACKUP_FORMAT = "meridian-backup";
-    const BACKUP_SCHEMA_VERSION = 2;
+    const BACKUP_SCHEMA_VERSION = 3;
     const AUTO_SNAPSHOT_KEY = "meridianRecoverySnapshot";
     const LAST_VERIFIED_KEY = "meridianLastVerifiedBackup";
+    const DESK_ASSET_ID = "desk-commander";
+    const DESK_RECOVERY_ASSET_ID = "desk-commander-recovery";
 
     const exportButton = document.getElementById("backupExportButton");
     const exportStatus = document.getElementById("backupExportStatus");
@@ -43,6 +45,11 @@
         return (hash >>> 0).toString(16).padStart(8, "0");
     }
 
+    function numberOr(value, fallback) {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : fallback;
+    }
+
     function getLocalDateStamp(date) {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -73,9 +80,67 @@
         return data;
     }
 
-    function buildBackupPayload() {
+    function blobToDataUrl(blob) {
+        return new Promise(function (resolve, reject) {
+            const reader = new FileReader();
+            reader.addEventListener("load", function () {
+                resolve(String(reader.result));
+            });
+            reader.addEventListener("error", function () {
+                reject(new Error("Desk画像をバックアップへ追加できなかった。"));
+            });
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    function dataUrlToBlob(dataUrl) {
+        const parts = String(dataUrl || "").split(",");
+        const match = parts[0] && parts[0].match(/^data:([^;]+);base64$/);
+        if (!match || !parts[1]) {
+            throw new Error("バックアップ内のDesk画像を読み取れない。");
+        }
+        const binary = atob(parts[1]);
+        const bytes = new Uint8Array(binary.length);
+        for (let index = 0; index < binary.length; index += 1) {
+            bytes[index] = binary.charCodeAt(index);
+        }
+        return new Blob([bytes], { type: match[1] });
+    }
+
+    async function readDeskAssetForBackup() {
+        if (!window.MeridianPhotoDB || typeof window.MeridianPhotoDB.getAsset !== "function") {
+            return null;
+        }
+        const asset = await window.MeridianPhotoDB.getAsset(DESK_ASSET_ID);
+        if (!asset || !asset.blob) {
+            return null;
+        }
+        return {
+            id: DESK_ASSET_ID,
+            updatedAt: asset.updatedAt || new Date().toISOString(),
+            mimeType: asset.mimeType || asset.blob.type || "image/jpeg",
+            width: Number(asset.width) || 0,
+            height: Number(asset.height) || 0,
+            size: Number(asset.size) || asset.blob.size,
+            positionX: numberOr(asset.positionX, 50),
+            positionY: numberOr(asset.positionY, 36),
+            zoom: numberOr(asset.zoom, 100),
+            dataUrl: await blobToDataUrl(asset.blob)
+        };
+    }
+
+    function integritySource(localStorageData, assets) {
+        return {
+            localStorage: localStorageData,
+            assets: assets || {}
+        };
+    }
+
+    async function buildBackupPayload() {
         const now = new Date();
         const storageData = readAllLocalStorage();
+        const deskImage = await readDeskAssetForBackup();
+        const assets = deskImage ? { deskImage: deskImage } : {};
 
         const payload = {
             format: BACKUP_FORMAT,
@@ -84,9 +149,10 @@
             exportedAt: now.toISOString(),
             origin: window.location.origin,
             pathname: window.location.pathname,
-            itemCount: Object.keys(storageData).length,
+            itemCount: Object.keys(storageData).length + (deskImage ? 1 : 0),
             localStorage: storageData,
-            integrity: { algorithm: "FNV1A-32", value: fingerprint(storageData) }
+            assets: assets,
+            integrity: { algorithm: "FNV1A-32", value: fingerprint(integritySource(storageData, assets)) }
         };
         return payload;
     }
@@ -100,11 +166,15 @@
             return "Meridian形式のバックアップではない。";
         }
 
-        if (![1, BACKUP_SCHEMA_VERSION].includes(payload.schemaVersion)) {
+        if (![1, 2, BACKUP_SCHEMA_VERSION].includes(payload.schemaVersion)) {
             return "対応していないバックアップ形式だ。";
         }
 
-        if (payload.schemaVersion >= 2 && (!payload.integrity || payload.integrity.value !== fingerprint(payload.localStorage))) {
+        const expectedIntegrity = payload.schemaVersion >= 3
+            ? fingerprint(integritySource(payload.localStorage, payload.assets))
+            : fingerprint(payload.localStorage);
+
+        if (payload.schemaVersion >= 2 && (!payload.integrity || payload.integrity.value !== expectedIntegrity)) {
             return "バックアップの整合性を確認できない。内容が欠損または変更されている。";
         }
 
@@ -157,7 +227,7 @@
             "保存データを読み取っている。アプリ内のデータは変更しない。";
 
         try {
-            const payload = buildBackupPayload();
+            const payload = await buildBackupPayload();
 
             if (payload.itemCount === 0) {
                 exportStatus.textContent =
@@ -184,15 +254,26 @@
         }
     }
 
-    function saveAutomaticSnapshot() {
+    async function saveAutomaticSnapshot() {
         const snapshot = {
             format: BACKUP_FORMAT,
             schemaVersion: BACKUP_SCHEMA_VERSION,
             createdAt: new Date().toISOString(),
             localStorage: readAllLocalStorage()
         };
-        snapshot.integrity = { algorithm: "FNV1A-32", value: fingerprint(snapshot.localStorage) };
+        if (window.MeridianPhotoDB && typeof window.MeridianPhotoDB.getAsset === "function") {
+            const currentAsset = await window.MeridianPhotoDB.getAsset(DESK_ASSET_ID);
+            snapshot.deskAssetPresent = Boolean(currentAsset && currentAsset.blob);
+            if (currentAsset && currentAsset.blob) {
+                await window.MeridianPhotoDB.putAsset(Object.assign({}, currentAsset, {
+                    id: DESK_RECOVERY_ASSET_ID
+                }));
+            } else {
+                await window.MeridianPhotoDB.deleteAsset(DESK_RECOVERY_ASSET_ID);
+            }
+        }
 
+        snapshot.integrity = { algorithm: "FNV1A-32", value: fingerprint(snapshot.localStorage) };
         localStorage.setItem(
             AUTO_SNAPSHOT_KEY,
             JSON.stringify(snapshot)
@@ -205,14 +286,46 @@
         if (recoveryButton) recoveryButton.disabled = !localStorage.getItem(AUTO_SNAPSHOT_KEY);
     }
 
-    function restoreRecoverySnapshot() {
+    async function restoreRecoverySnapshot() {
         let snapshot=null; try { snapshot=JSON.parse(localStorage.getItem(AUTO_SNAPSHOT_KEY)); } catch (_) {}
         if (!snapshot || !snapshot.localStorage || snapshot.integrity?.value !== fingerprint(snapshot.localStorage)) {
             if (recoveryStatus) recoveryStatus.textContent="復元前退避を検証できない。現在データは変更しない。";
             return;
         }
         if (!window.confirm("直前の復元操作より前の状態へ戻します。現在の状態は上書きされます。続行しますか？")) return;
-        const safety=buildBackupPayload(); sessionStorage.setItem("meridianBeforeRecovery",JSON.stringify(safety)); restoreLocalStorage(snapshot.localStorage); sessionStorage.setItem("meridianRestoreCompleted","true"); window.location.reload();
+        const recoveryAsset = window.MeridianPhotoDB && typeof window.MeridianPhotoDB.getAsset === "function"
+            ? await window.MeridianPhotoDB.getAsset(DESK_RECOVERY_ASSET_ID)
+            : null;
+        if (recoveryAsset && recoveryAsset.blob) {
+            await window.MeridianPhotoDB.putAsset(Object.assign({}, recoveryAsset, { id: DESK_ASSET_ID }));
+        } else if (snapshot.deskAssetPresent === false && window.MeridianPhotoDB) {
+            await window.MeridianPhotoDB.deleteAsset(DESK_ASSET_ID);
+        }
+        restoreLocalStorage(snapshot.localStorage); sessionStorage.setItem("meridianRestoreCompleted","true"); window.location.reload();
+    }
+
+    async function restoreDeskAsset(payload) {
+        const deskImage = payload && payload.assets && payload.assets.deskImage;
+        if (!deskImage) {
+            return false;
+        }
+        if (!window.MeridianPhotoDB || typeof window.MeridianPhotoDB.putAsset !== "function") {
+            throw new Error("Desk画像の保管庫を開けない。");
+        }
+        const blob = dataUrlToBlob(deskImage.dataUrl);
+        await window.MeridianPhotoDB.putAsset({
+            id: DESK_ASSET_ID,
+            updatedAt: deskImage.updatedAt || new Date().toISOString(),
+            mimeType: deskImage.mimeType || blob.type || "image/jpeg",
+            width: Number(deskImage.width) || 0,
+            height: Number(deskImage.height) || 0,
+            size: blob.size,
+            positionX: numberOr(deskImage.positionX, 50),
+            positionY: numberOr(deskImage.positionY, 36),
+            zoom: numberOr(deskImage.zoom, 100),
+            blob: blob
+        });
+        return true;
     }
 
     function restoreLocalStorage(storageData) {
@@ -328,8 +441,9 @@
             "現在データを退避してから復元している。";
 
         try {
-            saveAutomaticSnapshot();
+            await saveAutomaticSnapshot();
             restoreLocalStorage(selectedBackup.localStorage);
+            await restoreDeskAsset(selectedBackup);
 
             sessionStorage.setItem(
                 "meridianRestoreCompleted",

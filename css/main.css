@@ -151,6 +151,12 @@ Commander Hero
 
     background:
         linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    cursor: pointer;
+}
+
+.hero-image:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
 }
 
 .hero-image::after {
@@ -172,22 +178,208 @@ Commander Hero
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 36%;
+    object-position: var(--desk-image-x, 50%) var(--desk-image-y, 36%);
     display: block;
     animation: commanderBreath 7s ease-in-out infinite;
 }
 
 @keyframes commanderBreath {
     0% {
-        transform: scale(1);
+        transform: scale(var(--desk-image-scale, 1));
     }
 
     50% {
-        transform: scale(1.018);
+        transform: scale(var(--desk-image-breath-scale, 1.018));
     }
 
     100% {
-        transform: scale(1);
+        transform: scale(var(--desk-image-scale, 1));
+    }
+}
+
+.desk-image-edit-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 4;
+    min-width: 66px;
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid rgba(212, 175, 55, .34);
+    border-radius: 999px;
+    background: rgba(5, 7, 17, .84);
+    color: var(--color-gold);
+    font: 700 9px/1 var(--font-main);
+    letter-spacing: .16em;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .28);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.desk-image-edit-button:active {
+    transform: scale(.97);
+}
+
+/*==========================
+Desk Commander Image
+==========================*/
+
+.desk-image-modal[hidden] {
+    display: none;
+}
+
+.desk-image-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10030;
+    display: grid;
+    place-items: center;
+    padding: calc(18px + env(safe-area-inset-top)) 16px calc(18px + env(safe-area-inset-bottom));
+}
+
+.desk-image-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(2, 4, 10, .82);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.desk-image-dialog {
+    position: relative;
+    width: min(100%, 390px);
+    max-height: min(88vh, 760px);
+    overflow: auto;
+    padding: 20px;
+    border: 1px solid rgba(212, 175, 55, .28);
+    border-radius: 24px;
+    background: #0b0f1b;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .58);
+}
+
+.desk-image-dialog header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 15px;
+}
+
+.desk-image-dialog h2 {
+    margin: 4px 0 0;
+}
+
+.desk-image-preview-frame {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 18px;
+    background: #050711;
+}
+
+.desk-image-preview-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent 45%, rgba(2, 3, 10, .58));
+}
+
+.desk-image-preview-frame img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: var(--desk-preview-x, 50%) var(--desk-preview-y, 36%);
+    transform: scale(var(--desk-preview-scale, 1));
+    transform-origin: center;
+}
+
+.desk-image-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.desk-image-select-button {
+    display: grid;
+    place-items: center;
+    min-height: 46px;
+    margin-top: 13px;
+    border: 1px solid rgba(123, 157, 202, .3);
+    border-radius: 13px;
+    background: rgba(123, 157, 202, .1);
+    color: var(--color-text);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+}
+
+.desk-image-controls {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.desk-image-controls label {
+    display: grid;
+    grid-template-columns: 78px 1fr;
+    align-items: center;
+    gap: 12px;
+    color: var(--color-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.desk-image-controls input[type="range"] {
+    width: 100%;
+    accent-color: var(--color-gold);
+}
+
+.desk-image-status {
+    min-height: 1.6em;
+    margin: 14px 0 0;
+    color: var(--color-muted);
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.desk-image-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 14px;
+}
+
+.desk-image-actions button {
+    min-height: 46px;
+    padding: 9px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .04);
+    color: var(--color-muted);
+    font: inherit;
+    font-size: 11px;
+}
+
+.desk-image-actions button.primary {
+    border-color: rgba(212, 175, 55, .42);
+    background: rgba(212, 175, 55, .11);
+    color: var(--color-gold);
+}
+
+.desk-image-actions button:disabled {
+    opacity: .4;
+}
+
+@media (max-height: 720px) {
+    .desk-image-preview-frame {
+        height: 230px;
     }
 }
 
