@@ -16,7 +16,6 @@
 
     const hero = document.getElementById("deskHeroImage");
     const portrait = document.getElementById("commanderPortrait");
-    const editButton = document.getElementById("deskImageEditButton");
     const modal = document.getElementById("deskImageModal");
     const backdrop = document.getElementById("deskImageBackdrop");
     const closeButton = document.getElementById("deskImageClose");
@@ -30,7 +29,7 @@
     const saveButton = document.getElementById("deskImageSave");
 
     if (
-        !hero || !portrait || !editButton || !modal || !input || !preview ||
+        !hero || !portrait || !modal || !input || !preview ||
         !zoom || !positionX || !positionY || !status || !resetButton || !saveButton
     ) {
         console.warn("Meridian Desk Image: required elements were not found.");
@@ -305,7 +304,6 @@
         }
     }
 
-    editButton.addEventListener("click", openModal);
     hero.addEventListener("click", openModal);
     input.addEventListener("change", selectImage);
     zoom.addEventListener("input", updatePreview);

@@ -197,28 +197,6 @@ Commander Hero
     }
 }
 
-.desk-image-edit-button {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 4;
-    min-width: 66px;
-    min-height: 36px;
-    padding: 0 13px;
-    border: 1px solid rgba(212, 175, 55, .34);
-    border-radius: 999px;
-    background: rgba(5, 7, 17, .84);
-    color: var(--color-gold);
-    font: 700 9px/1 var(--font-main);
-    letter-spacing: .16em;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, .28);
-    -webkit-tap-highlight-color: transparent;
-}
-
-.desk-image-edit-button:active {
-    transform: scale(.97);
-}
-
 /*==========================
 Desk Commander Image
 ==========================*/

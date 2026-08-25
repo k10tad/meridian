@@ -3,7 +3,7 @@
 // Commander image refresh
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-5.3.0-custom-desk-image";
+const MERIDIAN_SW_VERSION = "meridian-runtime-5.3.1-desk-image-tap";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {

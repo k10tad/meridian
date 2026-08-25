@@ -1,12 +1,10 @@
 {
-  "version": "3.3.0",
-  "build": "custom-desk-commander-image",
+  "version": "3.3.1",
+  "build": "desk-image-direct-tap",
   "updatedAt": "2026-08-25",
   "notes": [
-    "DeskのCommander画像をiPhoneの写真から変更可能",
-    "画像の拡大率・上下・左右位置をプレビューしながら調整",
-    "標準Commander画像へいつでも復帰可能",
-    "廃止済みVestigioアルバムの表示を戻さず画像保管庫だけを再利用",
-    "カスタムDesk画像を通常バックアップの書き出し・復元対象へ追加"
+    "Desk右上のIMAGEボタンを撤去",
+    "Commander画像そのものをタップして画像設定を開く仕様へ整理",
+    "画像保存・位置調整・標準画像への復帰・バックアップ機能は維持"
   ]
 }
