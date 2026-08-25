@@ -11,6 +11,9 @@
     const archiveList = document.getElementById("archiveHealthRecords");
     const dailyList = document.getElementById("archiveDailyConditions");
     const commander = document.getElementById("headacheCommander");
+    const COLLAPSED_LIMIT = 3;
+    let headacheExpanded = false;
+    let dailyExpanded = false;
     if (!intensity || !save || !archiveList) return;
 
     function read() {
@@ -74,12 +77,13 @@
 
     function renderArchive() {
         const logs = read().sort(function (a, b) { return new Date(b.recordedAt) - new Date(a.recordedAt); });
-        archiveList.innerHTML = logs.length ? logs.map(function (item) {
+        const visibleLogs = headacheExpanded ? logs : logs.slice(0, COLLAPSED_LIMIT);
+        archiveList.innerHTML = logs.length ? visibleLogs.map(function (item) {
             const pulseText = Number(item.pulse) ? '<span>脈拍 ' + esc(item.pulse) + '/min</span>' : "";
             const medicineText = item.medication ? '<span>' + esc(item.medication) + '</span>' : '<span>頓服なし／未記録</span>';
             const memoText = item.memo ? '<p>' + esc(item.memo) + '</p>' : "";
             return '<article class="archive-health-item"><div class="archive-health-head"><strong>' + esc(format(item.recordedAt)) + '</strong><span class="archive-health-intensity">痛み ' + esc(item.intensity) + '/10</span></div><div class="archive-health-meta">' + pulseText + medicineText + '</div>' + memoText + '<button class="archive-health-delete" type="button" data-headache-delete="' + esc(item.id) + '">削除</button></article>';
-        }).join("") : '<div class="archive-empty">頭痛・脈拍記録はまだない。</div>';
+        }).join("") + archiveToggle("headache", logs.length, headacheExpanded) : '<div class="archive-empty">頭痛・脈拍記録はまだない。</div>';
 
         archiveList.querySelectorAll("[data-headache-delete]").forEach(function (button) {
             button.addEventListener("click", function () {
@@ -87,16 +91,34 @@
                 renderArchive();
             });
         });
+        const headacheToggle = archiveList.querySelector("[data-archive-health-toggle='headache']");
+        if (headacheToggle) headacheToggle.addEventListener("click", function () {
+            headacheExpanded = !headacheExpanded;
+            renderArchive();
+        });
 
         const daily = readDailyConditions();
         if (dailyList) {
-            dailyList.innerHTML = daily.length ? daily.map(function (item) {
+            const visibleDaily = dailyExpanded ? daily : daily.slice(0, COLLAPSED_LIMIT);
+            dailyList.innerHTML = daily.length ? visibleDaily.map(function (item) {
                 const dateText = item.date instanceof Date && !Number.isNaN(item.date.getTime())
                     ? item.date.toLocaleDateString("ja-JP", { year:"numeric", month:"numeric", day:"numeric" })
                     : String(item.date || "日付不明");
                 return '<article class="archive-condition-item"><strong>' + esc(dateText) + '</strong><span>' + esc(item.flags.join(" / ")) + '</span></article>';
-            }).join("") : '<div class="archive-empty">体調記録はまだない。</div>';
+            }).join("") + archiveToggle("daily", daily.length, dailyExpanded) : '<div class="archive-empty">体調記録はまだない。</div>';
+            const dailyToggle = dailyList.querySelector("[data-archive-health-toggle='daily']");
+            if (dailyToggle) dailyToggle.addEventListener("click", function () {
+                dailyExpanded = !dailyExpanded;
+                renderArchive();
+            });
         }
+    }
+
+    function archiveToggle(section, count, expanded) {
+        if (count <= COLLAPSED_LIMIT) return "";
+        const hiddenCount = count - COLLAPSED_LIMIT;
+        const label = expanded ? "最新3件に戻す" : "過去の記録を開く（あと" + hiddenCount + "件）";
+        return '<button class="archive-health-toggle" type="button" data-archive-health-toggle="' + section + '" aria-expanded="' + String(expanded) + '">' + label + '</button>';
     }
 
     function record() {

@@ -3418,6 +3418,25 @@ body.weather-reregistration-open {
     font: 600 9px/1 var(--font-main);
 }
 
+#archivePage .archive-health-toggle {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 3px;
+    padding: 9px 12px;
+    border: 1px solid rgba(212, 175, 55, .24);
+    border-radius: 12px;
+    background: rgba(212, 175, 55, .055);
+    color: var(--color-gold);
+    font: 700 10px/1.3 var(--font-main);
+    letter-spacing: .08em;
+}
+
+#archivePage .archive-health-toggle[aria-expanded="true"] {
+    border-color: var(--color-card-border);
+    background: rgba(255, 255, 255, .025);
+    color: var(--color-muted);
+}
+
 #archivePage .archive-condition-item {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
