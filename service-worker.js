@@ -3,7 +3,7 @@
 // Commander image refresh
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-5.0.1-observatory-sync-ui";
+const MERIDIAN_SW_VERSION = "meridian-runtime-5.0.2-sebastian-voice-canon-20260823";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {

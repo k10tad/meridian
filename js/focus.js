@@ -55,7 +55,7 @@
             },
 
             getBreakCompleteMessage: function () {
-                return "休憩終了。戻れるなら始めよう。";
+                return "休憩終了だ。戻れるなら始めろ。";
             },
 
             getResetMessage: function () {

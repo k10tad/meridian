@@ -1,13 +1,13 @@
 {
-  "version": "3.0.1",
-  "build": "observatory-sync-and-ui-fix",
-  "updatedAt": "2026-08-22",
+  "version": "3.0.2",
+  "build": "sebastian-voice-canon-from-20260823",
+  "updatedAt": "2026-08-25",
   "notes": [
-    "旧WeatherキャッシュからObservatory時間別予報へ自動移行",
-    "観測予報を2日分へ拡張し再同期ボタンを追加",
-    "未受信時の判定をPOORからSTANDBYへ修正",
-    "Medication Logの見出しと説明文の重なりを修正",
-    "Observatoryカード内の区切りと余白を調整",
+    "8月23日版を正本としてCommander台詞を再調整",
+    "一人称を俺、呼びかけをレイ・お前へ統一",
+    "汎用的な案内口調を短く硬質な指示へ変更",
+    "深夜・完了・帰還時の台詞に現在の関係性を反映",
+    "Observatoryへ天体観測攻防を反映した専用台詞を追加",
     "Planner・Health・Relationship・Archiveなどの保存データは維持"
   ]
 }
