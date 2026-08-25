@@ -223,6 +223,7 @@ function renderCommanderIntel() {
             if (data.health.period) flags.push("生理");
             if (data.health.pms) flags.push("PMS");
             if (data.health.medicine) flags.push("服薬");
+            if (data.health.palpitation) flags.push("動悸");
             if (data.health.boxing) flags.push("Boxing");
 
             intelHealth.textContent = flags.length

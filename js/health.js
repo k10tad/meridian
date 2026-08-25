@@ -14,7 +14,7 @@ let healthLog = {
     period: false,
     pms: false,
     medicine: false,
-    boxing: false
+    palpitation: false
 };
 
 function getHealthStorageKey() {
@@ -25,7 +25,9 @@ function loadHealthLog() {
     const saved = localStorage.getItem(getHealthStorageKey());
     if (saved) {
         try {
-            healthLog = Object.assign(healthLog, JSON.parse(saved));
+            const parsedHealthLog = JSON.parse(saved);
+            healthLog = Object.assign(healthLog, parsedHealthLog);
+            localStorage.setItem(getHealthStorageKey(), JSON.stringify(healthLog));
         } catch (error) {
             // 壊れた旧データがあっても画面は止めない。
         }
@@ -36,6 +38,7 @@ function loadHealthLog() {
 function saveHealthLog() {
     localStorage.setItem(getHealthStorageKey(), JSON.stringify(healthLog));
     renderHealthSummary();
+    window.dispatchEvent(new CustomEvent("meridianHealthLogUpdated"));
 }
 
 function renderHealthLog() {
@@ -55,7 +58,7 @@ function renderHealthSummary() {
     if (healthLog.period) active.push("生理");
     if (healthLog.pms) active.push("PMS");
     if (healthLog.medicine) active.push("服薬記録あり");
-    if (healthLog.boxing) active.push("Boxing済み");
+    if (healthLog.palpitation) active.push("動悸");
 
     healthSummary.textContent = active.length
         ? "記録：" + active.join(" / ")

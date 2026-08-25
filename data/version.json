@@ -1,11 +1,12 @@
 {
-  "version": "3.1.2",
-  "build": "headache-slider-simplification",
+  "version": "3.1.3",
+  "build": "health-archive-pulse-layout",
   "updatedAt": "2026-08-25",
   "notes": [
-    "頭痛強度の2・4・6・8クイックボタンを削除",
-    "0〜10を1刻みで選べるスライダーへ一本化",
-    "スライダー両端へ最小値と最大値だけを表示",
-    "Planner・Health・Relationship・Archiveなどの保存データは維持"
+    "頭痛記録へ脈拍入力を追加",
+    "頭痛・脈拍・頓服と日別体調の履歴をArchiveへ移動",
+    "頭痛時の薬候補を頓服だけに限定し、ロメリジンを除外",
+    "Health LogのBoxingを動悸へ変更し、Training記録とは分離",
+    "iPhoneの頭痛カードとステータスバーの重なりを修正"
   ]
 }

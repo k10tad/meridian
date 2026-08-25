@@ -147,6 +147,7 @@ function updateTodayHealthFromCycle(status) {
         pms: false,
         medicine: false,
         boxing: false,
+        palpitation: false,
         sleepMemo: "",
         bodyNote: ""
     };

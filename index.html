@@ -11,11 +11,11 @@
     <title>Meridian</title>
     <meta name="theme-color" content="#050711">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json?v=1.9.2">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png?v=1.9.2">
-    <link rel="stylesheet" href="css/main.css?v=4.0.1-observatory-sync-ui">
+    <link rel="stylesheet" href="css/main.css?v=4.1.0-health-archive-pulse">
 </head>
 
 <body>
@@ -395,7 +395,7 @@
             <button class="health-toggle" data-health="period">生理</button>
             <button class="health-toggle" data-health="pms">PMS</button>
             <button class="health-toggle" data-health="medicine">服薬</button>
-            <button class="health-toggle" data-health="boxing">Boxing</button>
+            <button class="health-toggle" data-health="palpitation">動悸</button>
         </div>
     </div>
 
@@ -462,14 +462,17 @@
     </div>
 
     <section class="card health-card headache-log-card">
-        <div class="health-card-header"><h3>Headache Quick Log</h3><p>痛みの強さと、その時の服薬だけを残す。</p></div>
-        <div class="headache-scale-row"><span>Intensity</span><strong id="headacheIntensityValue">5</strong></div>
+        <div class="health-card-header"><h3>Headache Quick Log</h3><p>痛みの強さ、脈拍、その時の頓服を残す。</p></div>
+        <div class="headache-scale-row"><span>Intensity</span><strong><span id="headacheIntensityValue">5</span><small>/10</small></strong></div>
         <input id="headacheIntensity" class="headache-range" type="range" min="0" max="10" value="5" step="1">
         <div class="headache-range-legend"><span>0</span><span>10</span></div>
-        <div class="headache-fields"><select id="headacheMedication" class="archive-select"><option value="">服薬なし／未記録</option></select><input id="headacheMemo" class="archive-input" maxlength="120" placeholder="メモ（任意）"></div>
+        <div class="headache-fields">
+            <label class="headache-pulse-field"><span>Pulse</span><span class="headache-pulse-control"><input id="headachePulse" class="archive-input" type="number" inputmode="numeric" min="30" max="250" placeholder="--"><small>/min</small></span></label>
+            <label class="headache-field-label"><span>PRN Medicine</span><select id="headacheMedication" class="archive-select"><option value="">服薬なし／未記録</option></select></label>
+            <label class="headache-field-label"><span>Memo</span><input id="headacheMemo" class="archive-input" maxlength="120" placeholder="任意"></label>
+        </div>
         <button id="saveHeadacheLog" class="archive-save-btn headache-save" type="button">Record Headache</button>
         <div id="headacheCommander" class="medication-commander-message">頭痛があった時だけ残せ。毎日埋める必要はない。</div>
-        <div id="headacheLogList" class="compact-record-list"></div>
     </section>
     <div class="card thirty-day-card"><div class="meta-label">30 DAY TRACE</div><h2>Condition Analysis</h2><div id="thirtyDayAnalysis">記録を分析している。</div></div>
 </section>
@@ -486,6 +489,13 @@
         <button class="archive-tab" type="button" data-archive-tab="terms">TERMS</button>
     </div>
     <section id="archiveClassified" class="archive-panel active"><div id="classifiedFiles" class="archive-file-list"></div></section>
+    <section class="card archive-health-card archive-classified-only">
+        <div class="meta-label">HEALTH RECORDS</div>
+        <h2>Condition Archive</h2>
+        <p>Healthで保存した体調、頭痛、脈拍、頓服の記録。</p>
+        <div class="archive-health-section"><h3>Headache &amp; Pulse</h3><div id="archiveHealthRecords" class="archive-health-records"></div></div>
+        <div class="archive-health-section"><h3>Daily Condition</h3><div id="archiveDailyConditions" class="archive-health-records"></div></div>
+    </section>
     <section id="archiveRedfile" class="archive-panel">
         <div class="card archive-editor-card">
             <input id="redFileTitle" class="archive-input" maxlength="80" placeholder="Case title">
@@ -802,9 +812,9 @@
 <script src="js/planner.js?v=3.0.0-compact-history"></script>
 <script src="js/medication-knowledge.js?v=2.3.0-proactive-alerts"></script>
 <script src="js/medication-settings.js?v=1.0.0"></script>
-<script src="js/health.js?v=3.1.0-medication-preflight"></script>
-<script src="js/headache-log.js?v=1.0.0"></script>
-<script src="js/cycleInsight.js"></script>
+<script src="js/health.js?v=3.2.0-palpitation"></script>
+<script src="js/headache-log.js?v=1.1.0-pulse-archive"></script>
+<script src="js/cycleInsight.js?v=1.1.0-palpitation"></script>
 <script src="js/weather.js?v=3.3.1-observatory-sync"></script>
 <script src="vendor/astronomy.browser.min.js?v=2.1.19"></script>
 <script src="js/observatory.js?v=2.0.0-phase2"></script>
@@ -822,7 +832,7 @@
 <script src="js/engine.js"></script>
 
 <script src="js/commander-messages.js"></script>
-<script src="js/commander.js?v=2.1.0-medication-intel"></script>
+<script src="js/commander.js?v=2.2.0-palpitation"></script>
 <script src="js/insights.js?v=1.0.0"></script>
 
 <script src="js/training.js?v=4.2.0-persistent-session"></script>

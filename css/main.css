@@ -3136,6 +3136,306 @@ body.modal-open{overflow:hidden}.record-modal[hidden]{display:none}.record-modal
 body.weather-reregistration-open {
     overflow: hidden;
 }
+
+/* Meridian Health input + Archive repair v3.1.3 */
+#healthPage .headache-log-card {
+    display: grid;
+    gap: 14px;
+    overflow: hidden;
+}
+
+#healthPage .headache-log-card .health-card-header h3 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.25;
+}
+
+#healthPage .headache-log-card .health-card-header p {
+    margin: 7px 0 0;
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+#healthPage .headache-scale-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    margin: 2px 0 0;
+    color: var(--color-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+#healthPage .headache-scale-row strong {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 3px;
+    color: var(--color-gold);
+    font-size: 26px;
+    font-weight: 550;
+    letter-spacing: 0;
+    line-height: 1;
+}
+
+#healthPage .headache-scale-row strong small {
+    color: var(--color-muted);
+    font-size: 10px;
+}
+
+#healthPage input.headache-range {
+    display: block;
+    width: 100% !important;
+    height: 30px;
+    min-height: 30px;
+    margin: -3px 0 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+#healthPage input.headache-range::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 5px;
+    border: 1px solid rgba(212, 175, 55, .28);
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(82, 129, 194, .8), rgba(212, 175, 55, .85));
+}
+
+#healthPage input.headache-range::-webkit-slider-thumb {
+    width: 23px;
+    height: 23px;
+    margin-top: -10px;
+    border: 2px solid var(--color-gold);
+    border-radius: 50%;
+    background: #0d1322;
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, .11);
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+#healthPage input.headache-range::-moz-range-track {
+    height: 5px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(82, 129, 194, .8), rgba(212, 175, 55, .85));
+}
+
+#healthPage input.headache-range::-moz-range-thumb {
+    width: 21px;
+    height: 21px;
+    border: 2px solid var(--color-gold);
+    border-radius: 50%;
+    background: #0d1322;
+}
+
+#healthPage .headache-range-legend {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between !important;
+    width: 100%;
+    margin: -13px 0 0;
+    padding: 0 1px;
+    color: rgba(244, 241, 234, .46);
+    font-size: 9px;
+    font-variant-numeric: tabular-nums;
+}
+
+#healthPage .headache-range-legend span {
+    display: block;
+    width: auto;
+}
+
+#healthPage .headache-fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+    min-width: 0;
+}
+
+#healthPage .headache-field-label,
+#healthPage .headache-pulse-field {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    min-width: 0;
+    color: var(--color-muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+#healthPage .headache-pulse-control {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 9px;
+}
+
+#healthPage .headache-pulse-control small {
+    color: var(--color-muted);
+    font-size: 11px;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+#healthPage .headache-log-card .archive-select,
+#healthPage .headache-log-card .archive-input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 12px;
+    background: rgba(5, 7, 17, .56);
+    color: var(--color-text);
+    font: 500 13px/1.3 var(--font-main);
+    color-scheme: dark;
+}
+
+#healthPage .headache-pulse-control .archive-input {
+    max-width: 118px;
+    font-size: 18px;
+    font-variant-numeric: tabular-nums;
+}
+
+#healthPage .headache-save {
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+}
+
+#healthPage .headache-log-card .medication-commander-message {
+    margin: 2px 0 0;
+    padding: 13px 14px;
+    font-size: 11px;
+    line-height: 1.65;
+}
+
+#archivePage .archive-health-card {
+    display: block;
+    margin-top: 18px;
+}
+
+#archivePage .archive-health-card[hidden] {
+    display: none !important;
+}
+
+#archivePage .archive-health-card h2 {
+    margin: 6px 0 7px;
+}
+
+#archivePage .archive-health-card > p {
+    font-size: 11px;
+}
+
+#archivePage .archive-health-section {
+    margin-top: 18px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, .07);
+}
+
+#archivePage .archive-health-section h3 {
+    margin: 0 0 10px;
+    color: var(--color-muted);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+#archivePage .archive-health-records {
+    display: grid;
+    gap: 8px;
+}
+
+#archivePage .archive-health-item,
+#archivePage .archive-condition-item {
+    position: relative;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, .07);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .025);
+}
+
+#archivePage .archive-health-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#archivePage .archive-health-head strong {
+    min-width: 0;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+#archivePage .archive-health-intensity {
+    flex: 0 0 auto;
+    color: var(--color-gold);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+#archivePage .archive-health-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 12px;
+    margin-top: 8px;
+    color: var(--color-muted);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+#archivePage .archive-health-item p {
+    margin: 8px 0 0;
+    color: var(--color-text);
+    font-size: 11px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+#archivePage .archive-health-delete {
+    min-width: 46px;
+    min-height: 28px;
+    margin-top: 10px;
+    padding: 4px 9px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, .035);
+    color: var(--color-muted);
+    font: 600 9px/1 var(--font-main);
+}
+
+#archivePage .archive-condition-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 10px;
+}
+
+#archivePage .archive-condition-item strong {
+    font-size: 10px;
+}
+
+#archivePage .archive-condition-item span {
+    color: var(--color-muted);
+    font-size: 10px;
+    line-height: 1.5;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
 #archivePage .backup-import-block { margin-top: 18px; }
 .training-mode-grid { grid-template-columns: repeat(3, 1fr); }
 @media (max-width: 360px) {

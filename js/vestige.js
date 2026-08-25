@@ -284,6 +284,7 @@ function getHealthFlags(health) {
     if (health.period) flags.push("生理");
     if (health.pms) flags.push("PMS");
     if (health.medicine) flags.push("服薬");
+    if (health.palpitation) flags.push("動悸");
     if (health.boxing) flags.push("Boxing");
 
     return flags;
