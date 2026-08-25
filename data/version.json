@@ -1,12 +1,12 @@
 {
-  "version": "3.2.0",
-  "build": "classified-dossiers-body-note-archive",
+  "version": "3.2.1",
+  "build": "ios-fixed-navigation-stability",
   "updatedAt": "2026-08-25",
   "notes": [
-    "PlannerのBody Note入力欄を整理し、既存メモをArchiveへ移動表示",
-    "Past Body Notesは最新3件表示と全件展開に対応",
-    "FILE 00〜03をタップ可能な機密ファイルへ変更",
-    "直近7日・Relationship・長期履歴を実データから生成",
-    "既存の予定・Body Note・体調・服薬・Training・観測記録は維持"
+    "iPhoneでスクロール中に下部ナビが透過・消失する問題を修正",
+    "下部ナビを独立した固定レイヤーへ変更",
+    "半透明ぼかしを廃止し、不透明な暗色背景へ統一",
+    "カードより前面、モーダルより背面になる描画順を固定",
+    "既存機能と保存データは変更なし"
   ]
 }

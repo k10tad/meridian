@@ -3,7 +3,7 @@
 // Commander image refresh
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-5.2.0-classified-dossiers";
+const MERIDIAN_SW_VERSION = "meridian-runtime-5.2.1-ios-fixed-navigation";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {
