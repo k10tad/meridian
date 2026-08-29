@@ -1,13 +1,14 @@
 (function () {
     "use strict";
 
-    const CACHE_KEY = "meridianAirQualityCacheV1";
+    const CACHE_KEY = "meridianAirQualityCacheV2";
     const HISTORY_KEY = "meridianAirQualityHistoryV1";
     const FRESH_MS = 60 * 60 * 1000;
     let request = null;
 
     const statusElement = document.getElementById("airQualityStatus");
     const metricsElement = document.getElementById("airQualityMetrics");
+    const adviceElement = document.getElementById("airQualityAdvice");
 
     function read(key, fallback) {
         try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (_) { return fallback; }
@@ -39,6 +40,51 @@
         return digits ? parsed.toFixed(digits) : String(Math.round(parsed));
     }
 
+    function pm25Category(value) {
+        const pm = Number(value);
+        if (!Number.isFinite(pm)) return { label: "判定待ち", level: 0 };
+        if (pm <= 15) return { label: "少ない", level: 0 };
+        if (pm <= 35) return { label: "やや多い", level: 1 };
+        if (pm <= 70) return { label: "多い", level: 2 };
+        return { label: "非常に多い", level: 3 };
+    }
+
+    function uvCategory(value) {
+        const uv = Number(value);
+        if (!Number.isFinite(uv)) return { label: "判定待ち", level: 0 };
+        if (uv < 3) return { label: "弱い", level: 0 };
+        if (uv < 6) return { label: "中程度", level: 1 };
+        if (uv < 8) return { label: "強い", level: 2 };
+        if (uv < 11) return { label: "非常に強い", level: 3 };
+        return { label: "極端に強い", level: 4 };
+    }
+
+    function assessment(current) {
+        if (!current) return null;
+        const pm = pm25Category(current.pm2_5);
+        const uv = uvCategory(current.uv_index);
+        const notes = [];
+
+        if (pm.level >= 3) notes.push("PM2.5が非常に多い。長時間の外出と換気は控えめにしろ。");
+        else if (pm.level >= 2) notes.push("PM2.5が多い。外出時間と換気の長さに気をつけろ。");
+        else if (pm.level >= 1) notes.push("PM2.5はやや多い。空気の変化には注意しておけ。");
+
+        if (uv.level >= 4) notes.push("紫外線は極端に強い。日中の外出は対策を徹底しろ。");
+        else if (uv.level >= 3) notes.push("紫外線が非常に強い。短時間でも対策して出ろ。");
+        else if (uv.level >= 2) notes.push("今日は紫外線が強い。外へ出るなら対策してから行け。");
+        else if (uv.level >= 1) notes.push("紫外線は中程度だ。長く外にいるなら対策しておけ。");
+
+        if (!notes.length) notes.push("大気と紫外線は落ち着いている。通常の範囲で動ける。");
+
+        return {
+            aqi: category(Number(current.us_aqi)),
+            pm25: pm,
+            uv: uv,
+            advice: notes.join(" "),
+            commanderLine: notes[0]
+        };
+    }
+
     function saveDailySnapshot(current) {
         const now = new Date();
         const dateKey = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
@@ -61,19 +107,20 @@
         if (!current) return false;
         const aqi = Number(current.us_aqi);
         const state = category(aqi);
+        const report = assessment(current);
         if (statusElement) {
             statusElement.textContent = state.label + (stale ? " · SAVED" : "");
             statusElement.dataset.status = state.key;
         }
         if (metricsElement) {
-            const parts = [
-                "AQI " + number(aqi),
-                "PM2.5 " + number(current.pm2_5, 1),
-                "PM10 " + number(current.pm10, 1),
-                "UV " + number(current.uv_index, 1)
-            ];
-            if (Number(current.dust) >= 10) parts.push("黄砂 " + number(current.dust));
-            metricsElement.textContent = parts.join(" · ");
+            metricsElement.innerHTML =
+                "<div class='air-metric' data-level='" + report.pm25.level + "'><span>PM2.5</span><strong>" + number(current.pm2_5, 1) + " <em>μg/m³</em></strong><small>" + report.pm25.label + "</small></div>" +
+                "<div class='air-metric' data-level='" + report.uv.level + "'><span>TODAY UV MAX</span><strong>" + number(current.uv_index, 1) + "</strong><small>" + report.uv.label + "</small></div>";
+        }
+        if (adviceElement) {
+            const details = ["AQI " + number(aqi), "PM10 " + number(current.pm10, 1)];
+            if (Number(current.dust) >= 10) details.push("黄砂 " + number(current.dust));
+            adviceElement.textContent = report.advice + " " + details.join(" · ");
         }
         return true;
     }
@@ -83,7 +130,8 @@
             statusElement.textContent = "STANDBY";
             statusElement.dataset.status = "standby";
         }
-        if (metricsElement) metricsElement.textContent = "PM2.5 -- · PM10 -- · UV --";
+        if (metricsElement) metricsElement.innerHTML = "<div class='air-metric'><span>PM2.5</span><strong>--</strong><small>判定待ち</small></div><div class='air-metric'><span>TODAY UV MAX</span><strong>--</strong><small>判定待ち</small></div>";
+        if (adviceElement) adviceElement.textContent = "登録地点の大気情報を確認している。";
     }
 
     function fetchAirQuality(force) {
@@ -97,6 +145,7 @@
         const cache = read(CACHE_KEY, null);
         if (!force && cache && cache.locationKey === key && Date.now() - Number(cache.savedAt || 0) < FRESH_MS) {
             render(cache.current, false);
+            window.dispatchEvent(new CustomEvent("meridianAirQualityUpdated", { detail: assessment(cache.current) }));
             return Promise.resolve(true);
         }
 
@@ -104,6 +153,8 @@
             latitude: String(place.latitude),
             longitude: String(place.longitude),
             current: "us_aqi,pm2_5,pm10,ozone,dust,uv_index",
+            hourly: "uv_index",
+            forecast_days: "1",
             timezone: String(place.timezone || "auto")
         });
         const controller = new AbortController();
@@ -116,14 +167,24 @@
             return response.json();
         }).then(function (data) {
             if (!data.current) throw new Error("Air quality current data missing");
-            const saved = { savedAt: Date.now(), locationKey: key, current: data.current };
+            const hourlyUv = data.hourly && Array.isArray(data.hourly.uv_index)
+                ? data.hourly.uv_index.map(Number).filter(Number.isFinite)
+                : [];
+            const current = Object.assign({}, data.current, {
+                uv_current: Number(data.current.uv_index),
+                uv_index: hourlyUv.length ? Math.max.apply(null, hourlyUv) : Number(data.current.uv_index)
+            });
+            const saved = { savedAt: Date.now(), locationKey: key, current: current };
             localStorage.setItem(CACHE_KEY, JSON.stringify(saved));
-            saveDailySnapshot(data.current);
-            render(data.current, false);
+            saveDailySnapshot(current);
+            render(current, false);
+            window.dispatchEvent(new CustomEvent("meridianAirQualityUpdated", { detail: assessment(current) }));
             return true;
         }).catch(function (error) {
-            if (cache && cache.locationKey === key && cache.current) render(cache.current, true);
-            else renderStandby();
+            if (cache && cache.locationKey === key && cache.current) {
+                render(cache.current, true);
+                window.dispatchEvent(new CustomEvent("meridianAirQualityUpdated", { detail: assessment(cache.current) }));
+            } else renderStandby();
             console.warn("Meridian air quality standby:", error);
             return false;
         }).finally(function () {
@@ -133,7 +194,15 @@
         return request;
     }
 
-    window.MeridianAirQuality = { fetch: fetchAirQuality };
+    window.MeridianAirQuality = {
+        fetch: fetchAirQuality,
+        getAssessment: function () {
+            const place = location();
+            const cache = read(CACHE_KEY, null);
+            if (!place || !cache || cache.locationKey !== locationKey(place)) return null;
+            return assessment(cache.current);
+        }
+    };
     window.addEventListener("meridianWeatherLocationChanged", function () { fetchAirQuality(true); });
     window.addEventListener("meridianBootCompleted", function () { fetchAirQuality(false); }, { once: true });
     document.addEventListener("visibilitychange", function () { if (!document.hidden) fetchAirQuality(false); });

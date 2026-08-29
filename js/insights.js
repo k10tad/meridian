@@ -13,6 +13,21 @@
         return read("meridianHealthLog_" + date.toDateString(), {});
     }
 
+    function environmentBrief() {
+        const parts = [];
+        const todayKey = ymd(new Date());
+        const holiday = window.MeridianHolidays && typeof window.MeridianHolidays.get === "function"
+            ? window.MeridianHolidays.get(todayKey)
+            : null;
+        const air = window.MeridianAirQuality && typeof window.MeridianAirQuality.getAssessment === "function"
+            ? window.MeridianAirQuality.getAssessment()
+            : null;
+
+        if (holiday) parts.push("今日は" + (holiday.localName || holiday.name || "祝日") + "だ。休息も予定として扱え。");
+        if (air && air.advice) parts.push(air.advice);
+        return parts.join("");
+    }
+
     function lastThirtyDays() {
         const days = [];
         for (let i = 29; i >= 0; i -= 1) {
@@ -123,10 +138,12 @@
         const weather = read("meridianWeather", {});
         const night = new Date().getHours() >= 18 || new Date().getHours() < 5;
         const done = plans.filter(function (item) { return item.done; }).length;
+        const environment = environmentBrief();
         title.textContent = night ? "Night Report" : "Morning Brief";
-        body.textContent = night
+        const report = night
             ? "予定 " + done + "/" + plans.length + "件完了。服薬記録 " + meds.length + "件。" + (health.headache ? "頭痛あり。明日は負荷を下げろ。" : "重大な体調記録はない。今日はここで切り上げろ。")
             : "本日の予定は" + plans.length + "件。" + (Number(weather.pressure) <= 1008 ? "気圧は低めだ。無理に詰め込むな。" : "気象条件は通常範囲。") + (meds.length ? "服薬記録は既にある。" : "服薬したらその場で記録しろ。");
+        body.textContent = report + (environment ? environment : "");
     }
 
     function render() {
@@ -136,6 +153,8 @@
 
     window.addEventListener("meridianWeatherUpdated", render);
     window.addEventListener("meridianHistoricalWeatherUpdated", render);
+    window.addEventListener("meridianAirQualityUpdated", render);
+    window.addEventListener("meridianHolidaysUpdated", render);
     document.addEventListener("visibilitychange", function () { if (!document.hidden) render(); });
     document.addEventListener("click", function () { window.setTimeout(render, 0); });
     window.setInterval(render, 60000);

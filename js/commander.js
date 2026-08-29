@@ -98,6 +98,27 @@ function commanderReadPlannerCount() {
     return Array.isArray(todayPlans) ? todayPlans.length : 0;
 }
 
+function commanderReadAirQuality() {
+    if (window.MeridianAirQuality && typeof window.MeridianAirQuality.getAssessment === "function") {
+        return window.MeridianAirQuality.getAssessment();
+    }
+    return null;
+}
+
+function commanderReadTodayHoliday() {
+    if (!window.MeridianHolidays || typeof window.MeridianHolidays.get !== "function") return null;
+    return window.MeridianHolidays.get(commanderDateKey(new Date()));
+}
+
+function commanderEnvironmentMessage(data) {
+    const lines = [];
+    if (data.holiday) {
+        lines.push("今日は" + (data.holiday.localName || data.holiday.name || "祝日") + "だ。休むことまで予定に入れておけ。");
+    }
+    if (data.airQuality && data.airQuality.advice) lines.push(data.airQuality.advice);
+    return lines.join(" ");
+}
+
 function commanderReadCycleStatus() {
     const cycle = commanderSafeJsonRead("meridianCycle", { records: [] });
     const records = Array.isArray(cycle.records)
@@ -162,7 +183,9 @@ function collectCommanderData() {
         missionPercent: commanderMissionPercent(mission),
         plannerCount: commanderReadPlannerCount(),
         cycle: commanderReadCycleStatus(),
-        medicationAlert: commanderReadMedicationAlert()
+        medicationAlert: commanderReadMedicationAlert(),
+        airQuality: commanderReadAirQuality(),
+        holiday: commanderReadTodayHoliday()
     };
 }
 
@@ -201,6 +224,11 @@ function renderCommanderIntel() {
     const data = collectCommanderData();
     const result = engine.buildIntelligence(data);
     const heroMessage = engine.buildHero(data);
+    const environmentMessage = commanderEnvironmentMessage(data);
+    const baseMessage = data.medicationAlert
+        ? data.medicationAlert.title + "。" + data.medicationAlert.message
+        : result.message;
+    const fullMessage = baseMessage + (environmentMessage ? " " + environmentMessage : "");
 
     if (intelWeather) {
         intelWeather.textContent = data.weather
@@ -237,12 +265,13 @@ function renderCommanderIntel() {
     }
 
     renderCommanderReadiness(result.readiness, result.risk);
-    renderCommanderPriorities(result.priorities);
+    const priorities = (result.priorities || []).slice();
+    if (data.airQuality && data.airQuality.pm25 && data.airQuality.pm25.level >= 2) priorities.push("外気負荷を避ける");
+    if (data.airQuality && data.airQuality.uv && data.airQuality.uv.level >= 2) priorities.push("紫外線対策");
+    renderCommanderPriorities(priorities.slice(0, 4));
 
     if (commanderIntelMessage) {
-        commanderIntelMessage.textContent = data.medicationAlert
-            ? data.medicationAlert.title + "。" + data.medicationAlert.message
-            : result.message;
+        commanderIntelMessage.textContent = fullMessage;
     }
 
     if (deskGreetingCommander) {
@@ -263,7 +292,7 @@ function renderCommanderIntel() {
     localStorage.setItem(
         "meridianCommanderSnapshot",
         JSON.stringify({
-            message: result.message,
+            message: fullMessage,
             heroMessage: heroMessage,
             readiness: result.readiness,
             risk: result.risk + " / 10",
@@ -280,6 +309,8 @@ window.renderCommanderIntel = renderCommanderIntel;
 renderCommanderIntel();
 
 window.addEventListener("meridianWeatherUpdated", renderCommanderIntel);
+window.addEventListener("meridianAirQualityUpdated", renderCommanderIntel);
+window.addEventListener("meridianHolidaysUpdated", renderCommanderIntel);
 window.addEventListener("meridianBootCompleted", renderCommanderIntel);
 window.addEventListener("meridianDataUpdated", renderCommanderIntel);
 window.addEventListener("storage", renderCommanderIntel);

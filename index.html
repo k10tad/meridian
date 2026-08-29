@@ -197,7 +197,11 @@
                     <span class="meta-label">AIR QUALITY</span>
                     <strong id="airQualityStatus">STANDBY</strong>
                 </div>
-                <div id="airQualityMetrics" class="air-quality-metrics">PM2.5 -- · PM10 -- · UV --</div>
+                <div id="airQualityMetrics" class="air-quality-metrics">
+                    <div class="air-metric"><span>PM2.5</span><strong>--</strong><small>判定待ち</small></div>
+                    <div class="air-metric"><span>TODAY UV MAX</span><strong>--</strong><small>判定待ち</small></div>
+                </div>
+                <p id="airQualityAdvice" class="air-quality-advice">登録地点の大気情報を確認している。</p>
             </div>
             <div class="api-source">Weather &amp; air data: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></div>
         </div>
@@ -256,6 +260,7 @@
         <div>
             <div class="planner-label">Selected Date</div>
             <div id="plannerToday" class="planner-today">--</div>
+            <div id="plannerHoliday" class="planner-holiday" hidden></div>
         </div>
 
         <button id="addPlanButton" class="planner-add-btn">＋</button>
@@ -854,7 +859,7 @@
 <script src="js/relationship.js?v=4.0.0-daily-trust"></script>
 <script src="js/mission.js?v=3.0.0"></script>
 
-<script src="js/planner.js?v=3.4.0-holidays"></script>
+<script src="js/planner.js?v=3.4.1-holiday-names"></script>
 <script src="js/holidays.js?v=1.0.0"></script>
 <script src="js/medication-knowledge.js?v=2.3.0-proactive-alerts"></script>
 <script src="js/medication-settings.js?v=1.0.0"></script>
@@ -863,7 +868,7 @@
 <script src="js/cycleInsight.js?v=1.1.0-palpitation"></script>
 <script src="js/weather.js?v=3.3.1-observatory-sync"></script>
 <script src="js/weather-history.js?v=1.0.0"></script>
-<script src="js/air-quality.js?v=1.0.0"></script>
+<script src="js/air-quality.js?v=1.1.0-readable-guidance"></script>
 <script src="vendor/astronomy.browser.min.js?v=2.1.19"></script>
 <script src="js/observatory.js?v=2.0.0-phase2"></script>
 <script src="js/space-weather.js?v=1.0.0"></script>
@@ -881,8 +886,8 @@
 <script src="js/engine.js"></script>
 
 <script src="js/commander-messages.js"></script>
-<script src="js/commander.js?v=2.2.0-palpitation"></script>
-<script src="js/insights.js?v=1.1.0-historical-weather"></script>
+<script src="js/commander.js?v=2.3.0-air-holiday-intel"></script>
+<script src="js/insights.js?v=1.2.0-air-holiday-brief"></script>
 
 <script src="js/training.js?v=4.2.0-persistent-session"></script>
 <script src="js/archive.js?v=4.0.0-classified-dossiers"></script>

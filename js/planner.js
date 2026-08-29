@@ -4,6 +4,7 @@
 //========================
 
 const plannerToday = document.getElementById("plannerToday");
+const plannerHoliday = document.getElementById("plannerHoliday");
 const plannerMonth = document.getElementById("plannerMonth");
 const calendarGrid = document.getElementById("calendarGrid");
 const prevMonthButton = document.getElementById("prevMonth");
@@ -191,8 +192,20 @@ function isPeriodEnd(key) {
 }
 
 function renderSelectedDate() {
+    const key = getDateKey(selectedDate);
+    const holiday = window.MeridianHolidays && typeof window.MeridianHolidays.get === "function"
+        ? window.MeridianHolidays.get(key)
+        : null;
+
     if (plannerToday) {
         plannerToday.textContent = formatSelectedDate(selectedDate);
+    }
+
+    if (plannerHoliday) {
+        plannerHoliday.hidden = !holiday;
+        plannerHoliday.textContent = holiday
+            ? "PUBLIC HOLIDAY · " + (holiday.localName || holiday.name || "祝日")
+            : "";
     }
 }
 
@@ -249,6 +262,10 @@ function renderCalendar() {
             dayCell.classList.add("public-holiday");
             dayCell.title = holidayName;
             dayCell.setAttribute("aria-label", day + "日 " + holidayName);
+            const holidayLabel = document.createElement("span");
+            holidayLabel.className = "calendar-holiday-name";
+            holidayLabel.textContent = holidayName;
+            dayCell.appendChild(holidayLabel);
         }
 
         if (dayPlans.length > 0 && dayPlans.every(function (item) { return item.done; })) {
@@ -325,6 +342,11 @@ function renderPlannerBrief() {
 
     if (getNextPeriodKey() === key) {
         html += "<div class='brief-item'>・次回生理予測日</div>";
+    }
+
+    if (holiday) {
+        html += "<div class='brief-item holiday-brief'>・祝日：" +
+            escapePlannerText(holiday.localName || holiday.name || "祝日") + "</div>";
     }
 
     plannerBrief.innerHTML = html;
@@ -504,11 +526,6 @@ function bindCycleDeleteButtons() {
     document.querySelectorAll(".cycle-delete").forEach(function (button) {
         button.addEventListener("click", function () { deleteCycleRecord(Number(button.dataset.index)); });
     });
-
-    if (holiday) {
-        html += "<div class='brief-item holiday-brief'>・祝日：" +
-            escapePlannerText(holiday.localName || holiday.name || "祝日") + "</div>";
-    }
 }
 
 function renderCycleInfo() {
@@ -594,4 +611,3 @@ window.MeridianPlanner = {
 };
 
 renderPlanner();
-

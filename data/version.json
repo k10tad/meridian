@@ -1,6 +1,6 @@
 {
-  "version": "3.4.0",
-  "build": "historical-air-space-holidays",
+  "version": "3.4.1",
+  "build": "readable-air-holiday-guidance",
   "updatedAt": "2026-08-29",
   "notes": [
     "Open-Meteo Historical Weatherから過去29日分の気圧・気温・湿度を補完",
@@ -8,6 +8,9 @@
     "WeatherへOpen-Meteo Air QualityのAQI・PM2.5・PM10・UVを追加",
     "Observatory BriefへNOAA SWPCの現在Kp・72時間最大予報を追加",
     "PlannerへNager.Dateの日本の祝日表示を追加",
-    "各外部データは保存済みキャッシュへフォールバックし、既存機能を独立維持"
+    "各外部データは保存済みキャッシュへフォールバックし、既存機能を独立維持",
+    "Plannerの選択日とBriefへ祝日名を表示し、祝日表示処理の配置不良を修正",
+    "PM2.5とUVを日本語の段階評価・注意文付き表示へ変更",
+    "大気質と当日の祝日をCommanderおよびOperations Reportの台詞へ反映"
   ]
 }

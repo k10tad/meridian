@@ -530,6 +530,14 @@ Planner
     font-weight: 650;
 }
 
+.planner-holiday {
+    margin-top: 7px;
+    color: #e7a1aa;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+}
+
 .planner-add-btn {
     width: 46px;
     height: 46px;
@@ -3913,9 +3921,60 @@ body.weather-reregistration-open {
 
 .air-quality-metrics {
     margin-top: 8px;
-    color: rgba(245, 243, 239, 0.82);
-    font-size: 12px;
-    line-height: 1.55;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.air-metric {
+    padding: 10px 11px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.air-metric span,
+.air-metric strong,
+.air-metric small {
+    display: block;
+}
+
+.air-metric span {
+    color: rgba(190, 191, 201, 0.68);
+    font-size: 8px;
+    letter-spacing: 0.13em;
+}
+
+.air-metric strong {
+    margin-top: 4px;
+    color: #f2eee6;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.air-metric strong em {
+    color: rgba(224, 222, 220, 0.64);
+    font-size: 8px;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.air-metric small {
+    margin-top: 3px;
+    color: #a9cdb3;
+    font-size: 10px;
+}
+
+.air-metric[data-level="1"] small { color: #e8c75b; }
+.air-metric[data-level="2"] small,
+.air-metric[data-level="3"] small,
+.air-metric[data-level="4"] small { color: #e79aa4; }
+
+.air-quality-advice {
+    margin: 10px 0 0;
+    color: rgba(224, 222, 220, 0.76);
+    font-size: 11px;
+    line-height: 1.7;
 }
 
 .api-source {
@@ -3963,6 +4022,27 @@ body.weather-reregistration-open {
 .calendar-day.public-holiday:not(.selected-day) {
     color: #e7a1aa;
     box-shadow: inset 0 -2px 0 rgba(197, 92, 109, 0.34);
+}
+
+.calendar-holiday-name {
+    position: absolute;
+    right: 2px;
+    bottom: 3px;
+    left: 2px;
+    overflow: hidden;
+    color: #e7a1aa;
+    font-size: 6.5px;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.calendar-day.public-holiday.has-event::after {
+    top: 5px;
+    right: 5px;
+    bottom: auto;
 }
 
 .holiday-brief {
