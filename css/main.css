@@ -3873,6 +3873,121 @@ body.weather-reregistration-open {
 .analysis-metrics strong,.analysis-metrics span { display:block; }
 .analysis-metrics strong { color:var(--color-gold); font-size:20px; font-weight:500; }
 .analysis-metrics span { margin-top:4px; color:var(--color-muted); font-size:8px; }
+
+/* Meridian v3.4.0: public intelligence feeds */
+.air-quality-strip {
+    margin-top: 14px;
+    padding: 13px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    background: rgba(5, 8, 18, 0.32);
+}
+
+.air-quality-head,
+.space-weather-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.air-quality-head strong,
+.space-weather-head strong {
+    color: var(--color-gold);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+}
+
+.air-quality-head strong[data-status="poor"],
+.air-quality-head strong[data-status="very-poor"],
+.space-weather-head strong[data-status="storm"] {
+    color: #e79aa4;
+}
+
+.air-quality-head strong[data-status="moderate"],
+.air-quality-head strong[data-status="sensitive"],
+.space-weather-head strong[data-status="watch"] {
+    color: #e8c75b;
+}
+
+.air-quality-metrics {
+    margin-top: 8px;
+    color: rgba(245, 243, 239, 0.82);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.api-source {
+    margin-top: 8px;
+    color: rgba(190, 191, 201, 0.55);
+    font-size: 8px;
+    letter-spacing: 0.08em;
+}
+
+.api-source a {
+    color: inherit;
+    text-decoration-color: rgba(212, 175, 55, 0.35);
+    text-underline-offset: 2px;
+}
+
+.space-weather-panel {
+    margin: 16px 0;
+    padding: 14px 15px;
+    border: 1px solid rgba(202, 168, 62, 0.18);
+    border-radius: 15px;
+    background: linear-gradient(145deg, rgba(22, 31, 52, 0.55), rgba(7, 10, 20, 0.55));
+}
+
+.space-weather-head span {
+    color: rgba(204, 205, 213, 0.76);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.17em;
+}
+
+.space-weather-kp {
+    margin-top: 10px;
+    color: #f2eee6;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.space-weather-panel p {
+    margin: 8px 0 0;
+    color: rgba(224, 222, 220, 0.72);
+    font-size: 11px;
+    line-height: 1.65;
+}
+
+.calendar-day.public-holiday:not(.selected-day) {
+    color: #e7a1aa;
+    box-shadow: inset 0 -2px 0 rgba(197, 92, 109, 0.34);
+}
+
+.holiday-brief {
+    margin-top: 9px;
+    color: #e7a1aa;
+}
+
+@media (max-width: 430px) {
+    .air-quality-strip {
+        margin-top: 11px;
+        padding: 11px 12px;
+    }
+
+    .air-quality-metrics {
+        font-size: 10px;
+    }
+
+    .space-weather-panel {
+        padding: 12px;
+    }
+
+    .space-weather-kp {
+        font-size: 15px;
+    }
+}
 #thirtyDayAnalysis p { margin:14px 0 7px; color:var(--color-text); font-size:12px; line-height:1.75; }
 #thirtyDayAnalysis small { color:var(--color-muted); font-size:9px; }
 .settings-description { color:var(--color-muted); font-size:11px; line-height:1.7; }

@@ -206,6 +206,10 @@ function renderCalendar() {
     const year = plannerDate.getFullYear();
     const month = plannerDate.getMonth();
 
+    if (window.MeridianHolidays && typeof window.MeridianHolidays.ensureYear === "function") {
+        window.MeridianHolidays.ensureYear(year);
+    }
+
     plannerMonth.textContent = formatMonthLabel(plannerDate);
 
     const firstDay = new Date(year, month, 1);
@@ -233,10 +237,19 @@ function renderCalendar() {
         dayCell.textContent = day;
 
         const dayPlans = normalizeOldPlans(plans, key);
+        const holiday = window.MeridianHolidays && typeof window.MeridianHolidays.get === "function"
+            ? window.MeridianHolidays.get(key)
+            : null;
 
         if (key === todayKey) dayCell.classList.add("today");
         if (key === selectedKey) dayCell.classList.add("selected-day");
         if (dayPlans.length > 0) dayCell.classList.add("has-event");
+        if (holiday) {
+            const holidayName = holiday.localName || holiday.name || "祝日";
+            dayCell.classList.add("public-holiday");
+            dayCell.title = holidayName;
+            dayCell.setAttribute("aria-label", day + "日 " + holidayName);
+        }
 
         if (dayPlans.length > 0 && dayPlans.every(function (item) { return item.done; })) {
             dayCell.classList.add("all-done");
@@ -270,6 +283,9 @@ function renderPlannerBrief() {
     const key = getDateKey(selectedDate);
     const plans = getPlans();
     const items = normalizeOldPlans(plans, key);
+    const holiday = window.MeridianHolidays && typeof window.MeridianHolidays.get === "function"
+        ? window.MeridianHolidays.get(key)
+        : null;
 
     if (items.length > 0) {
         plans[key] = items;
@@ -282,7 +298,7 @@ function renderPlannerBrief() {
         isPeriodStart(key) ||
         isPeriodEnd(key) ||
         getNextPeriodKey() === key;
-    if (items.length === 0 && !hasCycleMark) {
+    if (items.length === 0 && !hasCycleMark && !holiday) {
         plannerBrief.textContent =
             formatSelectedDate(selectedDate) + "：予定はまだ登録されていない。";
         return;
@@ -488,6 +504,11 @@ function bindCycleDeleteButtons() {
     document.querySelectorAll(".cycle-delete").forEach(function (button) {
         button.addEventListener("click", function () { deleteCycleRecord(Number(button.dataset.index)); });
     });
+
+    if (holiday) {
+        html += "<div class='brief-item holiday-brief'>・祝日：" +
+            escapePlannerText(holiday.localName || holiday.name || "祝日") + "</div>";
+    }
 }
 
 function renderCycleInfo() {
@@ -565,6 +586,12 @@ if (closeCycleHistory) closeCycleHistory.addEventListener("click", function () {
 document.querySelectorAll('[data-close-record-modal="cycle"]').forEach(function (button) {
     button.addEventListener("click", function () { setCycleHistoryOpen(false); });
 });
+
+window.addEventListener("meridianHolidaysUpdated", renderPlanner);
+window.MeridianPlanner = {
+    render: renderPlanner,
+    getSelectedDate: function () { return new Date(selectedDate.getTime()); }
+};
 
 renderPlanner();
 

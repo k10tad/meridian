@@ -15,7 +15,7 @@
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json?v=1.9.2">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png?v=1.9.2">
-    <link rel="stylesheet" href="css/main.css?v=4.3.1-desk-image-clean">
+    <link rel="stylesheet" href="css/main.css?v=4.4.0-intelligence-apis">
 </head>
 
 <body>
@@ -192,6 +192,14 @@
                 <span id="weatherHumidity">湿度 --%</span>
                 <span id="weatherPressureNote">Local sync standby</span>
             </div>
+            <div class="air-quality-strip" aria-live="polite">
+                <div class="air-quality-head">
+                    <span class="meta-label">AIR QUALITY</span>
+                    <strong id="airQualityStatus">STANDBY</strong>
+                </div>
+                <div id="airQualityMetrics" class="air-quality-metrics">PM2.5 -- · PM10 -- · UV --</div>
+            </div>
+            <div class="api-source">Weather &amp; air data: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></div>
         </div>
 
         <div id="observatoryBrief" class="card observatory-card">
@@ -202,6 +210,12 @@
             <div class="observatory-phase2">
                 <div class="observatory-detail-grid"><div><span>Astronomical Dark</span><strong id="observatoryDark">--:--</strong></div><div><span>Moon Rise / Set</span><strong id="observatoryMoonTimes">--:-- / --:--</strong></div></div>
                 <div id="observatoryPlanets" class="observatory-planets">惑星位置を計算している。</div>
+                <div class="space-weather-panel" aria-live="polite">
+                    <div class="space-weather-head"><span>SPACE WEATHER</span><strong id="spaceWeatherStatus">STANDBY</strong></div>
+                    <div id="spaceWeatherKp" class="space-weather-kp">Kp --</div>
+                    <p id="spaceWeatherMessage">地磁気情報を確認している。</p>
+                    <div class="api-source">Source: <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener">NOAA SWPC</a></div>
+                </div>
                 <button id="observationLogButton" class="record-open-btn" type="button">MARK AS OBSERVED</button>
                 <div id="observationLogForm" class="observation-log-form" hidden><input id="observationTargetInput" maxlength="80" placeholder="観測した天体"><textarea id="observationNoteInput" maxlength="240" placeholder="短い観測メモ"></textarea><button id="saveObservationLog" type="button">SAVE OBSERVATION</button></div>
                 <div id="observationLogList" class="compact-record-list"></div>
@@ -840,15 +854,19 @@
 <script src="js/relationship.js?v=4.0.0-daily-trust"></script>
 <script src="js/mission.js?v=3.0.0"></script>
 
-<script src="js/planner.js?v=3.1.0-body-note-retired"></script>
+<script src="js/planner.js?v=3.4.0-holidays"></script>
+<script src="js/holidays.js?v=1.0.0"></script>
 <script src="js/medication-knowledge.js?v=2.3.0-proactive-alerts"></script>
 <script src="js/medication-settings.js?v=1.0.0"></script>
 <script src="js/health.js?v=3.2.0-palpitation"></script>
 <script src="js/headache-log.js?v=1.2.0-collapsible-archive"></script>
 <script src="js/cycleInsight.js?v=1.1.0-palpitation"></script>
 <script src="js/weather.js?v=3.3.1-observatory-sync"></script>
+<script src="js/weather-history.js?v=1.0.0"></script>
+<script src="js/air-quality.js?v=1.0.0"></script>
 <script src="vendor/astronomy.browser.min.js?v=2.1.19"></script>
 <script src="js/observatory.js?v=2.0.0-phase2"></script>
+<script src="js/space-weather.js?v=1.0.0"></script>
 <script src="js/condition.js"></script>
 <script src="js/dailyBrief.js"></script>
 <script src="js/desk.js"></script>
@@ -864,7 +882,7 @@
 
 <script src="js/commander-messages.js"></script>
 <script src="js/commander.js?v=2.2.0-palpitation"></script>
-<script src="js/insights.js?v=1.0.0"></script>
+<script src="js/insights.js?v=1.1.0-historical-weather"></script>
 
 <script src="js/training.js?v=4.2.0-persistent-session"></script>
 <script src="js/archive.js?v=4.0.0-classified-dossiers"></script>
