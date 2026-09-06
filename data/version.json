@@ -1,6 +1,6 @@
 {
-  "version": "3.5.0",
-  "build": "private-atlas-median-cycle",
+  "version": "3.5.1",
+  "build": "lunar-calendar-markers",
   "updatedAt": "2026-09-06",
   "notes": [
     "Open-Meteo Historical Weatherから過去29日分の気圧・気温・湿度を補完",
@@ -18,6 +18,7 @@
     "Cycle Trackerを直近7周期の中央値、予測幅、信頼度、期間中央値へ更新",
     "記録中の生理は今日までを記録済み、以降を期間中央値による予測として区別",
     "生理記録、予測期間、PMS期、排卵推定を別々の月相記号で表示",
-    "Atlasの記録とカバー写真を通常バックアップへ追加"
+    "Atlasの記録とカバー写真を通常バックアップへ追加",
+    "周期カレンダーの印を日付中央の月相・軌道記号へ整理し、予測幅を淡い光で表示"
   ]
 }

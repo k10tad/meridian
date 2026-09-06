@@ -262,7 +262,10 @@ function renderCalendar() {
         const dayCell = document.createElement("button");
         dayCell.type = "button";
         dayCell.className = "calendar-day";
-        dayCell.textContent = day;
+        const dayNumber = document.createElement("span");
+        dayNumber.className = "calendar-day-number";
+        dayNumber.textContent = day;
+        dayCell.appendChild(dayNumber);
 
         const dayPlans = normalizeOldPlans(plans, key);
         const holiday = window.MeridianHolidays && typeof window.MeridianHolidays.get === "function"
@@ -297,6 +300,32 @@ function renderCalendar() {
             if (cycleState.forecastWindow) dayCell.classList.add("cycle-forecast-window");
             if (cycleState.pms) dayCell.classList.add("cycle-pms");
             if (cycleState.ovulation) dayCell.classList.add("cycle-ovulation");
+
+            const markerType = cycleState.recorded
+                ? "recorded"
+                : cycleState.predicted
+                    ? "predicted"
+                    : cycleState.pms
+                        ? "pms"
+                        : cycleState.ovulation
+                            ? "ovulation"
+                            : "";
+
+            if (markerType) {
+                const marker = document.createElement("span");
+                marker.className = "cycle-day-mark " + markerType;
+                marker.setAttribute("aria-hidden", "true");
+                dayCell.appendChild(marker);
+
+                const markerLabels = {
+                    recorded: "生理期間として記録済み",
+                    predicted: cycleState.currentPrediction ? "現在の生理期間予測" : "次回生理の予測期間",
+                    pms: "PMSが出やすい時期の目安",
+                    ovulation: "排卵日の暦上推定"
+                };
+                const existingLabel = dayCell.getAttribute("aria-label") || day + "日";
+                dayCell.setAttribute("aria-label", existingLabel + "、" + markerLabels[markerType]);
+            }
         }
 
         dayCell.addEventListener("click", function () {
