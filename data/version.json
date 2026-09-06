@@ -1,7 +1,7 @@
 {
-  "version": "3.4.1",
-  "build": "readable-air-holiday-guidance",
-  "updatedAt": "2026-08-29",
+  "version": "3.5.0",
+  "build": "private-atlas-median-cycle",
+  "updatedAt": "2026-09-06",
   "notes": [
     "Open-Meteo Historical Weatherから過去29日分の気圧・気温・湿度を補完",
     "30日分析を低気圧・前日比6hPa以上の低下と頭痛記録の重なり表示へ更新",
@@ -11,6 +11,13 @@
     "各外部データは保存済みキャッシュへフォールバックし、既存機能を独立維持",
     "Plannerの選択日とBriefへ祝日名を表示し、祝日表示処理の配置不良を修正",
     "PM2.5とUVを日本語の段階評価・注意文付き表示へ変更",
-    "大気質と当日の祝日をCommanderおよびOperations Reportの台詞へ反映"
+    "大気質と当日の祝日をCommanderおよびOperations Reportの台詞へ反映",
+    "Planner内へPLANNER / ATLAS切替式のPrivate Atlasを追加",
+    "登録・APIキー・請求先なしでOpenStreetMapを表示し、長押しまたは中央ボタンからピンを保存",
+    "旅程、日程、状態、メモ、URL、カバー写真、分類付きピンを端末内へ保存",
+    "Cycle Trackerを直近7周期の中央値、予測幅、信頼度、期間中央値へ更新",
+    "記録中の生理は今日までを記録済み、以降を期間中央値による予測として区別",
+    "生理記録、予測期間、PMS期、排卵推定を別々の月相記号で表示",
+    "Atlasの記録とカバー写真を通常バックアップへ追加"
   ]
 }

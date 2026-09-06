@@ -7,7 +7,7 @@
     "use strict";
 
     const BACKUP_FORMAT = "meridian-backup";
-    const BACKUP_SCHEMA_VERSION = 3;
+    const BACKUP_SCHEMA_VERSION = 4;
     const AUTO_SNAPSHOT_KEY = "meridianRecoverySnapshot";
     const LAST_VERIFIED_KEY = "meridianLastVerifiedBackup";
     const DESK_ASSET_ID = "desk-commander";
@@ -129,6 +129,31 @@
         };
     }
 
+    async function readAtlasAssetsForBackup() {
+        if (!window.MeridianPhotoDB || typeof window.MeridianPhotoDB.getAsset !== "function") return [];
+        let atlas = null;
+        try { atlas = JSON.parse(localStorage.getItem("meridianAtlasV1")); } catch (_) { atlas = null; }
+        const journeys = atlas && Array.isArray(atlas.journeys) ? atlas.journeys : [];
+        const ids = Array.from(new Set(journeys.map(function (journey) {
+            return String(journey && journey.coverAssetId || "");
+        }).filter(Boolean)));
+        const assets = [];
+        for (const assetId of ids) {
+            const asset = await window.MeridianPhotoDB.getAsset(assetId);
+            if (!asset || !asset.blob) continue;
+            assets.push({
+                id: assetId,
+                kind: "atlas-cover",
+                journeyId: String(asset.journeyId || ""),
+                updatedAt: asset.updatedAt || new Date().toISOString(),
+                mimeType: asset.mimeType || asset.blob.type || "image/jpeg",
+                size: Number(asset.size) || asset.blob.size,
+                dataUrl: await blobToDataUrl(asset.blob)
+            });
+        }
+        return assets;
+    }
+
     function integritySource(localStorageData, assets) {
         return {
             localStorage: localStorageData,
@@ -140,7 +165,10 @@
         const now = new Date();
         const storageData = readAllLocalStorage();
         const deskImage = await readDeskAssetForBackup();
-        const assets = deskImage ? { deskImage: deskImage } : {};
+        const atlasCovers = await readAtlasAssetsForBackup();
+        const assets = {};
+        if (deskImage) assets.deskImage = deskImage;
+        if (atlasCovers.length) assets.atlasCovers = atlasCovers;
 
         const payload = {
             format: BACKUP_FORMAT,
@@ -149,7 +177,7 @@
             exportedAt: now.toISOString(),
             origin: window.location.origin,
             pathname: window.location.pathname,
-            itemCount: Object.keys(storageData).length + (deskImage ? 1 : 0),
+            itemCount: Object.keys(storageData).length + (deskImage ? 1 : 0) + atlasCovers.length,
             localStorage: storageData,
             assets: assets,
             integrity: { algorithm: "FNV1A-32", value: fingerprint(integritySource(storageData, assets)) }
@@ -166,7 +194,7 @@
             return "Meridian形式のバックアップではない。";
         }
 
-        if (![1, 2, BACKUP_SCHEMA_VERSION].includes(payload.schemaVersion)) {
+        if (![1, 2, 3, BACKUP_SCHEMA_VERSION].includes(payload.schemaVersion)) {
             return "対応していないバックアップ形式だ。";
         }
 
@@ -328,6 +356,32 @@
         return true;
     }
 
+    async function restoreAtlasAssets(payload) {
+        const assets = payload && payload.assets && Array.isArray(payload.assets.atlasCovers)
+            ? payload.assets.atlasCovers
+            : [];
+        if (!assets.length) return 0;
+        if (!window.MeridianPhotoDB || typeof window.MeridianPhotoDB.putAsset !== "function") {
+            throw new Error("Atlas画像の保管庫を開けない。");
+        }
+        let restored = 0;
+        for (const asset of assets) {
+            if (!asset || !asset.id || !asset.dataUrl) continue;
+            const blob = dataUrlToBlob(asset.dataUrl);
+            await window.MeridianPhotoDB.putAsset({
+                id: String(asset.id),
+                kind: "atlas-cover",
+                journeyId: String(asset.journeyId || ""),
+                updatedAt: asset.updatedAt || new Date().toISOString(),
+                mimeType: asset.mimeType || blob.type || "image/jpeg",
+                size: blob.size,
+                blob: blob
+            });
+            restored += 1;
+        }
+        return restored;
+    }
+
     function restoreLocalStorage(storageData) {
         const preservedSnapshot = localStorage.getItem(AUTO_SNAPSHOT_KEY);
 
@@ -444,6 +498,7 @@
             await saveAutomaticSnapshot();
             restoreLocalStorage(selectedBackup.localStorage);
             await restoreDeskAsset(selectedBackup);
+            await restoreAtlasAssets(selectedBackup);
 
             sessionStorage.setItem(
                 "meridianRestoreCompleted",

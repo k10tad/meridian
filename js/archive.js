@@ -143,7 +143,7 @@
                 metric("頭痛", readArray("meridianHeadacheLogs").length + "件") +
                 metric("旧Body Note", notes + "件") +
             '</div>' +
-            list(["Planner：予定と生理周期", "Health：体調・服薬・頭痛・脈拍", "Training：運動セッション", "Observatory：" + locationName, "Archive：記録保全と復元"]) +
+            list(["Planner：予定と生理周期", "Atlas：旅程・地図ピン・訪問記録", "Health：体調・服薬・頭痛・脈拍", "Training：運動セッション", "Observatory：" + locationName, "Archive：記録保全と復元"]) +
             report("記録は多ければいいわけではない。判断に使えるものだけ残せ。管理は私が引き受ける。");
     }
 

@@ -15,7 +15,7 @@
     <meta name="apple-mobile-web-app-title" content="Meridian">
     <link rel="manifest" href="manifest.json?v=1.9.2">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png?v=1.9.2">
-    <link rel="stylesheet" href="css/main.css?v=4.4.0-intelligence-apis">
+    <link rel="stylesheet" href="css/main.css?v=5.0.0-atlas-cycle">
 </head>
 
 <body>
@@ -251,11 +251,16 @@
     </section>
 
   <section id="plannerPage" class="app-page">
-    <div class="title">
-        <h1>Planner</h1>
-        <p>Mission calendar</p>
+    <div class="title planner-title-switcher">
+        <h1 class="visually-hidden">Planner and Private Atlas</h1>
+        <div class="planner-mode-tabs" role="tablist" aria-label="Planner view">
+            <button id="plannerModePlanner" class="planner-mode-tab active" type="button" role="tab" aria-selected="true" aria-controls="plannerPanel" data-planner-mode="planner">PLANNER</button>
+            <button id="plannerModeAtlas" class="planner-mode-tab" type="button" role="tab" aria-selected="false" aria-controls="atlasPanel" data-planner-mode="atlas">ATLAS</button>
+        </div>
+        <p id="plannerModeSubtitle">Mission calendar</p>
     </div>
 
+    <section id="plannerPanel" class="planner-mode-panel active" role="tabpanel" aria-labelledby="plannerModePlanner">
     <div class="planner-header-card">
         <div>
             <div class="planner-label">Selected Date</div>
@@ -282,11 +287,23 @@
     </div>
 
     <div class="card cycle-card">
-        <h2>Cycle Tracker</h2>
+        <div class="cycle-card-heading">
+            <div>
+                <div class="meta-label">LUNAR CYCLE LOG</div>
+                <h2>Cycle Tracker</h2>
+            </div>
+            <span id="cycleConfidenceBadge" class="cycle-confidence-badge">仮予測</span>
+        </div>
 
         <p class="cycle-note">
-            開始日と終了日を記録して、平均周期と次回予測を更新する。
+            直近7周期の中央値から、次の時期を幅を持たせて見積もる。
         </p>
+
+        <div class="cycle-next-card">
+            <div class="meta-label">NEXT CYCLE</div>
+            <div id="cycleNextHeadline" class="cycle-next-headline">未記録</div>
+            <p id="cycleForecastMessage">開始日を記録すれば、ここに見通しを出す。</p>
+        </div>
 
         <div class="cycle-actions">
             <button id="periodStartButton" class="cycle-btn">
@@ -305,15 +322,29 @@
             </div>
 
             <div>
-                <div class="meta-label">Average</div>
+                <div class="meta-label">Typical</div>
                 <div id="averageCycleDays">--日</div>
             </div>
 
             <div class="meta-right">
-                <div class="meta-label">Next Estimate</div>
+                <div class="meta-label">Forecast</div>
                 <div id="nextPeriodDate">未設定</div>
             </div>
         </div>
+
+        <div class="cycle-detail-grid">
+            <div><span>周期の幅</span><strong id="cycleVariability">--</strong></div>
+            <div><span>生理期間</span><strong id="cycleDuration">--</strong></div>
+            <label><span>PMS目安</span><select id="cyclePmsDays" aria-label="PMS period"><option value="3">3日前</option><option value="4">4日前</option><option value="5">5日前</option><option value="6">6日前</option><option value="7">7日前</option><option value="8">8日前</option><option value="9">9日前</option><option value="10">10日前</option></select></label>
+        </div>
+
+        <div class="cycle-legend" aria-label="Cycle calendar legend">
+            <div><span class="cycle-symbol recorded" aria-hidden="true"></span><p><strong>生理中</strong><small>濃い月は記録済み</small></p></div>
+            <div><span class="cycle-symbol predicted" aria-hidden="true"></span><p><strong>予測期間</strong><small>淡い月は推定</small></p></div>
+            <div><span class="cycle-symbol pms" aria-hidden="true"></span><p><strong>PMS期</strong><small>金環は体調変化の目安</small></p></div>
+            <div><span class="cycle-symbol ovulation" aria-hidden="true"></span><p><strong>排卵日推定</strong><small>星の日は暦上の推定</small></p></div>
+        </div>
+        <p class="cycle-symbol-note">月相は見分けるための表現だ。月の満ち欠けと体調の因果関係は示さない。</p>
 
         <div class="record-section-head"><span>Recent Records</span><button id="openCycleHistory" class="record-link-btn" type="button">View All</button></div>
         <div id="cycleHistory" class="cycle-history compact-record-list"></div>
@@ -323,7 +354,51 @@
         <h2>Today’s Brief</h2>
         <div id="plannerBrief">予定はまだ登録されていない。</div>
     </div>
+    </section>
 
+    <section id="atlasPanel" class="planner-mode-panel" role="tabpanel" aria-labelledby="plannerModeAtlas" hidden>
+        <div class="card atlas-overview-card">
+            <div>
+                <div class="meta-label">PRIVATE TRAVEL RECORD</div>
+                <h2>Private Atlas</h2>
+                <p id="atlasOverviewText">旅程を作り、地図へ行きたい場所と訪れた場所を残す。</p>
+            </div>
+            <button id="atlasNewJourney" class="atlas-primary-button" type="button">＋ JOURNEY</button>
+        </div>
+
+        <div class="card atlas-map-card">
+            <div class="atlas-map-heading">
+                <div>
+                    <div class="meta-label">OPERATIONS MAP</div>
+                    <h2 id="atlasMapTitle">All Journeys</h2>
+                </div>
+                <select id="atlasJourneyFilter" class="atlas-compact-select" aria-label="地図に表示する旅程">
+                    <option value="all">ALL</option>
+                </select>
+            </div>
+            <div id="atlasMap" class="atlas-map" tabindex="0" aria-label="OpenStreetMap。ドラッグで移動、長押しでピンを追加">
+                <div id="atlasMapTiles" class="atlas-map-tiles" aria-hidden="true"></div>
+                <div id="atlasMapMarkers" class="atlas-map-markers"></div>
+                <div class="atlas-map-crosshair" aria-hidden="true"></div>
+                <div class="atlas-map-controls">
+                    <button id="atlasZoomIn" type="button" aria-label="地図を拡大">＋</button>
+                    <button id="atlasZoomOut" type="button" aria-label="地図を縮小">−</button>
+                </div>
+            </div>
+            <div class="atlas-map-footer">
+                <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a>
+                <span>地図を長押ししてピンを置ける</span>
+            </div>
+            <div class="atlas-map-actions">
+                <button id="atlasAddCenterPin" type="button">中央にピン</button>
+                <button id="atlasFitPins" type="button">全ピンを表示</button>
+            </div>
+            <p id="atlasMapStatus" class="atlas-status" aria-live="polite">旅程を一つ作れば、地図へピンを登録できる。</p>
+        </div>
+
+        <div class="record-section-head"><span>Journey Files</span><span id="atlasJourneyCount">0 records</span></div>
+        <div id="atlasJourneyList" class="atlas-journey-list"></div>
+    </section>
 </section>
 
     <section id="trainingPage" class="app-page">
@@ -661,7 +736,7 @@
         </div>
 
         <p class="backup-description">
-            Planner、Health、Relationship、Archiveと現在のDesk画像を、
+            Planner、Atlas、Health、Relationship、Archiveと画像を、
             MeridianデータとしてJSONへ書き出す。
         </p>
 
@@ -780,6 +855,62 @@
         <button class="record-modal-backdrop" type="button" data-close-record-modal="medication" aria-label="閉じる"></button>
         <section class="record-modal-card" role="dialog" aria-modal="true" aria-labelledby="medicationHistoryTitle"><header><div><div class="meta-label">90 DAY LOG</div><h2 id="medicationHistoryTitle">Medication History</h2></div><button id="closeMedicationHistory" class="record-modal-close" type="button">×</button></header><div id="medicationHistoryList" class="medication-history-list record-modal-list"><div class="medication-empty">履歴はまだない</div></div></section>
     </div>
+    <div id="atlasJourneyModal" class="record-modal" hidden>
+        <button class="record-modal-backdrop" type="button" data-close-atlas-journey aria-label="旅程編集を閉じる"></button>
+        <section class="record-modal-card atlas-editor-modal" role="dialog" aria-modal="true" aria-labelledby="atlasJourneyModalTitle">
+            <header><div><div class="meta-label">PRIVATE ATLAS</div><h2 id="atlasJourneyModalTitle">Journey File</h2></div><button id="atlasJourneyClose" class="record-modal-close" type="button">×</button></header>
+            <div class="record-modal-list atlas-editor-form">
+                <input id="atlasJourneyId" type="hidden">
+                <label><span>旅程名</span><input id="atlasJourneyTitle" maxlength="80" placeholder="例：マドリード散策"></label>
+                <label><span>行き先</span><input id="atlasJourneyLocation" maxlength="100" placeholder="都市・地域・国"></label>
+                <div class="atlas-editor-row">
+                    <label><span>開始日</span><input id="atlasJourneyStart" type="date"></label>
+                    <label><span>終了日</span><input id="atlasJourneyEnd" type="date"></label>
+                </div>
+                <label><span>状態</span><select id="atlasJourneyStatus"><option value="planned">PLANNED</option><option value="visited">VISITED</option><option value="wishlist">WISHLIST</option></select></label>
+                <label><span>参照URL</span><input id="atlasJourneyUrl" type="url" inputmode="url" maxlength="500" placeholder="予約・案内ページ（任意）"></label>
+                <label><span>計画と記録</span><textarea id="atlasJourneyNotes" maxlength="4000" placeholder="移動、宿、持ち物、やりたいこと、旅の記録"></textarea></label>
+                <div class="atlas-cover-field">
+                    <span>Cover Photo</span>
+                    <div id="atlasJourneyCoverPreview" class="atlas-cover-preview"><span>NO IMAGE</span></div>
+                    <input id="atlasJourneyCoverInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif">
+                    <label for="atlasJourneyCoverInput" class="atlas-secondary-button">写真を選ぶ</label>
+                    <button id="atlasJourneyCoverRemove" class="atlas-text-button" type="button">写真を外す</button>
+                </div>
+                <p id="atlasJourneyFormStatus" class="atlas-status" aria-live="polite"></p>
+                <div class="atlas-editor-actions">
+                    <button id="atlasJourneyDelete" class="danger" type="button">Delete</button>
+                    <button id="atlasJourneySave" class="primary" type="button">Save Journey</button>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="atlasPinModal" class="record-modal" hidden>
+        <button class="record-modal-backdrop" type="button" data-close-atlas-pin aria-label="ピン編集を閉じる"></button>
+        <section class="record-modal-card atlas-editor-modal" role="dialog" aria-modal="true" aria-labelledby="atlasPinModalTitle">
+            <header><div><div class="meta-label">ATLAS PIN</div><h2 id="atlasPinModalTitle">Location Record</h2></div><button id="atlasPinClose" class="record-modal-close" type="button">×</button></header>
+            <div class="record-modal-list atlas-editor-form">
+                <input id="atlasPinId" type="hidden">
+                <input id="atlasPinLatitude" type="hidden">
+                <input id="atlasPinLongitude" type="hidden">
+                <label><span>旅程</span><select id="atlasPinJourney"></select></label>
+                <label><span>場所の名前</span><input id="atlasPinTitle" maxlength="100" placeholder="例：プラド美術館"></label>
+                <div class="atlas-editor-row">
+                    <label><span>分類</span><select id="atlasPinCategory"><option value="sight">PLACE</option><option value="stay">STAY</option><option value="food">FOOD</option><option value="shop">SHOP</option><option value="transit">TRANSIT</option><option value="note">NOTE</option></select></label>
+                    <label><span>状態</span><select id="atlasPinStatus"><option value="planned">PLANNED</option><option value="visited">VISITED</option></select></label>
+                </div>
+                <label><span>優先度</span><select id="atlasPinPriority"><option value="normal">NORMAL</option><option value="high">HIGH</option><option value="optional">OPTIONAL</option></select></label>
+                <label><span>参照URL</span><input id="atlasPinUrl" type="url" inputmode="url" maxlength="500" placeholder="公式サイト・予約ページ（任意）"></label>
+                <label><span>メモ</span><textarea id="atlasPinNotes" maxlength="2000" placeholder="営業時間、予約、現地で気づいたこと"></textarea></label>
+                <div id="atlasPinCoordinates" class="atlas-coordinate-label"></div>
+                <p id="atlasPinFormStatus" class="atlas-status" aria-live="polite"></p>
+                <div class="atlas-editor-actions">
+                    <button id="atlasPinDelete" class="danger" type="button">Delete</button>
+                    <button id="atlasPinSave" class="primary" type="button">Save Pin</button>
+                </div>
+            </div>
+        </section>
+    </div>
     <div id="classifiedFileModal" class="record-modal" hidden>
         <button class="record-modal-backdrop" type="button" data-close-classified-file aria-label="閉じる"></button>
         <section class="record-modal-card classified-dossier-card" role="dialog" aria-modal="true" aria-labelledby="classifiedFileTitle">
@@ -859,13 +990,14 @@
 <script src="js/relationship.js?v=4.0.0-daily-trust"></script>
 <script src="js/mission.js?v=3.0.0"></script>
 
-<script src="js/planner.js?v=3.4.1-holiday-names"></script>
+<script src="js/cycle-core.js?v=2.1.0"></script>
+<script src="js/planner.js?v=3.5.1-atlas-cycle"></script>
 <script src="js/holidays.js?v=1.0.0"></script>
 <script src="js/medication-knowledge.js?v=2.3.0-proactive-alerts"></script>
 <script src="js/medication-settings.js?v=1.0.0"></script>
 <script src="js/health.js?v=3.2.0-palpitation"></script>
 <script src="js/headache-log.js?v=1.2.0-collapsible-archive"></script>
-<script src="js/cycleInsight.js?v=1.1.0-palpitation"></script>
+<script src="js/cycleInsight.js?v=2.0.0-median-range"></script>
 <script src="js/weather.js?v=3.3.1-observatory-sync"></script>
 <script src="js/weather-history.js?v=1.0.0"></script>
 <script src="js/air-quality.js?v=1.1.0-readable-guidance"></script>
@@ -886,13 +1018,13 @@
 <script src="js/engine.js"></script>
 
 <script src="js/commander-messages.js"></script>
-<script src="js/commander.js?v=2.3.0-air-holiday-intel"></script>
+<script src="js/commander.js?v=2.4.0-cycle-range"></script>
 <script src="js/insights.js?v=1.2.0-air-holiday-brief"></script>
 
 <script src="js/training.js?v=4.2.0-persistent-session"></script>
-<script src="js/archive.js?v=4.0.0-classified-dossiers"></script>
+<script src="js/archive.js?v=4.1.0-atlas-scope"></script>
 <script src="js/update.js?v=1.9.1-album-hotfix"></script>
-<script src="js/backup.js?v=3.0.0-desk-image"></script>
+<script src="js/backup.js?v=4.0.0-atlas-covers"></script>
 
     <!-- Meridian Updater -->
     <div
@@ -915,7 +1047,7 @@
             <ul id="meridianUpdateNotes" class="update-modal-notes"></ul>
 
             <p id="meridianUpdateStatus" class="update-modal-status">
-                更新しても、Planner・Health・Relationship・Archiveの保存データは消えない。
+                更新しても、Planner・Atlas・Health・Relationship・Archiveの保存データは消えない。
             </p>
 
             <div class="update-modal-actions">
@@ -969,6 +1101,7 @@
 
 
     <script src="js/photo-db.js?v=2.0.0-assets"></script>
+    <script src="js/atlas.js?v=1.0.1"></script>
     <script src="js/desk-image.js?v=1.0.1-image-tap"></script>
     <script src="js/vestige-photo.js?v=1.9.1-album-hotfix"></script>
     <script src="js/photo-backup.js"></script>

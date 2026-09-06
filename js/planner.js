@@ -22,11 +22,17 @@ const cycleHistoryFullList = document.getElementById("cycleHistoryFullList");
 const cycleHistoryModal = document.getElementById("cycleHistoryModal");
 const openCycleHistory = document.getElementById("openCycleHistory");
 const closeCycleHistory = document.getElementById("closeCycleHistory");
+const cycleNextHeadline = document.getElementById("cycleNextHeadline");
+const cycleForecastMessage = document.getElementById("cycleForecastMessage");
+const cycleVariability = document.getElementById("cycleVariability");
+const cycleDuration = document.getElementById("cycleDuration");
+const cyclePmsDays = document.getElementById("cyclePmsDays");
+const cycleConfidenceBadge = document.getElementById("cycleConfidenceBadge");
 
 let plannerDate = new Date();
 let selectedDate = new Date();
 
-const DEFAULT_CYCLE_DAYS = 30;
+const DEFAULT_CYCLE_DAYS = 28;
 
 function getDateKey(date) {
     const y = date.getFullYear();
@@ -72,6 +78,7 @@ function savePlans(plans) {
 }
 
 function getCycleData() {
+    if (window.MeridianCycle) return window.MeridianCycle.getData();
     const saved = JSON.parse(localStorage.getItem("meridianCycle"));
 
     if (saved && Array.isArray(saved.records)) {
@@ -96,7 +103,11 @@ function getCycleData() {
 }
 
 function saveCycleData(data) {
-    localStorage.setItem("meridianCycle", JSON.stringify(data));
+    if (window.MeridianCycle) {
+        window.MeridianCycle.save(data);
+    } else {
+        localStorage.setItem("meridianCycle", JSON.stringify(data));
+    }
 }
 
 function normalizeOldPlans(plans, key) {
@@ -116,6 +127,7 @@ function normalizeOldPlans(plans, key) {
 }
 
 function getSortedCycleRecords() {
+    if (window.MeridianCycle) return window.MeridianCycle.getRecords();
     const cycle = getCycleData();
 
     return cycle.records
@@ -136,6 +148,7 @@ function getLastCycleRecord() {
 }
 
 function calculateAverageCycleDays() {
+    if (window.MeridianCycle) return window.MeridianCycle.getStats().typicalDays;
     const records = getSortedCycleRecords();
 
     if (records.length < 2) {
@@ -167,6 +180,7 @@ function calculateAverageCycleDays() {
 }
 
 function getNextPeriodKey() {
+    if (window.MeridianCycle) return window.MeridianCycle.getStats().next;
     const last = getLastCycleRecord();
 
     if (!last) return null;
@@ -233,6 +247,7 @@ function renderCalendar() {
     const todayKey = getDateKey(new Date());
     const selectedKey = getDateKey(selectedDate);
     const nextPeriodKey = getNextPeriodKey();
+    const cycleStats = window.MeridianCycle ? window.MeridianCycle.getStats() : null;
 
     for (let i = 0; i < firstWeekday; i++) {
         const emptyCell = document.createElement("div");
@@ -274,7 +289,15 @@ function renderCalendar() {
 
         if (isPeriodStart(key)) dayCell.classList.add("period-start");
         if (isPeriodEnd(key)) dayCell.classList.add("period-end");
-        if (nextPeriodKey === key) dayCell.classList.add("period-estimate");
+        if (nextPeriodKey === key && !cycleStats) dayCell.classList.add("period-estimate");
+        if (cycleStats) {
+            const cycleState = window.MeridianCycle.getDayStatus(key, cycleStats);
+            if (cycleState.recorded) dayCell.classList.add("cycle-recorded");
+            if (cycleState.predicted) dayCell.classList.add("cycle-predicted");
+            if (cycleState.forecastWindow) dayCell.classList.add("cycle-forecast-window");
+            if (cycleState.pms) dayCell.classList.add("cycle-pms");
+            if (cycleState.ovulation) dayCell.classList.add("cycle-ovulation");
+        }
 
         dayCell.addEventListener("click", function () {
             selectedDate = date;
@@ -303,6 +326,8 @@ function renderPlannerBrief() {
     const holiday = window.MeridianHolidays && typeof window.MeridianHolidays.get === "function"
         ? window.MeridianHolidays.get(key)
         : null;
+    const cycleStats = window.MeridianCycle ? window.MeridianCycle.getStats() : null;
+    const cycleState = cycleStats ? window.MeridianCycle.getDayStatus(key, cycleStats) : null;
 
     if (items.length > 0) {
         plans[key] = items;
@@ -314,7 +339,8 @@ function renderPlannerBrief() {
     const hasCycleMark =
         isPeriodStart(key) ||
         isPeriodEnd(key) ||
-        getNextPeriodKey() === key;
+        getNextPeriodKey() === key ||
+        Boolean(cycleState && (cycleState.recorded || cycleState.predicted || cycleState.pms || cycleState.ovulation));
     if (items.length === 0 && !hasCycleMark && !holiday) {
         plannerBrief.textContent =
             formatSelectedDate(selectedDate) + "：予定はまだ登録されていない。";
@@ -340,7 +366,23 @@ function renderPlannerBrief() {
         html += "<div class='brief-item'>・生理終了日</div>";
     }
 
-    if (getNextPeriodKey() === key) {
+    if (cycleState && cycleState.recorded && !cycleState.start && !cycleState.end) {
+        html += "<div class='brief-item'>・生理期間として記録済み</div>";
+    }
+
+    if (cycleState && cycleState.pms) {
+        html += "<div class='brief-item'>・PMSが出やすい時期の目安</div>";
+    }
+
+    if (cycleState && cycleState.ovulation) {
+        html += "<div class='brief-item'>・排卵日の暦上推定（確定日ではない）</div>";
+    }
+
+    if (cycleState && cycleState.currentPrediction) {
+        html += "<div class='brief-item'>・現在記録中の生理期間予測</div>";
+    } else if (cycleState && cycleState.predicted) {
+        html += "<div class='brief-item'>・次回生理の予測期間</div>";
+    } else if (!cycleState && getNextPeriodKey() === key) {
         html += "<div class='brief-item'>・次回生理予測日</div>";
     }
 
@@ -533,16 +575,43 @@ function renderCycleInfo() {
     const last = getLastCycleRecord();
     const nextKey = getNextPeriodKey();
     const average = calculateAverageCycleDays();
+    const stats = window.MeridianCycle ? window.MeridianCycle.getStats() : null;
 
     if (!last) {
         if (lastPeriodDate) lastPeriodDate.textContent = "未記録";
         if (nextPeriodDate) nextPeriodDate.textContent = "未設定";
         if (averageCycleDays) averageCycleDays.textContent = "--日";
+        if (cycleNextHeadline) cycleNextHeadline.textContent = "未記録";
+        if (cycleForecastMessage) cycleForecastMessage.textContent = "開始日を記録すれば、ここに見通しを出す。";
+        if (cycleVariability) cycleVariability.textContent = "--";
+        if (cycleDuration) cycleDuration.textContent = "--";
+        if (cycleConfidenceBadge) {
+            cycleConfidenceBadge.textContent = "仮予測";
+            cycleConfidenceBadge.dataset.confidence = "provisional";
+        }
     } else {
         if (lastPeriodDate) lastPeriodDate.textContent = formatShortDateFromKey(last.start);
-        if (nextPeriodDate) nextPeriodDate.textContent = formatShortDateFromKey(nextKey);
+        if (nextPeriodDate) nextPeriodDate.textContent = formatShortDateFromKey(nextKey) + "ごろ";
         if (averageCycleDays) averageCycleDays.textContent = average + "日";
+        if (cycleNextHeadline) cycleNextHeadline.textContent = formatShortDateFromKey(nextKey) + "ごろ";
+        if (stats) {
+            if (cycleVariability) cycleVariability.textContent = stats.intervalCount > 1 ? stats.variability + "日幅" : "記録待ち";
+            if (cycleDuration) cycleDuration.textContent = stats.periodDays + "日";
+            if (cycleConfidenceBadge) {
+                cycleConfidenceBadge.textContent = stats.confidence.label;
+                cycleConfidenceBadge.dataset.confidence = stats.confidence.key;
+            }
+            if (cycleForecastMessage) {
+                cycleForecastMessage.textContent = stats.intervalCount === 0
+                    ? "まだ1周期だけだ。28日を仮の基準にしているから、日付は目安として見ろ。"
+                    : "直近" + stats.intervalCount + "周期の間隔から、" +
+                        formatShortDateFromKey(stats.forecastStart) + "〜" + formatShortDateFromKey(stats.forecastEnd) +
+                        "を開始の目安にしている。一日に決めつけるな。";
+            }
+        }
     }
+
+    if (cyclePmsDays && stats) cyclePmsDays.value = String(stats.pmsDays);
 
     if (!cycleHistory) return;
 
@@ -591,6 +660,13 @@ if (periodStartButton) {
 
 if (periodEndButton) {
     periodEndButton.addEventListener("click", setCycleEnd);
+}
+
+if (cyclePmsDays) {
+    cyclePmsDays.addEventListener("change", function () {
+        if (window.MeridianCycle) window.MeridianCycle.setPmsDays(cyclePmsDays.value);
+        renderPlanner();
+    });
 }
 
 function setCycleHistoryOpen(open) {

@@ -120,6 +120,22 @@ function commanderEnvironmentMessage(data) {
 }
 
 function commanderReadCycleStatus() {
+    if (window.MeridianCycle && typeof window.MeridianCycle.statusForToday === "function") {
+        const status = window.MeridianCycle.statusForToday();
+        if (!status.last) {
+            return { label: "未記録", cycleDay: null, isPeriod: false, isPmsWindow: false };
+        }
+        return {
+            label: "Day " + status.cycleDay + (status.isPmsWindow ? " · PMS" : ""),
+            cycleDay: status.cycleDay,
+            isPeriod: status.isPeriod,
+            isPmsWindow: status.isPmsWindow,
+            isNearNext: status.isNearNext,
+            forecastStart: status.forecastStart,
+            forecastEnd: status.forecastEnd,
+            confidence: status.confidence && status.confidence.label
+        };
+    }
     const cycle = commanderSafeJsonRead("meridianCycle", { records: [] });
     const records = Array.isArray(cycle.records)
         ? cycle.records
@@ -313,6 +329,7 @@ window.addEventListener("meridianAirQualityUpdated", renderCommanderIntel);
 window.addEventListener("meridianHolidaysUpdated", renderCommanderIntel);
 window.addEventListener("meridianBootCompleted", renderCommanderIntel);
 window.addEventListener("meridianDataUpdated", renderCommanderIntel);
+window.addEventListener("meridianCycleUpdated", renderCommanderIntel);
 window.addEventListener("storage", renderCommanderIntel);
 
 

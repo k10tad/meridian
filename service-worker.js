@@ -3,7 +3,7 @@
 // Commander image refresh
 //========================
 
-const MERIDIAN_SW_VERSION = "meridian-runtime-5.4.1-air-holiday-guidance";
+const MERIDIAN_SW_VERSION = "meridian-runtime-5.5.0-atlas-cycle";
 const MERIDIAN_ROOT = new URL("./", self.location.href).pathname;
 
 self.addEventListener("install", function () {
